@@ -1,0 +1,107 @@
+---
+title: "InDesign Will Not Warn You About External Links"
+date: 2026-08-21T17:10:57.340-07:00
+updated: 2026-08-21T17:10:57.340-07:00
+permalink: "/2026/08/indesign-will-not-warn-you-about.html"
+tags: ["automation", "InDesign", "links", "low judgment"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-1656832663907541634"
+layout: post.njk
+---
+<!-- YouTube embed (responsive 16:9) -->
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:0 0 1.5em;">
+<iframe src="https://www.youtube.com/embed/zN5TkmJ5yq8" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="LinkSafe: Collect, Relink, and Audit External Links in InDesign"></iframe>
+</div>
+
+<p>A document opens cleanly. No red flags in the Links panel, no warnings on export. It gets zipped, copied to a shared drive, or handed off as it stands. On the other machine, images are missing &mdash; not one or two, but a screenful.</p>
+
+<p>Nothing broke in transit. The links were already pointing at places that were never going to travel with the file. They had been for weeks. The handoff was just the first moment anything depended on it.</p>
+
+<h2>Two Kinds of Bad Link, and InDesign Only Names One</h2>
+
+<p>InDesign is precise about link state. It will tell you a link is <strong>missing</strong> &mdash; the file is not where the document expects it. It will tell you a link is <strong>out of date</strong> &mdash; the file changed since it was placed. Both get a badge in the Links panel, and both are picked up by the default preflight profile.</p>
+
+<p>There is a third situation it does not treat as a problem: the link resolves perfectly, and its source file lives somewhere that only exists on your machine. A different folder. A different drive. Someone's Desktop.</p>
+
+<p>This is not a third link status, and InDesign is not wrong to omit it. The link genuinely is fine. Missing and out-of-date are observations about the file as it is right now. An external source is a different kind of fact &mdash; a dependency on a location that may or may not exist on the other side of a handoff. That is a property of the workflow, not of the link, which is why no badge covers it.</p>
+
+<h2>What "External" Means Here</h2>
+
+<p>Worth pinning down, because everything below depends on it.</p>
+
+<p>LinkSafe uses one deliberately strict rule: the canonical home for a linked file is the <code>Links</code> folder beside the INDD. Anything outside that folder is reported as external &mdash; <em>including</em> files elsewhere inside the same project folder, which would travel with the document perfectly well.</p>
+
+<p>That is a workflow policy, not an InDesign category. If your shop keeps assets in <code>Photos/</code> and <code>Logos/</code> next to the document and always moves the whole tree, those links are fine in practice and LinkSafe will still list them. The strictness is the point: one canonical place means one test, with nothing to configure per project and nothing to get wrong.</p>
+
+<h2>The Panel Shows You a Name, Not a Relationship</h2>
+
+<p>It would be wrong to say the path is hidden. Open the Links panel menu, choose <strong>Panel Options</strong>, and you can switch on <code>Folder 0</code>, <code>Folder 1</code>, <code>Folder 2</code> &mdash; the enclosing folder and its parents &mdash; as columns. Select a link and <strong>Link Info</strong> shows the full path.</p>
+
+<p>So the information is there. What is not there is the comparison.</p>
+
+<p><code>Folder 0</code> tells you a link sits in a folder called <code>Images</code>. It does not tell you <em>which</em> <code>Images</code> &mdash; the one beside this document, or the one on the shared drive, or the one in last year's job folder. Two links showing an identical folder name can point at completely different places. The panel gives you a label; what decides the outcome is a relationship between two paths, and there is no column for a relationship.</p>
+
+<p>That leaves reading full paths row by row. It is fine at six links and stops scaling quickly, because a clean result is only provable by exhaustion: there is no shortcut to establishing that none of the remaining rows point somewhere else.</p>
+
+<p>Meanwhile the state accumulates through ordinary work &mdash; duplicating last year's layout, reusing a logo from a shared folder, placing an image straight out of a client's download folder, opening a document built on a machine with different drive letters. Each one leaves a link pointing somewhere a handoff will not carry.</p>
+
+<h2>Package Fixes the Handoff, Not the Working Document</h2>
+
+<p>The obvious objection is that InDesign already covers this. <strong>File &gt; Package</strong> copies linked graphics into a <code>Links</code> folder and, with <em>Update Graphic Links in Package</em> enabled, repoints the links at those copies. That is true, and for a handoff it is the right tool &mdash; done properly it prevents exactly the failure this post opens with.</p>
+
+<p>The distinction is narrower than "Package is not enough," and it is worth stating exactly: <strong>Package makes a portable copy. It does not change the dependency structure of the document you keep working in.</strong> The links that get repointed belong to the copy inside the package folder. Your working file still points wherever it pointed before.</p>
+
+<p>If production continues from the packaged copy, that is a complete answer and there is nothing left to do. If production continues from the original &mdash; the common case, since the original is what sits in the job folder and carries the edit history &mdash; then the underlying condition is untouched, and every future handoff depends on remembering to package correctly again.</p>
+
+<p>Consolidating in place is the other operation. It changes the working document so that its eligible links resolve from the canonical <code>Links</code> folder beside the INDD. Packaging is still the right way to hand off afterward; by then the links are already consolidated.</p>
+
+<h2>This Is a Low Judgment Check</h2>
+
+<p>Once the canonical location is fixed by policy, deciding whether a given link satisfies it takes no judgment at all. At the scripting level it reduces to a deterministic path-containment test &mdash; after both paths are normalized, which is the part that is less trivial than it sounds: separators, trailing separators, and whether the volume is case-sensitive, which LinkSafe probes at run time rather than inferring from the operating system's name.</p>
+
+<p>Objective detection, predictable action: that is the combination I have written about before as <a href="https://www.linguist-coder.com/2026/04/scaling-multilingual-dtp-by-detecting.html" target="_blank" rel="noopener">low judgment work</a>, and it is the category that is safe to automate first. There is a second reason to hand it over, which only shows up later. Done by hand, the result exists in someone's head and there is nothing to point at afterward. Done by tool, the result is a file &mdash; and a file can be attached to a handoff, filed with the job, or read six months later when someone asks what happened.</p>
+
+<h2>Consolidation Is Four Operations, Not One</h2>
+
+<p>"Collect the links" sounds like one action &mdash; copy the files. It is four, and skipping any of them is where consolidation scripts usually go wrong.</p>
+
+<ol>
+<li><strong>Copy</strong> every eligible external file into the <code>Links</code> folder beside the document. Eligible carries weight: an embedded graphic has no external source to copy, because it is already stored inside the document; a missing file cannot be copied at all; a file already in the folder does not need to be. Three different reasons, and each should be recorded rather than silently skipped.</li>
+<li><strong>Relink</strong> the document to the copies. This is the step that changes the document, and the only one that does.</li>
+<li><strong>Verify</strong> each relink after making it. Not assume &mdash; read the link back and check both its status and its resolved path against the copy you intended. A relink that reports success and does not land is worse than no relink at all, because now the document <em>looks</em> consolidated.</li>
+<li><strong>Log</strong> the run. What moved, what did not, and why.</li>
+</ol>
+
+<p>Name conflicts deserve their own note. Two different images called <code>logo.eps</code> from two different folders will collide in one flat folder. Blind overwrite is the unsafe answer: it leaves a file that still opens, still shows an image, and shows the wrong one. Several responses are defensible &mdash; preserve the source hierarchy, abort on collision, ask. LinkSafe renames the incoming copy (<code>logo.eps</code>, <code>logo_2.eps</code>) and never overwrites what is already there.</p>
+
+<h2>The Script</h2>
+
+<p><strong>LinkSafe</strong> is an InDesign script that does the above. It has one mode that changes the document and three that only read it:</p>
+
+<ul>
+<li><strong>Collect &amp; Relink</strong> &mdash; copy, relink, verify, log. The run is wrapped as a single InDesign undo transaction, so one Ctrl/Cmd+Z reverts every relink together.</li>
+<li><strong>External Links Report</strong> &mdash; a CSV of every link whose source sits outside the <code>Links</code> folder beside the document, with its path and a reason code.</li>
+<li><strong>Missing Links Report</strong> &mdash; a CSV of everything that is gone, keeping the recorded path so you know what to restore.</li>
+<li><strong>All Links Inventory</strong> &mdash; one row per link with its status: local, external, embedded, missing.</li>
+</ul>
+
+<p>The three report modes do not touch the document. That separation is deliberate: on a file you did not build, you want to look before you change anything.</p>
+
+<p>Worth knowing before leaning on it:</p>
+
+<ul>
+<li><strong>Undo covers the relinking, not the copying.</strong> The relinks revert in one step because the run is wrapped as one transaction. The copied files stay on disk &mdash; a filesystem operation is not something Undo can reach &mdash; and nothing already in the folder is overwritten. Delete the unused copies manually once you are satisfied with the document.</li>
+<li><strong>It does not collect fonts.</strong> Package does. Consolidating links is not a replacement for packaging; it removes one class of failure from it.</li>
+<li><strong>It does not reconstruct missing sources.</strong> If a recorded path no longer resolves, LinkSafe can list it but not rebuild it. Recovering the file from a backup, an earlier package, or the machine it came from is outside what a script can do.</li>
+<li><strong>It works on links, whatever they point at.</strong> Everything in the Links panel is in scope &mdash; graphics, placed INDD files, linked text &mdash; because the rule is about where a source file lives, not what kind of file it is. What it does not do is recurse: a placed INDD is copied and relinked as a file, but the links <em>inside</em> that document remain that document's own problem. Fonts and color settings are not links at all, and are separate concerns with separate failure modes.</li>
+</ul>
+
+<p>Full walkthrough here: <a href="https://youtu.be/Ccm4zA4w6dw" target="_blank" rel="noopener">https://youtu.be/Ccm4zA4w6dw</a></p>
+
+<p>LinkSafe is on aescripts, with a free trial: <a href="https://aescripts.com/linksafe/" target="_blank" rel="noopener">https://aescripts.com/linksafe/</a></p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_18.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Language-Based Image Relinking in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/04/scaling-multilingual-dtp-by-detecting.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Detecting Objects Outside the Layout (Low Judgment Workflows)</a></li>
+</ul>

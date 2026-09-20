@@ -1,0 +1,167 @@
+---
+title: "How to Run JavaScript in Adobe InDesign (Without Learning JavaScript First)"
+date: 2026-01-24T13:28:00.000-08:00
+updated: 2026-09-18T16:09:55.248-07:00
+permalink: "/2026/01/how-to-run-javascript-in-adobe-indesign.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-257059034089245698"
+layout: post.njk
+---
+<h2 style="text-align: left;">&nbsp;0. Who This Article Is For</h2>
+<p data-end="355" data-start="237">This article is for InDesign users who don’t want to “learn JavaScript” — they just want to make InDesign do the work.</p>
+<p data-end="547" data-start="357">You may have seen scripts, automation examples, or <code data-end="414" data-start="408">.jsx</code> files before, but stopped there because many explanations immediately turn into a JavaScript course.<br data-end="518" data-start="515" />
+That is not the purpose here.</p>
+<p data-end="719" data-start="549">This article is <strong data-end="572" data-start="565">not</strong> for people who want to become JavaScript developers.<br data-end="628" data-start="625" />
+It is for people who already work in InDesign and want to automate small, repetitive tasks.</p>
+<hr data-end="724" data-start="721" />
+<h2 data-end="772" data-start="726">1. What This Article Does (And Does Not Do)</h2>
+<p data-end="814" data-start="774">The goal of this article is very simple:</p>
+<ul data-end="900" data-start="816">
+<li data-end="842" data-start="816">
+<p data-end="842" data-start="818">Write a minimal script</p>
+</li>
+<li data-end="865" data-start="843">
+<p data-end="865" data-start="845">Run it in InDesign</p>
+</li>
+<li data-end="900" data-start="866">
+<p data-end="900" data-start="868">Confirm that it actually works</p>
+</li>
+</ul>
+<p data-end="912" data-start="902">That’s it.</p>
+<p data-end="1029" data-start="914">This article does <strong data-end="939" data-start="932">not</strong> cover JavaScript syntax in detail.<br data-end="977" data-start="974" />
+General programming concepts are also not explained.</p>
+<p data-end="1164" data-start="1031">Those topics are already well covered elsewhere.<br data-end="1082" data-start="1079" />
+Here, the focus is limited to what is necessary to make InDesign execute a script.</p>
+<p data-end="1241" data-start="1166">If something runs and produces a visible result, that is already a success.</p>
+<hr data-end="1246" data-start="1243" />
+<h2 data-end="1288" data-start="1248">2. Write the Smallest Possible Script</h2>
+<h3 data-end="1329" data-start="1290">2.1 Open a Text Editor (or VS Code)</h3>
+<p data-end="1365" data-start="1331">Any plain text editor can be used.</p>
+<ul data-end="1459" data-start="1367">
+<li data-end="1386" data-start="1367">
+<p data-end="1386" data-start="1369">Notepad (Windows)</p>
+</li>
+<li data-end="1422" data-start="1387">
+<p data-end="1422" data-start="1389">TextEdit (macOS, plain text mode)</p>
+</li>
+<li data-end="1459" data-start="1423">
+<p data-end="1459" data-start="1425">VS Code, if it is already familiar</p>
+</li>
+</ul>
+<p data-end="1558" data-start="1461">The specific tool does not matter.<br data-end="1498" data-start="1495" />
+The only requirement is that a plain text file can be saved.</p>
+<hr data-end="1563" data-start="1560" />
+<h3 data-end="1591" data-start="1565">2.2 Type This One Line</h3>
+<p data-end="1634" data-start="1593">Type the following line exactly as it is:</p>
+<pre class="overflow-visible! px-0!" data-end="1668" data-start="1636"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span class="hljs-title function_">alert</span>(<span class="hljs-string">"Hello, world"</span>);
+</code></div></div></pre>
+<p data-end="1796" data-start="1670">At this stage, understanding the code is not required.<br data-end="1727" data-start="1724" />
+This line is only used to confirm that InDesign can execute a script.</p>
+<hr data-end="1801" data-start="1798" />
+<h2 data-end="1834" data-start="1803">3. Save the File as a <code data-end="1834" data-start="1828">.jsx</code></h2>
+<p data-end="1889" data-start="1836">Save the file with the <code data-end="1865" data-start="1859">.jsx</code> extension, for example:</p>
+<pre class="overflow-visible! px-0!" data-end="1908" data-start="1891"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre!">hello.jsx
+</code></div></div></pre>
+<p data-end="2001" data-start="1910">InDesign recognizes scripts by this extension.<br data-end="1959" data-start="1956" />
+For now, no further explanation is needed.</p>
+<hr data-end="2006" data-start="2003" />
+<h2 data-end="2059" data-start="2008">4. Put the Script into InDesign’s Scripts Folder</h2>
+<div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/NP57c8p8hE0" width="320" youtube-src-id="NP57c8p8hE0"></iframe></div><br /><p data-end="2116" data-start="2061">InDesign only runs scripts placed in a specific folder.</p>
+<p data-end="2150" data-start="2118">The easiest way to locate it is:</p><ol data-end="330" data-start="209"><li data-end="227" data-start="209"><p data-end="227" data-start="212">Open InDesign</p>
+</li>
+<li data-end="291" data-start="228">
+<p data-end="291" data-start="231">From the top menu, choose <strong data-end="289" data-start="257">Window → Utilities → Scripts</strong></p>
+</li>
+<li data-end="330" data-start="292">
+<p data-end="330" data-start="295">The <strong data-end="310" data-start="299">Scripts</strong> panel will appear</p>
+</li>
+</ol><p data-end="384" data-start="332">In the Scripts panel, three folders are usually shown:</p><ul data-end="416" data-start="386">
+<li data-end="405" data-start="386">
+<p data-end="405" data-start="388"><strong data-end="403" data-start="388">Application</strong></p>
+</li><li data-end="405" data-start="386"><p data-end="405" data-start="388"><b>Community</b></p></li>
+<li data-end="416" data-start="406">
+<p data-end="416" data-start="408"><strong data-end="416" data-start="408">User</strong></p>
+</li>
+</ul><ol data-end="642" data-start="418" start="4">
+<li data-end="438" data-start="418">
+<p data-end="438" data-start="421">Select <strong data-end="436" data-start="428">User</strong></p>
+</li>
+<li data-end="503" data-start="439">
+<p data-end="503" data-start="442">From the panel menu, choose <strong data-end="501" data-start="470">Reveal in Explorer / Finder<br /></strong></p><div class="separator" style="clear: both; text-align: center;"><strong data-end="501" data-start="470"><a href="/images/2026/01/how-to-run-javascript-in-adobe-indesign/01.png" style="margin-left: 1em; margin-right: 1em;"><img alt="" data-original-height="358" data-original-width="471" height="240" src="/images/2026/01/how-to-run-javascript-in-adobe-indesign/01.png" width="316" /></a></strong></div><p></p></li>
+<li data-end="545" data-start="504">
+<p data-end="545" data-start="507">A folder named <strong data-end="533" data-start="522">Scripts</strong> will open</p>
+</li>
+<li data-end="594" data-start="546">
+<p data-end="594" data-start="549">Open the <strong data-end="575" data-start="558">Scripts Panel</strong> folder inside it</p>
+</li>
+<li data-end="642" data-start="595">
+<p data-end="642" data-start="598">Save your <code data-end="614" data-start="608">.jsx</code> file into <strong data-end="642" data-start="625">Scripts Panel</strong></p>
+</li>
+</ol><p data-end="2150" data-start="2118">
+
+
+
+</p><p data-end="705" data-start="644">This is the folder where the <code data-end="2320" data-start="2314">.jsx</code> file should be saved.</p>
+<p data-end="2409" data-start="2344">Once placed there, the script should appear in the Scripts panel.</p>
+<hr data-end="2414" data-start="2411" />
+<h2 data-end="2436" data-start="2416">5. Run the Script</h2>
+<p data-end="2483" data-start="2438">Double-click the script in the Scripts panel.</p>
+<p data-end="2568" data-start="2485">If a dialog displaying <strong data-end="2526" data-start="2508">“Hello, world”</strong> appears, the script has run successfully.<br /></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/01/how-to-run-javascript-in-adobe-indesign/02.png" style="margin-left: 1em; margin-right: 1em;"><img alt="" data-original-height="271" data-original-width="261" height="240" src="/images/2026/01/how-to-run-javascript-in-adobe-indesign/02.png" width="231" /></a></div><br /><br /><p></p>
+<p data-end="2624" data-start="2570">At this point, one important thing has been confirmed:</p>
+<blockquote data-end="2666" data-start="2626">
+<p data-end="2666" data-start="2628">JavaScript is running inside InDesign.</p>
+</blockquote>
+<p data-end="2710" data-start="2668">This step exists only to verify that fact.</p>
+<hr data-end="2715" data-start="2712" />
+<h2 data-end="2758" data-start="2717">6. Change One Line to Control InDesign</h2>
+<h3 data-end="2784" data-start="2760">6.1 Replace the Code</h3>
+<p data-end="2867" data-start="2786">Open the same <code data-end="2806" data-start="2800">.jsx</code> file again and replace its contents with the following line:</p>
+<pre class="overflow-visible! px-0!" data-end="2899" data-start="2869"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js">app.<span class="hljs-property">documents</span>.<span class="hljs-title function_">add</span>();
+</code></div></div></pre>
+<p data-end="2915" data-start="2901">Save the file.</p>
+<hr data-end="2920" data-start="2917" />
+<h3 data-end="2942" data-start="2922">6.2 Run It Again</h3>
+<p data-end="2992" data-start="2944">Run the script from the Scripts panel once more.</p>
+<p data-end="3046" data-start="2994">If a new InDesign document opens, the script worked.<br /></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/01/how-to-run-javascript-in-adobe-indesign/03.png" style="margin-left: 1em; margin-right: 1em;"><img alt="" data-original-height="896" data-original-width="1013" height="240" src="/images/2026/01/how-to-run-javascript-in-adobe-indesign/03.png" width="271" /></a></div><p></p>
+<p data-end="3099" data-start="3048">This confirms something more important than before:</p>
+<blockquote data-end="3163" data-start="3101">
+<p data-end="3163" data-start="3103">JavaScript is not just running — it is controlling InDesign.</p>
+</blockquote>
+<hr data-end="3168" data-start="3165" />
+<h2 data-end="3220" data-start="3170">7. What Is Actually Necessary (And What Is Not)</h2>
+<p data-end="3304" data-start="3222">At this stage, enough has already been covered to start using scripts in practice.</p>
+<p data-end="3322" data-start="3306">It is now clear:</p>
+<ul data-end="3416" data-start="3324">
+<li data-end="3352" data-start="3324">
+<p data-end="3352" data-start="3326">Where scripts are stored</p>
+</li>
+<li data-end="3378" data-start="3353">
+<p data-end="3378" data-start="3355">How they are executed</p>
+</li>
+<li data-end="3416" data-start="3379">
+<p data-end="3416" data-start="3381">That scripts can control InDesign</p>
+</li>
+</ul>
+<p data-end="3525" data-start="3418">A deep understanding of JavaScript is not required.<br data-end="3472" data-start="3469" />
+Programming theory is also unnecessary at this point.</p>
+<p data-end="3601" data-start="3527">For many real-world InDesign tasks, this level of knowledge is sufficient.</p>
+<hr data-end="3606" data-start="3603" />
+<h2 data-end="3631" data-start="3608">8. That’s It for Now</h2>
+<p data-end="3671" data-start="3633">This article intentionally stops here.</p>
+<p data-end="3800" data-start="3673">The goal was not to teach JavaScript, but to remove the barrier between<br data-end="3747" data-start="3744" />
+“I’ve heard of scripts” and “I can actually run one”.</p>
+<p data-end="3963" data-start="3802">Most articles on this blog are written for people working with InDesign in production environments.<br data-end="3904" data-start="3901" />
+Occasionally, articles like this are added as entry points.</p>
+<p data-end="4040" data-start="3965">If a script can be executed successfully, the hardest part is already over.</p><p data-end="4040" data-start="3965"><br /></p><p data-end="4040" data-start="3965"><br /></p><p data-end="4040" data-start="3965">If you want to try a real-world example, the following article includes a sample script.</p><p data-end="531" data-start="457">The script can be run using exactly the same method shown in this article:</p><p data-end="4040" data-start="3965">
+
+</p><ul data-end="621" data-start="536">
+<li data-end="621" data-start="536">
+<p data-end="621" data-start="538"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating.html">Scaling Multilingual DTP by Automating Trados-Ready IDML Export from InDesign Books</a></p></li></ul>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/02/your-first-practical-indesign.html" target="_blank" rel="noopener">Your First Practical InDesign Automation: Opening and Closing Multiple Files</a></li>
+<li><a href="https://www.linguist-coder.com/2025/06/close-all-indesign-files-with-one-click.html" target="_blank" rel="noopener">Close All InDesign Files with One Click: A Script for Busy Designers</a></li>
+<li><a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">Your First InDesign Script: Which Pages Have Overset Text?</a></li>
+</ul>

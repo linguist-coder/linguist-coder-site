@@ -1,0 +1,22 @@
+---
+title: "🦊When Times New Roman Suddenly Vanished from InDesign"
+date: 2025-11-22T15:05:00.000-08:00
+updated: 2025-11-22T15:05:53.096-08:00
+permalink: "/2025/11/when-times-new-roman-suddenly-vanished.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-3345590972618620053"
+layout: post.njk
+---
+<p>&nbsp;Recently at work, I ran into a <strong data-end="235" data-start="184">strange and frustrating issue in Adobe InDesign</strong>:</p><p data-end="412" data-start="153">
+<strong data-end="309" data-start="239">Times New Roman suddenly started appearing as an unsupported font.</strong><br data-end="312" data-start="309" />
+This happened completely out of the blue — the same documents had been fine just a few days earlier.</p>
+<p data-end="653" data-start="414">After some trial and error, I came to suspect that this wasn’t an InDesign issue at all, but a <strong data-end="218" data-start="194">Windows-side problem</strong>. It seems that a recent Windows Update may have <strong data-end="304" data-start="267">updated the Times New Roman files</strong>, and as a result, <strong data-end="396" data-start="323">InDesign was no longer able to recognize the updated version properly</strong>.</p>
+<p data-end="916" data-start="655"><b>I even tried writing a script to automate the font replacement, but it didn’t help.</b> Because the font name technically matched, InDesign didn’t treat it as something that could be substituted cleanly.</p><p data-end="916" data-start="655"><span data-end="916" data-start="857">At this point, the only reliable method is to fix the fonts manually — either <b>by using “Find/Replace Font” in InDesign or by updating the font settings in each paragraph or character style one by one</b>.</span></p>
+<hr data-end="921" data-start="918" />
+<h3 data-end="965" data-start="923"><strong data-end="965" data-start="927">A workaround for urgent situations</strong></h3>
+<p data-end="1017" data-start="967">One workaround did help when I needed a quick fix:</p>
+<p data-end="1339" data-start="1019">If I had another InDesign project that had been <strong data-end="1105" data-start="1067">packaged before the issue occurred</strong>, the “Document fonts” folder often included <strong data-end="1186" data-start="1150">older Times New Roman font files</strong>.<br data-end="1190" data-start="1187" />
+By copying that folder and placing it in the same directory as the problematic INDD file, <strong data-end="1339" data-start="1280">InDesign was able to display the fonts correctly again.</strong></p>
+<p data-end="1546" data-start="1341">It’s not a fundamental solution, and it doesn’t address whatever is happening at the system level, but it’s a surprisingly effective emergency measure when the document needs to open correctly <em data-end="1545" data-start="1534">right now</em>.</p>
+<hr data-end="1551" data-start="1548" />
+<p data-end="1632" data-start="1553"><span data-end="1632" data-start="1553">I hope this note helps anyone facing the same sudden Times New Roman issue.</span></p>

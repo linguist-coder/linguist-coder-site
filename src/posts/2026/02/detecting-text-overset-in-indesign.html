@@ -1,0 +1,447 @@
+---
+title: "Detecting Text Overset in InDesign: A Minimal Script Before Automation"
+date: 2026-02-01T16:31:00.000-08:00
+updated: 2026-03-21T15:04:34.902-07:00
+permalink: "/2026/02/detecting-text-overset-in-indesign.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-7224939874364280581"
+layout: post.njk
+---
+<p data-end="307" data-start="161"><strong data-end="185" data-start="161">Update (2026-02-18):</strong><br data-end="188" data-start="185" />
+Fixed a restore issue that could leave a black 1pt stroke in certain environments. Please use the updated script below.</p><p>
+</p><p data-end="575" data-start="309"><strong data-end="318" data-start="309">Note:</strong><br data-end="321" data-start="318" />
+In some localized versions of InDesign, the internal name of the built-in “None” swatch may differ. If the restore script does not correctly remove the stroke, verify the swatch name in your document and adjust the <code data-end="553" data-start="536">getNoneSwatch()</code> function accordingly.</p><h1 data-end="182" data-start="110">Context</h1><p data-end="341" data-start="196">In the previous article, I explained why text overset is not just a layout problem, but a <strong data-end="305" data-start="286">scaling problem</strong> in multilingual InDesign workflows.</p><p data-end="491" data-start="343">When overset handling depends on manual inspection and ad-hoc fixes, the workflow breaks down quickly as document count and language count increase.</p><p data-end="582" data-start="493">This article is a follow-up.<br data-end="524" data-start="521" />It intentionally does <strong data-end="553" data-start="546">not</strong> attempt to fix overset text.</p><p data-end="635" data-start="584">Instead, it focuses on a more fundamental question:</p><blockquote data-end="713" data-start="637"><p data-end="713" data-start="639">How do you reliably <em data-end="664" data-start="659">see</em> where overset exists before deciding what to do?</p></blockquote><p data-end="869" data-start="715">If you have not read the previous article yet, it provides important context on <strong data-end="838" data-start="795">why overset detection itself must scale</strong>, not just the correction step.</p><p data-end="974" data-start="871">Previous article:<br data-end="891" data-start="888" /><a class="decorated-link" data-end="974" data-start="891" href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html" rel="noopener" target="_new">https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html<span aria-hidden="true" class="ms-0.5 inline-block align-middle leading-none"><svg aria-hidden="true" class="block h-[0.75em] w-[0.75em] stroke-current stroke-[0.75]" data-rtl-flip="" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><use fill="currentColor" href="/cdn/assets/sprites-core-c9exbsc1.svg#304883"></use></svg></span></a></p><hr data-end="979" data-start="976" /><h2 data-end="1033" data-start="981">Why Detection Still Matters (Even with Preflight)</h2><p data-end="1109" data-start="1035">InDesign already has a Preflight feature, and it does detect overset text.</p><p data-end="1169" data-start="1111">The problem is not <em data-end="1142" data-start="1130">capability</em>, but <em data-end="1168" data-start="1148">usability at scale</em>.</p><ul data-end="1268" data-start="1171"><li data-end="1211" data-start="1171"><p data-end="1211" data-start="1173">Preflight reports issues as a <strong data-end="1211" data-start="1203">list</strong></p></li><li data-end="1268" data-start="1212"><p data-end="1268" data-start="1214">This script visualizes issues <strong data-end="1268" data-start="1244">directly on the page</strong></p></li></ul><p data-end="1371" data-start="1270">Instead of scanning rows in a panel, you flip through pages and immediately see where overset exists.</p><p data-end="1423" data-start="1373">Think of it as a <strong data-end="1413" data-start="1390">visual pressure map</strong> for text.</p><p data-end="1488" data-start="1425">Before fixing anything, this answers a more important question:</p><blockquote data-end="1578" data-start="1490"><p data-end="1578" data-start="1492">Are these a few isolated problems, or a structural issue that will not scale manually?</p></blockquote><hr data-end="1583" data-start="1580" /><h2 data-end="1625" data-start="1585">Design Philosophy of This Free Sample</h2><p data-end="1664" data-start="1627">This script is intentionally limited.</p><h3 data-end="1682" data-start="1666">What it does</h3><ul data-end="1891" data-start="1684"><li data-end="1750" data-start="1684"><p data-end="1750" data-start="1686">Scans all text frames in the document (including master spreads)</p></li><li data-end="1780" data-start="1751"><p data-end="1780" data-start="1753">Detects overset text frames</p></li><li data-end="1847" data-start="1781"><p data-end="1847" data-start="1783">Makes them visually obvious using stroke color and stroke weight</p></li><li data-end="1891" data-start="1848"><p data-end="1891" data-start="1850">Stores minimal metadata for later cleanup</p></li></ul><h3 data-end="1918" data-start="1893">What it does <em data-end="1915" data-start="1910">not</em> do</h3><ul data-end="2015" data-start="1920"><li data-end="1947" data-start="1920"><p data-end="1947" data-start="1922">Automatically fix overset</p></li><li data-end="1973" data-start="1948"><p data-end="1973" data-start="1950">Change text composition</p></li><li data-end="2015" data-start="1974"><p data-end="2015" data-start="1976">Adjust fonts, tracking, or layout rules</p></li></ul><p data-end="2036" data-start="2017">This is deliberate.</p><p data-end="2171" data-start="2038">Overset correction requires context and judgment.<br data-end="2090" data-start="2087" />Blind automation in this area is more likely to damage layouts than improve them.</p><p data-end="2245" data-start="2173">This sample exists to support <strong data-end="2228" data-start="2203">human decision-making</strong>, not replace it.</p><hr data-end="2250" data-start="2247" /><h2 data-end="2287" data-start="2252">Why Stroke Color + Stroke Weight</h2><p data-end="2318" data-start="2289">Overset frames are marked by:</p><ul data-end="2435" data-start="2320"><li data-end="2393" data-start="2320"><p data-end="2393" data-start="2322">Changing the <strong data-end="2351" data-start="2335">stroke color</strong> (e.g. a bright warning color such as red)</p></li><li data-end="2435" data-start="2394"><p data-end="2435" data-start="2396">Increasing the <strong data-end="2435" data-start="2411">stroke weight to 2pt</strong></p></li></ul><p data-end="2512" data-start="2437">The fill is left untouched to avoid interfering with layout or readability.</p><p data-end="2605" data-start="2514">Increasing stroke weight is intentional.<br data-end="2557" data-start="2554" />Without it, visibility is poor in dense layouts.</p><p data-end="2631" data-start="2607">Important clarification:<br /><b>This script does not change text content or layout decisions.</b></p><p data-end="2631" data-start="2607">It only adds a temporary visual marker to help you identify where overset occurs.</p><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/5RRmToc_yLo" width="320" youtube-src-id="5RRmToc_yLo"></iframe></div><br /><p data-end="2631" data-start="2607"><br /></p><hr data-end="2731" data-start="2728" /><h2 data-end="2778" data-start="2733">Detection Script: Mark Overset Text Frames</h2>
+
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+/*
+Detect overset text frames and mark them with a warning stroke.
+Marker is stored in TextFrame.label as:
+  |LC_OVRSET_V1{c=&lt;origStrokeColorToken&gt;;w=&lt;origStrokeWeight&gt;}
+Where c=@NONE means "no stroke" (None).
+
+Note:
+- Some environments are sensitive to file encoding. If the script does not run, save as "UTF-8 with BOM".
+*/
+
+(function () {
+    var MARK_KEY = "LC_OVRSET_V1";
+    var NONE_TOKEN = "@NONE";
+    var WARN_STROKE_WEIGHT = 2; // pt
+    var WARN_SWATCH_NAME = "LC_Overset_Warn";
+
+    if (app.documents.length === 0) {
+        alert("No documents are currently open.");
+        return;
+    }
+
+    var doc = app.activeDocument;
+    var frames = collectAllTextFrames(doc);
+
+    var scanned = frames.length;
+    var oversetFound = 0;
+    var marked = 0;
+    var alreadyMarked = 0;
+    var skippedLocked = 0;
+    var skippedErrors = 0;
+
+    for (var i = 0; i &lt; frames.length; i++) {
+        var tf = frames[i];
+        if (!tf || !tf.isValid) continue;
+
+        try {
+            if (!tf.overflows) continue;
+            oversetFound++;
+
+            // Avoid label pollution on repeated runs
+            if (tf.label &amp;&amp; tf.label.indexOf("|" + MARK_KEY + "{") !== -1) {
+                alreadyMarked++;
+                continue;
+            }
+
+            if (isLockedOrOnLockedLayer(tf)) {
+                skippedLocked++;
+                continue;
+            }
+
+            // Capture original stroke
+            var origColorToken = getStrokeColorToken(doc, tf, NONE_TOKEN);
+            var origWeight = safeNumber(tf.strokeWeight, 0);
+
+            // Apply warning stroke
+            tf.strokeColor = getWarningSwatch(doc, WARN_SWATCH_NAME);
+            tf.strokeWeight = WARN_STROKE_WEIGHT;
+
+            // Store marker
+            tf.label = (tf.label || "") +
+                "|" + MARK_KEY + "{c=" + origColorToken + ";w=" + origWeight + "}";
+
+            marked++;
+
+        } catch (e) {
+            skippedErrors++;
+        }
+    }
+
+    alert(buildSummary());
+
+    function buildSummary() {
+        var lines = [];
+        lines.push("Overset detection completed.");
+        lines.push("");
+        lines.push("Text frames scanned: " + scanned);
+        lines.push("Overset frames found: " + oversetFound);
+        lines.push("Marked: " + marked);
+        lines.push("Already marked: " + alreadyMarked);
+
+        if (skippedLocked &gt; 0 || skippedErrors &gt; 0) {
+            lines.push("");
+            lines.push("Warnings:");
+            if (skippedLocked &gt; 0) lines.push("- Skipped (locked object or layer): " + skippedLocked);
+            if (skippedErrors &gt; 0) lines.push("- Skipped (other errors): " + skippedErrors);
+        }
+        return lines.join("\n");
+    }
+
+    function collectAllTextFrames(doc) {
+        var result = [];
+
+        try { collectFromItems(doc.allPageItems, result); } catch (e) {}
+
+        // Include master items
+        try {
+            for (var m = 0; m &lt; doc.masterSpreads.length; m++) {
+                try { collectFromItems(doc.masterSpreads[m].allPageItems, result); } catch (e2) {}
+            }
+        } catch (e3) {}
+
+        return result;
+
+        function collectFromItems(items, out) {
+            var len = 0;
+            try { len = items.length; } catch (e) { return; }
+            for (var i = 0; i &lt; len; i++) {
+                try {
+                    var it = items[i];
+                    if (it &amp;&amp; it.isValid &amp;&amp; it.constructor.name === "TextFrame") out.push(it);
+                } catch (e2) {}
+            }
+        }
+    }
+
+    function isLockedOrOnLockedLayer(tf) {
+        try { if (tf.locked) return true; } catch (e) {}
+        try { if (tf.itemLayer &amp;&amp; tf.itemLayer.locked) return true; } catch (e2) {}
+        return false;
+    }
+
+    function getStrokeColorToken(doc, tf, noneToken) {
+        try {
+            var c = tf.strokeColor;
+            if (isNoneLike(doc, c)) return noneToken;
+            return (c &amp;&amp; c.isValid &amp;&amp; c.name) ? c.name : noneToken;
+        } catch (e) {
+            return noneToken;
+        }
+    }
+
+    // Robust "None" detection (locale-safe enough for common environments)
+    function isNoneLike(doc, colorObj) {
+        if (!colorObj) return true;
+        try { if (!colorObj.isValid) return true; } catch (e0) { return true; }
+
+        // Name-based (works in your environment: "None")
+        try {
+            var n = colorObj.name;
+            if (n === "None" || n === "[None]") return true;
+        } catch (e1) {}
+
+        // Identity-based fallback
+        try {
+            var noneSw = getNoneSwatch(doc);
+            if (noneSw &amp;&amp; noneSw.isValid &amp;&amp; colorObj === noneSw) return true;
+        } catch (e2) {}
+
+        return false;
+    }
+
+    function getNoneSwatch(doc) {
+        // Your environment uses "None", but keep both for portability.
+        try { var s0 = doc.swatches.itemByName("None"); s0.name; return s0; } catch (e0) {}
+        try { var s1 = doc.swatches.itemByName("[None]"); s1.name; return s1; } catch (e1) {}
+
+        // Minimal scan fallback
+        try {
+            for (var i = 0; i &lt; doc.swatches.length; i++) {
+                var sw = doc.swatches[i];
+                if (!sw || !sw.isValid) continue;
+                var nm = "";
+                try { nm = sw.name; } catch (e2) {}
+                if (nm === "None" || nm === "[None]") return sw;
+            }
+        } catch (e3) {}
+
+        return null;
+    }
+
+    function getWarningSwatch(doc, swatchName) {
+        try {
+            var s = doc.colors.itemByName(swatchName);
+            s.name; // validate
+            return s;
+        } catch (e) {
+            return doc.colors.add({
+                name: swatchName,
+                model: ColorModel.PROCESS,
+                space: ColorSpace.RGB,
+                colorValue: [255, 0, 0]
+            });
+        }
+    }
+
+    function safeNumber(n, fallback) {
+        var v = parseFloat(n);
+        return isNaN(v) ? fallback : v;
+    }
+
+})();</code>
+</pre>
+
+<hr data-end="7260" data-start="7257" /><h2 data-end="7299" data-start="7262">Restore Script (Cleanup, Not Undo)</h2><p data-end="3466" data-start="3397">This restore script exists for <strong data-end="3439" data-start="3428">cleanup</strong>, not for perfect rollback.</p><p data-end="3585" data-start="3468">If your goal is simply to undo the script execution,<br data-end="3523" data-start="3520" />
+<strong data-end="3584" data-start="3523">InDesign’s built-in “Revert” feature is the safest option</strong>.</p><p data-end="3646" data-start="3587">The restore script is intended for two specific situations:</p><ul data-end="3787" data-start="3648">
+<li data-end="3725" data-start="3648">
+<p data-end="3725" data-start="3650">After you manually fix overset text and want to remove the visual markers</p>
+</li>
+<li data-end="3787" data-start="3726">
+<p data-end="3787" data-start="3728">When you forgot to save before running the detection script</p>
+</li>
+</ul><p data-end="3898" data-start="3789">It removes <strong data-end="3832" data-start="3800">only the visualization layer</strong><br data-end="3835" data-start="3832" />
+(stroke color and stroke weight added by the detection script).</p><p data-end="4028" data-start="3900">It does <strong data-end="3915" data-start="3908">not</strong> attempt to restore all original appearance details<br data-end="3969" data-start="3966" />
+such as stroke style, tint, or other decorative attributes.</p><h3 data-end="4054" data-start="4030">Implementation notes</h3><p data-end="4137" data-start="4056">The restore logic is written defensively to handle real-world InDesign documents:</p><ul data-end="4397" data-start="4139">
+<li data-end="4212" data-start="4139">
+<p data-end="4212" data-start="4141">Frames that became invalid (e.g. after ungrouping) are skipped safely</p>
+</li>
+<li data-end="4266" data-start="4213">
+<p data-end="4266" data-start="4215">Locked objects and locked layers are not modified</p>
+</li>
+<li data-end="4324" data-start="4267">
+<p data-end="4324" data-start="4269">Multiple markers from previous runs are fully removed</p>
+</li>
+<li data-end="4397" data-start="4325">
+<p data-end="4397" data-start="4327">Frames that originally had no stroke are explicitly restored to “None”</p>
+</li>
+</ul><p data-end="4474" data-start="4399">This keeps the script predictable and avoids leaving warning styles behind.</p><h3 data-end="4498" data-start="4476">About Undo support</h3><p data-end="4572" data-start="4500">For simplicity, this sample does not wrap changes in a single Undo step.</p><p data-end="4740" data-start="4574">If you adapt this logic for production use,<br data-end="4620" data-start="4617" />
+wrapping the script with <code data-end="4664" data-start="4645">app.doScript(...)</code> and <code data-end="4694" data-start="4669">UndoModes.ENTIRE_SCRIPT</code><br data-end="4697" data-start="4694" />
+is the standard approach to improve safety.</p><p data-end="7370" data-start="7301">
+
+
+
+
+
+
+
+
+
+
+
+
+
+</p><p data-end="4861" data-start="4742">This sample intentionally avoids that step<br data-end="4787" data-start="4784" />
+to keep the focus on <strong data-end="4860" data-start="4808">conceptual clarity rather than tool completeness</strong>.</p><hr data-end="7807" data-start="7804" /><h2 data-end="7850" data-start="7809">Restore Script: Remove Overset Markers</h2>
+
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+(function () {
+    var MARK_KEY = "LC_OVRSET_V1";
+    var NONE_TOKEN = "@NONE";
+
+    if (app.documents.length === 0) {
+        alert("No documents are currently open.");
+        return;
+    }
+
+    var doc = app.activeDocument;
+    var frames = collectAllTextFrames(doc);
+
+    var scanned = frames.length;
+    var restored = 0;
+    var notMarked = 0;
+    var skippedLocked = 0;
+    var skippedErrors = 0;
+    var failedSetNone = 0;
+
+    for (var i = 0; i &lt; frames.length; i++) {
+        var tf = frames[i];
+        if (!tf || !tf.isValid) continue;
+
+        try {
+            var parsed = parseLastMark(tf.label, MARK_KEY);
+            if (!parsed) { notMarked++; continue; }
+
+            if (isLockedOrOnLockedLayer(tf)) { skippedLocked++; continue; }
+
+            if (parsed.colorToken === NONE_TOKEN) {
+                // Force None + 0
+                if (!setNoStroke(doc, tf)) {
+                    failedSetNone++;
+                }
+            } else {
+                // Restore original color if resolvable
+                var restoredColor = resolveColorOrSwatch(doc, parsed.colorToken);
+                if (restoredColor) tf.strokeColor = restoredColor;
+
+                if (!isNaN(parsed.weight)) tf.strokeWeight = parsed.weight;
+            }
+
+            tf.label = removeAllMarks(tf.label, MARK_KEY);
+            restored++;
+
+        } catch (e) {
+            skippedErrors++;
+        }
+    }
+
+    alert(
+        "Restore completed.\n\n" +
+        "Text frames scanned: " + scanned + "\n" +
+        "Restored (marker removed): " + restored + "\n" +
+        "Not marked: " + notMarked + "\n" +
+        (skippedLocked ? ("Skipped locked: " + skippedLocked + "\n") : "") +
+        (failedSetNone ? ("Failed to set None (kept stroke): " + failedSetNone + "\n") : "") +
+        (skippedErrors ? ("Errors: " + skippedErrors + "\n") : "")
+    );
+
+    function setNoStroke(doc, tf) {
+        // Get "None" swatch fresh each time (environment-safe)
+        var noneSw = getNoneSwatch(doc);
+        if (!noneSw) {
+            // If we can't even find None, at least set weight=0
+            try { tf.strokeWeight = 0; } catch (e0) {}
+            return false;
+        }
+
+        // Apply
+        try { tf.strokeColor = noneSw; } catch (e1) {}
+        try { tf.strokeWeight = 0; } catch (e2) {}
+
+        // Verify (some environments keep old strokeColor)
+        try {
+            var sc = tf.strokeColor;
+            var nm = sc &amp;&amp; sc.isValid ? sc.name : "";
+            if (nm === "None" || nm === "[None]" || nm === "なし" || nm === "[なし]") return true;
+        } catch (e3) {}
+
+        // Retry once
+        try { tf.strokeColor = noneSw; } catch (e4) {}
+        return true;
+    }
+
+    function collectAllTextFrames(doc) {
+        var result = [];
+        try { collectFromItems(doc.allPageItems, result); } catch (e) {}
+        try {
+            for (var m = 0; m &lt; doc.masterSpreads.length; m++) {
+                try { collectFromItems(doc.masterSpreads[m].allPageItems, result); } catch (e2) {}
+            }
+        } catch (e3) {}
+        return result;
+
+        function collectFromItems(items, out) {
+            var len = 0;
+            try { len = items.length; } catch (e) { return; }
+            for (var i = 0; i &lt; len; i++) {
+                try {
+                    var it = items[i];
+                    if (it &amp;&amp; it.isValid &amp;&amp; it.constructor.name === "TextFrame") out.push(it);
+                } catch (e2) {}
+            }
+        }
+    }
+
+    function isLockedOrOnLockedLayer(tf) {
+        try { if (tf.locked) return true; } catch (e) {}
+        try { if (tf.itemLayer &amp;&amp; tf.itemLayer.locked) return true; } catch (e2) {}
+        return false;
+    }
+
+    function parseLastMark(label, key) {
+        if (!label) return null;
+
+        var needle = "|" + key + "{";
+        var pos = label.lastIndexOf(needle);
+        if (pos === -1) return null;
+
+        var end = label.indexOf("}", pos);
+        if (end === -1) return null;
+
+        var token = label.substring(pos + needle.length, end);
+        var parts = token.split(";");
+
+        var colorToken = "";
+        var weight = NaN;
+
+        for (var i = 0; i &lt; parts.length; i++) {
+            var kv = parts[i].split("=");
+            if (kv.length !== 2) continue;
+            if (kv[0] === "c") colorToken = kv[1];
+            if (kv[0] === "w") weight = parseFloat(kv[1]);
+        }
+
+        return { colorToken: colorToken, weight: weight };
+    }
+
+    function removeAllMarks(label, key) {
+        if (!label) return "";
+        var needle = "|" + key + "{";
+        var out = label;
+        while (true) {
+            var start = out.indexOf(needle);
+            if (start === -1) break;
+            var end = out.indexOf("}", start);
+            if (end === -1) break;
+            out = out.substring(0, start) + out.substring(end + 1);
+        }
+        return out;
+    }
+
+    function getNoneSwatch(doc) {
+        // Your environment shows "None (Swatch)" so try "None" first.
+        try { var s0 = doc.swatches.itemByName("None"); s0.name; return s0; } catch (e0) {}
+        try { var s1 = doc.swatches.itemByName("[None]"); s1.name; return s1; } catch (e1) {}
+
+        // Scan by name / constructor
+        try {
+            for (var i = 0; i &lt; doc.swatches.length; i++) {
+                var sw = doc.swatches[i];
+                if (!sw || !sw.isValid) continue;
+                var nm = "";
+                var cn = "";
+                try { nm = sw.name; } catch (e2) {}
+                try { cn = sw.constructor &amp;&amp; sw.constructor.name ? sw.constructor.name : ""; } catch (e3) {}
+                if (nm === "None" || nm === "[None]" || nm === "なし" || nm === "[なし]" || cn === "NoColor") return sw;
+            }
+        } catch (e4) {}
+
+        return null;
+    }
+
+    function resolveColorOrSwatch(doc, name) {
+        if (!name) return null;
+
+        try {
+            var c = doc.colors.itemByName(name);
+            if (c &amp;&amp; c.isValid) return c;
+        } catch (e1) {}
+
+        try {
+            var s = doc.swatches.itemByName(name);
+            if (s &amp;&amp; s.isValid) return s;
+        } catch (e2) {}
+
+        return null;
+    }
+
+})();</code>
+</pre>
+
+<hr data-end="13241" data-start="13238" /><h2 data-end="13262" data-start="13243">Closing Thoughts</h2><p data-end="13303" data-start="13264">Overset itself is not the real problem.</p><p data-end="13399" data-start="13305">The real problem is mixing <strong data-end="13345" data-start="13332">detection</strong>, <strong data-end="13359" data-start="13347">judgment</strong>, and <strong data-end="13379" data-start="13365">correction</strong> into a single step.</p><p data-end="13534" data-start="13401">This free sample exists to separate those concerns —<br data-end="13456" data-start="13453" />not to fix everything, but to help you decide <strong data-end="13533" data-start="13502">what deserves fixing at all</strong>.</p><p data-end="13603" data-start="13536">That separation is what allows multilingual DTP workflows to scale.</p>

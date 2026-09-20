@@ -1,0 +1,408 @@
+---
+title: "Scaling Multilingual DTP – Maintenance / Recovery: When and How to Clean Up InDesign Files with IDML"
+date: 2026-01-28T17:36:00.000-08:00
+updated: 2026-09-18T16:12:07.013-07:00
+permalink: "/2026/01/scaling-multilingual-dtp-maintenance.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-3280790097860685001"
+layout: post.njk
+---
+<p>&nbsp;</p><h1 data-end="53" data-start="0"></h1>
+<h2 data-end="144" data-start="113">0. Why This Article Exists</h2>
+<h3 data-end="176" data-start="145">Recovery as Part of Scaling</h3>
+<p data-end="269" data-start="178">The <em data-end="208" data-start="182">Scaling Multilingual DTP</em> series has covered the parts that are easier to systematize:</p>
+<ul data-end="517" data-start="271">
+<li data-end="326" data-start="271">
+<p data-end="326" data-start="273">pre-export for translation (IDML export from books)</p>
+</li>
+<li data-end="393" data-start="327">
+<p data-end="393" data-start="329">automation before/after translation (style reloads, relinking)</p>
+</li>
+<li data-end="435" data-start="394">
+<p data-end="435" data-start="396">final QA (PDF required-string checks)</p>
+</li>
+<li data-end="517" data-start="436">
+<p data-end="517" data-start="438">“escape hatches” when the layout pressure becomes too high (bulk image scaling)</p>
+</li>
+</ul>
+<p data-end="661" data-start="519">This final article is different. It is not about adding another layer of automation.<br data-end="606" data-start="603" />
+It is about <strong data-end="660" data-start="618">protecting what you have already built</strong>.</p>
+<p data-end="870" data-start="663">When you scale a workflow, you eventually hit a different kind of problem:<br data-end="740" data-start="737" />
+files that become unstable, inconsistent, or unpredictable—often after years of edits, template reuse, or a major InDesign update.</p>
+<p data-end="1110" data-start="872">IDML cleanup is not a magic wand.<br data-end="908" data-start="905" />
+Especially in multilingual production, you may see <strong data-end="1010" data-start="959">unexpected line breaks or subtle reflow changes</strong> after an IDML round trip. That is exactly why this is a <strong data-end="1089" data-start="1067">strategic decision</strong>, not a routine step.</p>
+<p data-end="1210" data-start="1112">Scaling is not about “never breaking.”<br data-end="1153" data-start="1150" />
+It is about having a reliable way back when things break.</p>
+<hr data-end="1215" data-start="1212" />
+<h2 data-end="1257" data-start="1217">1. IDML Cleanup Is Not a Routine Task</h2>
+<p data-end="1325" data-start="1259">IDML cleanup is best treated as a <strong data-end="1324" data-start="1293">maintenance / recovery tool</strong>.</p>
+<p data-end="1388" data-start="1327">If it becomes part of your daily workflow, two things happen:</p>
+<ul data-end="1489" data-start="1390">
+<li data-end="1446" data-start="1390">
+<p data-end="1446" data-start="1392">you increase the amount of “extra work” you generate</p>
+</li>
+<li data-end="1489" data-start="1447">
+<p data-end="1489" data-start="1449">you pay the verification cost repeatedly</p>
+</li>
+</ul>
+<p data-end="1568" data-start="1491">In other words, frequent cleanup can reduce stability rather than improve it.</p>
+<p data-end="1598" data-start="1570">The correct mental model is:</p>
+<ul data-end="1714" data-start="1600">
+<li data-end="1644" data-start="1600">
+<p data-end="1644" data-start="1602"><strong data-end="1619" data-start="1602">Routine steps</strong> keep production moving</p>
+</li>
+<li data-end="1714" data-start="1645">
+<p data-end="1714" data-start="1647"><strong data-end="1665" data-start="1647">Recovery steps</strong> exist to restore stability when something is off</p>
+</li>
+</ul>
+<p data-end="1839" data-start="1716">IDML cleanup belongs to the second category.<br data-end="1763" data-start="1760" />
+It is a “last resort” tool—useful, powerful, and not meant for everyday use.</p>
+<hr data-end="1844" data-start="1841" />
+<h2 data-end="1892" data-start="1846">2. When IDML Cleanup Actually Makes Sense</h2>
+<h3 data-end="1919" data-start="1893">A Go / No-Go Checklist</h3>
+<p data-end="1968" data-start="1921">This is the most important part of the article.</p>
+<h3 data-end="2000" data-start="1970">Go (consider IDML cleanup)</h3>
+<p data-end="2100" data-start="2002">Use IDML cleanup when you have a clear reason to believe the file’s internal state is the problem:</p>
+<ul data-end="2415" data-start="2102">
+<li data-end="2180" data-start="2102">
+<p data-end="2180" data-start="2104"><strong data-end="2137" data-start="2104">After a major InDesign update</strong>, especially for high-stakes deliverables</p>
+</li>
+<li data-end="2264" data-start="2181">
+<p data-end="2264" data-start="2183"><strong data-end="2216" data-start="2183">Unexplained unstable behavior</strong> (random glitches, unexpected errors, crashes)</p>
+</li>
+<li data-end="2343" data-start="2265">
+<p data-end="2343" data-start="2267"><strong data-end="2290" data-start="2267">Abnormal file bloat</strong> (file size grows beyond what the content explains)</p>
+</li>
+<li data-end="2415" data-start="2344">
+<p data-end="2415" data-start="2346"><strong data-end="2377" data-start="2346">Long-lived master templates</strong> reused for years across many projects</p>
+</li>
+</ul>
+<h3 data-end="2449" data-start="2417">No-Go (probably unnecessary)</h3>
+<p data-end="2513" data-start="2451">Avoid it when the issue is likely caused by something simpler:</p>
+<ul data-end="2653" data-start="2515">
+<li data-end="2574" data-start="2515">
+<p data-end="2574" data-start="2517">minor, visible layout issues that can be fixed directly</p>
+</li>
+<li data-end="2601" data-start="2575">
+<p data-end="2601" data-start="2577">clear editing mistakes</p>
+</li>
+<li data-end="2653" data-start="2602">
+<p data-end="2653" data-start="2604">“just in case” cleanup without a concrete trigger</p>
+</li>
+</ul>
+<p data-end="2813" data-start="2655">The goal is not to “keep files clean.”<br data-end="2696" data-start="2693" />
+The goal is to <strong data-end="2732" data-start="2711">recover stability</strong> when the cost of instability becomes higher than the cost of an IDML round trip.</p>
+<hr data-end="2818" data-start="2815" />
+<h2 data-end="2849" data-start="2820">3. Save / Save As / IDML</h2>
+<h3 data-end="2880" data-start="2850">What Is Actually Different</h3>
+<p data-end="2929" data-start="2882">When InDesign feels unstable, people often try:</p>
+<ul data-end="2969" data-start="2931">
+<li data-end="2939" data-start="2931">
+<p data-end="2939" data-start="2933">Save</p>
+</li>
+<li data-end="2951" data-start="2940">
+<p data-end="2951" data-start="2942">Save As</p>
+</li>
+<li data-end="2969" data-start="2952">
+<p data-end="2969" data-start="2954">IDML round trip</p>
+</li>
+</ul>
+<p data-end="2996" data-start="2971">These are not equivalent.</p>
+<p data-end="3041" data-start="2998">A useful way to think about the difference:</p>
+<ul data-end="3172" data-start="3043">
+<li data-end="3085" data-start="3043">
+<p data-end="3085" data-start="3045"><strong data-end="3053" data-start="3045">Save</strong>: putting a bandage on a wound</p>
+</li>
+<li data-end="3120" data-start="3086">
+<p data-end="3120" data-start="3088"><strong data-end="3099" data-start="3088">Save As</strong>: cleaning the room</p>
+</li>
+<li data-end="3172" data-start="3121">
+<p data-end="3172" data-start="3123"><strong data-end="3131" data-start="3123">IDML</strong>: rebuilding the house from the ground up</p>
+</li>
+</ul>
+<p data-end="3280" data-start="3174">Save and Save As operate inside the existing structure.<br data-end="3232" data-start="3229" />
+IDML forces a rebuild via an interchange format.</p>
+<p data-end="3461" data-start="3282">That difference is exactly why IDML can work when the other options don’t.<br data-end="3359" data-start="3356" />
+It also explains why IDML comes with risk: rebuilding can change small behaviors, including text flow.</p>
+<hr data-end="3466" data-start="3463" />
+<h2 data-end="3508" data-start="3468">4. What IDML Cleanup Does <em data-end="3502" data-start="3497">Not</em> Solve</h2>
+<p data-end="3562" data-start="3510">IDML cleanup is powerful, but it is not a guarantee.</p>
+<p data-end="3608" data-start="3564">Common limitations and side effects include:</p>
+<ul data-end="3894" data-start="3610">
+<li data-end="3674" data-start="3610">
+<p data-end="3674" data-start="3612"><strong data-end="3634" data-start="3612">subtle text reflow</strong> (line breaks and spacing differences)</p></li>
+<li data-end="3833" data-start="3755">
+<p data-end="3833" data-start="3757">loss of <strong data-end="3790" data-start="3765">plugin-dependent data</strong> (features stored by third-party plugins)</p>
+</li>
+<li data-end="3894" data-start="3834">
+<p data-end="3894" data-start="3836">edge cases involving conditions or special document states</p>
+</li>
+</ul>
+<p data-end="3968" data-start="3896">Because of this, <strong data-end="3942" data-start="3913">verification is mandatory</strong> after an IDML round trip.</p>
+<p data-end="4191" data-start="3970">For multilingual work, verifying every page manually does not scale.<br data-end="4041" data-start="4038" />
+This is a good place to rely on <strong data-end="4094" data-start="4073">diff-based review</strong> (PDF comparison tools, difference extraction, structured QA checks) to reduce the review burden.</p>
+<p data-end="4217" data-start="4193">The key point is simple:</p>
+<blockquote data-end="4331" data-start="4219">
+<p data-end="4331" data-start="4221">IDML cleanup can restore stability, but it can also introduce small differences.<br data-end="4304" data-start="4301" />
+Always verify the result.</p>
+</blockquote>
+<hr data-end="4336" data-start="4333" />
+<h2 data-end="4384" data-start="4338">5. A Minimal, Reproducible Cleanup Workflow</h2>
+<p data-end="4529" data-start="4386">The biggest risk with “maintenance” operations is inconsistency.<br data-end="4453" data-start="4450" />
+Different people perform slightly different steps, or skip a critical check.</p>
+<p data-end="4591" data-start="4531">That is why the workflow should be minimal and reproducible:</p>
+<ol data-end="4747" data-start="4593">
+<li data-end="4630" data-start="4593">
+<p data-end="4630" data-start="4596">start from a <strong data-end="4618" data-start="4609">saved</strong> INDD file</p>
+</li>
+<li data-end="4650" data-start="4631">
+<p data-end="4650" data-start="4634">export to IDML</p>
+</li>
+<li data-end="4671" data-start="4651">
+<p data-end="4671" data-start="4654">reopen the IDML</p>
+</li>
+<li data-end="4701" data-start="4672">
+<p data-end="4701" data-start="4675">save a cleaned INDD file</p>
+</li>
+<li data-end="4747" data-start="4702">
+<p data-end="4747" data-start="4705">verify (diff/QA) before replacing anything</p>
+</li>
+</ol>
+<p data-end="4872" data-start="4749">This is not about convenience.<br data-end="4782" data-start="4779" />
+It is about <strong data-end="4811" data-start="4794">repeatability</strong>, which is the core requirement for scaling maintenance work.</p>
+<hr data-end="4877" data-start="4874" />
+<h2 data-end="4905" data-start="4879">6. The Minimal Script</h2>
+<h3 data-end="4942" data-start="4906">Reproducibility Over Convenience</h3><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/uIy5dfOp52M" width="320" youtube-src-id="uIy5dfOp52M"></iframe></div><br /><div>This script is not the main point of the article.</div><p data-end="5073" data-start="4944">
+Its role is to make the cleanup workflow <strong data-end="5051" data-start="5037">repeatable</strong> and less error-prone.</p>
+<p data-end="5116" data-start="5075">Design choices (intentional constraints):</p>
+<ul data-end="5475" data-start="5118">
+<li data-end="5174" data-start="5118">
+<p data-end="5174" data-start="5120">it processes <strong data-end="5172" data-start="5133">all currently open, saved documents</strong></p>
+</li>
+<li data-end="5232" data-start="5175">
+<p data-end="5232" data-start="5177">it exports IDML and saves a <strong data-end="5230" data-start="5205">new cleaned INDD copy</strong></p>
+</li>
+<li data-end="5272" data-start="5233">
+<p data-end="5272" data-start="5235">it does <strong data-end="5270" data-start="5243">not overwrite originals</strong></p>
+</li>
+<li data-end="5329" data-start="5273">
+<p data-end="5329" data-start="5275">it keeps the exported IDML files for troubleshooting</p>
+</li>
+<li data-end="5420" data-start="5330">
+<p data-end="5420" data-start="5332">it suppresses blocking dialogs during batch processing and restores settings afterward</p>
+</li>
+<li data-end="5475" data-start="5421">
+<p data-end="5475" data-start="5423">it avoids UI complexity (only a single confirmation)</p>
+</li>
+</ul>
+<p data-end="5614" data-start="5477">The script saves outputs in the same folder as the original document.<br data-end="5549" data-start="5546" />
+That increases the chance that link behavior remains predictable.</p>
+<blockquote data-end="5772" data-start="5616">
+<p data-end="5772" data-start="5618">Note: dialog suppression improves batch stability, but it does not remove the need for verification. It simply prevents the process from stopping halfway.</p>
+</blockquote>
+<h3 data-end="5823" data-start="5774">Script: IDML Cleanup Helper (non-destructive)</h3><div><div style="background: rgb(31, 41, 55); border-radius: 10px; border: 1px solid rgb(55, 65, 81); color: #f9fafb; margin: 20px 0px; padding: 18px;"><div style="color: #f9fafb; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Want the ready-to-use version?
+  </div>
+  <div style="color: #d1d5db; font-size: 15px; line-height: 1.6; margin-bottom: 14px;">
+    Skip the copy-paste and download the script directly from Gumroad.
+  </div>
+  <a href="https://linguistcoder.gumroad.com/l/IDML-Cleanup-Helper" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
+    Download on Gumroad (Free) →
+  </a>
+</div>
+
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+(function () {
+    var docs = app.documents;
+
+    if (docs.length === 0) {
+        alert("No documents are currently open.");
+        return;
+    }
+
+    var proceed = confirm(
+        "This will export each saved document to IDML, reopen it, and save a cleaned copy as a new INDD file.\n\n" +
+        "Original files will NOT be overwritten.\n" +
+        "IDML files will be kept for troubleshooting.\n\n" +
+        "Continue?"
+    );
+    if (!proceed) return;
+
+    var results = [];
+    var skipped = [];
+
+    // Suppress blocking dialogs during batch processing
+    var oldLevel = app.scriptPreferences.userInteractionLevel;
+    app.scriptPreferences.userInteractionLevel = UserInteractionLevels.NEVER_INTERACT;
+
+    try {
+        // Close() happens inside the loop -&gt; iterate backwards to avoid index shifts
+        for (var i = docs.length - 1; i &gt;= 0; i--) {
+            try {
+                var doc = docs[i];
+
+                if (!doc.saved) {
+                    skipped.push(doc.name + " (not saved)");
+                    continue;
+                }
+
+                var originalFile = doc.fullName;           // File
+                var originalFolder = originalFile.parent;  // Folder
+                var baseName = stripInddExtension(originalFile.name);
+
+                // Output paths (same folder to preserve link behavior as much as possible)
+                var idmlFile = new File(originalFolder.fsName + "/" + baseName + "__idml_cleanup.idml");
+
+                // If a cleaned file already exists, add timestamp to avoid collision
+                var cleanedInddFile = new File(originalFolder.fsName + "/" + baseName + "__idml_cleaned.indd");
+                if (cleanedInddFile.exists) {
+                    cleanedInddFile = new File(
+                        originalFolder.fsName + "/" + baseName + "__idml_cleaned_" + timestamp() + ".indd"
+                    );
+                }
+
+                // 1) Export IDML
+                doc.exportFile(ExportFormat.INDESIGN_MARKUP, idmlFile, false);
+
+                // 2) Close original without saving (non-destructive)
+                doc.close(SaveOptions.NO);
+
+                // 3) Open IDML (attempt hidden open if supported)
+                var reopened;
+                try {
+                    reopened = app.open(idmlFile, false);
+                } catch (_) {
+                    reopened = app.open(idmlFile);
+                }
+
+                // 4) Save as new INDD (do not overwrite original)
+                reopened.save(cleanedInddFile);
+
+                // 5) Close cleaned doc
+                reopened.close(SaveOptions.YES);
+
+                results.push(baseName + " -&gt; " + cleanedInddFile.fsName);
+
+            } catch (e) {
+                skipped.push(safeDocNameAtIndex(i, docs) + " (error: " + e.message + ")");
+                continue;
+            }
+        }
+    } finally {
+        // Always restore interaction level
+        app.scriptPreferences.userInteractionLevel = oldLevel;
+    }
+
+    // Report
+    var msg = [];
+    msg.push("Completed.\n");
+
+    if (results.length &gt; 0) {
+        msg.push("[Cleaned copies created]");
+        for (var r = 0; r &lt; results.length; r++) msg.push("- " + results[r]);
+        msg.push("");
+    }
+
+    if (skipped.length &gt; 0) {
+        msg.push("[Skipped]");
+        for (var s = 0; s &lt; skipped.length; s++) msg.push("- " + skipped[s]);
+        msg.push("");
+    }
+
+    msg.push("Note: Always verify (diff/QA) before replacing originals.");
+    alert(msg.join("\n"));
+
+    // ---- helpers ----
+
+    function stripInddExtension(name) {
+        return name.replace(/\.indd$/i, "");
+    }
+
+    function timestamp() {
+        // YYYYMMDD_HHMMSS
+        var d = new Date();
+        return (
+            d.getFullYear() +
+            pad2(d.getMonth() + 1) +
+            pad2(d.getDate()) + "_" +
+            pad2(d.getHours()) +
+            pad2(d.getMinutes()) +
+            pad2(d.getSeconds())
+        );
+    }
+
+    function pad2(n) {
+        return (n &lt; 10) ? ("0" + n) : ("" + n);
+    }
+
+    function safeDocNameAtIndex(idx, collection) {
+        try { return collection[idx].name; } catch (_) { return "(unknown document)"; }
+    }
+})();</code>
+</pre>
+<hr data-end="10036" data-start="10033" />
+<h2 data-end="10084" data-start="10038">7. How This Fits into a Scalable Workflow</h2>
+<h3 data-end="10108" data-start="10085">Why Recovery Scales</h3>
+<p data-end="10193" data-start="10110">Recovery sounds “non-scalable” at first—because it happens when something is wrong.</p>
+<p data-end="10269" data-start="10195">But in multilingual publishing, recovery can be the highest-leverage step.</p>
+<p data-end="10329" data-start="10271">If you produce 20 languages from a single master workflow:</p>
+<ul data-end="10465" data-start="10331">
+<li data-end="10391" data-start="10331">
+<p data-end="10391" data-start="10333">one unstable master can generate <strong data-end="10389" data-start="10366">20 unstable outputs</strong></p>
+</li>
+<li data-end="10465" data-start="10392">
+<p data-end="10465" data-start="10394">one recovery operation applied upstream can prevent that multiplication</p>
+</li>
+</ul>
+<p data-end="10530" data-start="10467">That is the reason IDML cleanup belongs in a scalable workflow:</p>
+<ul data-end="10674" data-start="10532">
+<li data-end="10557" data-start="10532">
+<p data-end="10557" data-start="10534">not as a routine step</p>
+</li>
+<li data-end="10607" data-start="10558">
+<p data-end="10607" data-start="10560">but as a controlled, upstream recovery action</p>
+</li>
+<li data-end="10674" data-start="10608">
+<p data-end="10674" data-start="10610">applied at the point where it prevents downstream multiplication</p>
+</li>
+</ul>
+<p data-end="10834" data-start="10676">This is also why reproducibility matters.<br data-end="10720" data-start="10717" />
+When recovery steps are defined clearly, the work becomes transferable and less dependent on individual intuition.</p>
+<hr data-end="10839" data-start="10836" />
+<h2 data-end="10881" data-start="10841">8. Closing: Scaling Includes Recovery</h2>
+<p data-end="10921" data-start="10883">Scaling is not about “never breaking.”</p>
+<p data-end="10980" data-start="10923">It is about having a reliable way back when things break.</p>
+<p data-end="11020" data-start="10982">The first phase of scaling is usually:</p>
+<ul data-end="11104" data-start="11022">
+<li data-end="11055" data-start="11022">
+<p data-end="11055" data-start="11024">creating repeatable processes</p>
+</li>
+<li data-end="11083" data-start="11056">
+<p data-end="11083" data-start="11058">automating stable rules</p>
+</li>
+<li data-end="11104" data-start="11084">
+<p data-end="11104" data-start="11086">reducing decisions</p>
+</li>
+</ul>
+<p data-end="11138" data-start="11106">The second phase is more subtle:</p>
+<ul data-end="11266" data-start="11140">
+<li data-end="11170" data-start="11140">
+<p data-end="11170" data-start="11142">protecting those processes</p>
+</li>
+<li data-end="11231" data-start="11171">
+<p data-end="11231" data-start="11173">restoring stability when something becomes unpredictable</p>
+</li>
+<li data-end="11266" data-start="11232">
+<p data-end="11266" data-start="11234">maintaining the system you built</p>
+</li>
+</ul>
+<p data-end="11314" data-start="11268">That is what maintenance and recovery are for.</p>
+<p data-end="11363" data-is-last-node="" data-is-only-node="" data-start="11316">In multilingual DTP, scaling includes recovery.</p></div>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/07/when-indesign-fails-to-export-start-by.html" target="_blank" rel="noopener">When InDesign Fails to Export: Start by Finding the Broken Page</a></li>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Trados-Ready IDML Export from InDesign Books</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/why-idml-formatting-can-produce.html" target="_blank" rel="noopener">Why IDML Formatting Can Produce Translation Tags, and What to Check in InDesign</a></li>
+</ul>

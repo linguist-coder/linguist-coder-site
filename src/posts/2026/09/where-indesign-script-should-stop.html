@@ -1,0 +1,91 @@
+---
+title: "Where an InDesign Script Should Stop"
+date: 2026-09-10T20:30:49.015-07:00
+updated: 2026-09-10T20:30:49.015-07:00
+permalink: "/2026/09/where-indesign-script-should-stop.html"
+tags: ["automation", "InDesign", "low judgment", "overset"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-6740479321692200125"
+layout: post.njk
+---
+<p>A translated document comes back and the layout is full of overset text. Not one frame: dozens, spread across chapters, plus a handful of table cells where the German ran two lines longer than the English.</p>
+
+<p>A script can tighten the tracking, drop a point of type, grow the frame, raise a fixed row height. The interesting question was never whether it can do that. It is how far it should go, what it should refuse to do at all, and what it should say when it stops short.</p>
+
+<p>The examples below come from Overset Fixer Pro, a script I sell for InDesign. Version 2.0 forced four of those decisions into the open, and the last one was a lesson in how quietly this kind of thing goes wrong.</p>
+
+<h2>A Row It Could Grow, and Doesn't</h2>
+
+<p>InDesign gives a table row one of two height behaviors. <strong>At Least</strong> means the row grows on its own to fit whatever is in it. <strong>Exactly</strong> means the row is pinned at a height someone chose, and text that does not fit becomes overset.</p>
+
+<p>If a cell in an Exactly row is overset, growing the row is a reasonable fix. The row is pinned; raise its fixed height a little and the text may fit.</p>
+
+<p>If a cell in an At Least row is overset, growing the row is not a fix at all. That row is already trying to grow. Its height is not what is holding the text back &mdash; something else is, usually the frame the table sits in. Writing a height to that row would not solve the problem, and it would do damage on the way past: the height the script writes imposes a minimum the script chose, and the script has no verified way to reconstruct the row's previous state afterward. That is reason enough not to write it.</p>
+
+<p>So the script never writes to those rows. Not as a default, not as an option, not when you clear the option that lets fixed rows grow. That option governs Exactly rows only.</p>
+
+<p>The asymmetry is the whole argument. On one side, one row gets fixed. On the other, the document's existing behavior is replaced by a minimum the script invented, silently, in a document that may have hundreds of rows. <strong>The test is not whether the script can do the thing. It is whether the user can get back what the script replaced.</strong> When the answer is "by hand, and only if they notice," the feature does not ship.</p>
+
+<h2>One Lever at a Time</h2>
+
+<p>The text side has three levers: tracking, font size, horizontal scale. Leading is not a fourth; it follows font size at a ratio you set. Each lever has a floor you set, and the floor is a typographic decision before it is anything else &mdash; I made that case for the single-lever version in <a href="https://www.linguist-coder.com/2026/09/your-second-indesign-script-condensing.html" target="_blank" rel="noopener">Part 2 of the beginner series</a>, which ends by noting that a script with several levers also needs a rule for the order they are tried in. This is that rule.</p>
+
+<p>The obvious implementation runs them together. Nudge everything down a step, check whether the overset cleared, nudge again. It terminates, and it can be wrong in a way that is easy to miss: text that tighter tracking alone would have fixed comes back a half point smaller and slightly narrower as well. Nothing looks broken. The page is just quietly further from the design than it needed to be, and no single setting explains why.</p>
+
+<p>2.0 runs them as a cascade instead. Tracking goes first and goes all the way to its floor. Only then does font size start moving, with leading following it. Horizontal scale is last, and is reached only if the other two fell short. The loop stops the moment the overset clears. Tracking and horizontal scale are off by default, so a default run moves only the type size and its linked leading; the cascade is the order among whatever you switch on.</p>
+
+<p>Two things come out of that. The result respects the order: when an earlier lever clears the overset, no later lever is touched. And the result is legible: when tracking is enabled and clears the overset at the first stage, you can look at the frame, see that only the tracking moved, and know the type size was never touched.</p>
+
+<p>The order is a judgment, not a fact. I put tracking first because I judge a few units of it to be the least objectionable change of the three, and horizontal scale last because I treat visibly distorted letterforms as the costliest. Someone setting a different kind of work could argue for a different order. What matters is that there <strong>is</strong> an order, that it is written down, and that it is the same on every run.</p>
+
+<h2>Saying What Happened When It Stops Short</h2>
+
+<p>Sometimes the levers reach their floors and the text still does not fit. Now the script has to do something, and there are two defensible answers.</p>
+
+<p>Text adjustment mode writes the original values back and counts the frame as unresolved. <a href="https://www.linguist-coder.com/2026/09/your-second-indesign-script-condensing.html" target="_blank" rel="noopener">Part 2</a> is about why "putting it back" is a claim to test rather than assume. Here it is verified at the level of values: the script snapshots each style run before it moves anything, and a mixed-formatting test confirmed that each run received its original values again, so a story that disagreed with itself comes back disagreeing in the same places. Whether the text's relationship to its styles comes back with the values, I have not tested. Either way the frame is left for a person.</p>
+
+<p>Frame expansion mode does the opposite. A frame or row that was enlarged without resolving is left at its new size rather than silently discarded. That is not a claim that the page is finished: expansion moves only the bottom edge and does not move nearby items out of the way, so the result still needs to be inspected. The choice is simply to keep the enlargement for that inspection, and to report that it remains.</p>
+
+<p>Both answers are defensible. What is not defensible is leaving the user to guess which one happened. The run report names it, and the notice after a frame expansion run says plainly that enlarged frames have been left at their new size, that one Ctrl+Z undoes the entire run, and to do that before making any other edit. Nobody discovers it three pages later. Skips are reported the same way, with the reason attached instead of folded into a single count of failures &mdash; a row skipped because it grows on its own is a different fact from a frame the script tried and could not fix.</p>
+
+<p>A limit whose effect you cannot see is not a limit. It is a hope.</p>
+
+<h2>The Limit That Was Not Real</h2>
+
+<p>Which brings me to the decision that should have been checked before the first version shipped.</p>
+
+<p>Frame expansion has two numbers: how much to add per step, and the maximum a frame may grow in total. They are the safety rail for the entire feature. Set 2mm and 15mm, and a frame should grow in 2mm steps and stop at 15mm.</p>
+
+<p>In a document whose rulers are set to millimeters, it did not. It grew in steps of 5.669mm and would carry on to roughly 42.5mm. Every number was off by the same factor &mdash; 2.835, the number of points in a millimeter.</p>
+
+<p>The cause is one step of reasoning that was never verified. <code>geometricBounds</code> reports a frame's position in whatever unit the document's rulers use. The script was converting the user's millimeters into points before adding them. Two values, two unit systems, one addition, no error message.</p>
+
+<p>Nothing announced it. The frames grew, the overset cleared, the script reported success. The clue that led me to it was excess space below the last line in frames the script had expanded, which is exactly the kind of thing you put down to the document. It surfaced when that impression finally got measured: one frame, before and after, read off the Transform panel &mdash; 13.529mm to 24.868mm. Two steps of a setting that said 2mm had added 11.339mm.</p>
+
+<p>The fix is unremarkable. The run now forces measurements into points for its duration and restores the previous setting afterward. What is worth keeping is the shape of the failure. Refusing a row and reporting a skip need no number. But the floors in the cascade are numbers, and so are these two limits, <strong>and a number in an interface is only a promise about what the code does.</strong> The guard had been written, documented, and shipped, and it was not enforcing the value anyone typed.</p>
+
+<p>So the fourth decision is not finished when the limit is designed. It is finished when the boundary has been measured in a real document, in the units the user actually has, rather than trusted because it was written down.</p>
+
+<h2>The Pattern Underneath</h2>
+
+<p>This is the distinction I keep coming back to in <a href="https://www.linguist-coder.com/2026/04/scaling-multilingual-dtp-by-detecting.html" target="_blank" rel="noopener">low judgment work</a>: some parts of a production job are mechanical and repetitive, and some parts need a decision only a person can make. Automation earns its place on the first kind, and gets dangerous when it quietly annexes the second.</p>
+
+<p>Where to stop is not one question but four:</p>
+
+<ul>
+<li>What will it refuse to touch, even when it could, because it cannot put the previous state back?</li>
+<li>When several levers are available, in what order are they tried, and where does each one stop?</li>
+<li>What state is left behind when it stops short, and how is that reported?</li>
+<li>Have the limits you configured been measured where they actually run?</li>
+</ul>
+
+<p>The script that comes out of this does less than it could. That is the point. The work it declines to do is the work you would not want it doing unsupervised, and what a tool leaves alone is one of the things I check before handing one to a production team.</p>
+
+<p>Overset Fixer Pro 2.0 is on <a href="https://aescripts.com/overset-fixer-pro/" target="_blank" rel="noopener">aescripts + aeplugins</a>, with a free trial.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/09/your-second-indesign-script-condensing.html" target="_blank" rel="noopener">Your Second InDesign Script: Condensing Text Until It Fits</a></li>
+<li><a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">Your First InDesign Script: Which Pages Have Overset Text?</a></li>
+<li><a href="https://www.linguist-coder.com/2026/04/scaling-multilingual-dtp-by-detecting.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Detecting Objects Outside the Layout (Low Judgment Workflows)</a></li>
+</ul>

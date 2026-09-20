@@ -1,0 +1,184 @@
+---
+title: "Scaling Multilingual DTP by Creating an Escape Hatch for Layout Adjustment (Shrinking All Placed Images at Once)"
+date: 2026-01-25T16:45:00.000-08:00
+updated: 2026-03-25T13:24:01.576-07:00
+permalink: "/2026/01/scaling-multilingual-dtp-by-creating.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-8957373761878445979"
+layout: post.njk
+---
+<p>&nbsp;</p><h1 data-end="166" data-start="88"></h1>
+<h2 data-end="281" data-start="213">0. Context: Why Layout Adjustment Stops Scaling After Translation</h2>
+<p data-end="461" data-start="283">In multilingual publishing, text expansion after translation is expected.<br data-end="359" data-start="356" />
+The real problem is not that layouts need adjustment, but that <strong data-end="460" data-start="422">the adjustment work does not scale</strong>.</p>
+<p data-end="620" data-start="463">Line spacing and paragraph tweaks can absorb small increases in text volume.<br data-end="542" data-start="539" />
+However, there is always a point where those adjustments are no longer enough.</p>
+<p data-end="735" data-start="622">What remains at the end is usually layout work that must be done by hand — and that is where scaling breaks down.</p>
+<hr data-end="740" data-start="737" />
+<h2 data-end="795" data-start="742">1. Why Image Adjustment Is the Least Scalable Part</h2>
+<p data-end="842" data-start="797">Image adjustment often becomes the last step.</p>
+<ul data-end="966" data-start="844">
+<li data-end="877" data-start="844">
+<p data-end="877" data-start="846">Images are visually prominent</p>
+</li>
+<li data-end="929" data-start="878">
+<p data-end="929" data-start="880">Each image seems to require individual judgment</p>
+</li>
+<li data-end="966" data-start="930">
+<p data-end="966" data-start="932">Decisions feel content-dependent</p>
+</li>
+</ul>
+<p data-end="1037" data-start="968">This makes image-related layout work expensive in terms of attention.</p>
+<p data-end="1208" data-start="1039">The more carefully each image is adjusted, the less scalable the process becomes.<br data-end="1123" data-start="1120" />
+Perfect layouts do not compound well when document count and language count increase.</p>
+<hr data-end="1213" data-start="1210" />
+<h2 data-end="1258" data-start="1215">2. Escaping Instead of Fixing Everything</h2>
+<p data-end="1350" data-start="1260">Instead of trying to fix everything perfectly, this article proposes a different approach:</p>
+<p data-end="1391" data-start="1352"><strong data-end="1391" data-start="1352">Create an intentional escape hatch.</strong></p>
+<p data-end="1528" data-start="1393">An escape hatch is not about achieving a final layout.<br data-end="1450" data-start="1447" />
+It is about applying a simple, uniform rule to reduce overall layout pressure.</p>
+<p data-end="1582" data-start="1530">The goal is not perfection, but <strong data-end="1581" data-start="1562">room to breathe</strong>.</p>
+<hr data-end="1587" data-start="1584" />
+<h2 data-end="1648" data-start="1589">3. What This Script Does (And Intentionally Does Not Do)</h2>
+<h3 data-end="1670" data-start="1650">3.1 What It Does</h3>
+<p data-end="1721" data-start="1672">The script introduced here applies a single rule:</p>
+<ul data-end="1914" data-start="1723">
+<li data-end="1769" data-start="1723">
+<p data-end="1769" data-start="1725">All currently open documents are processed</p>
+</li>
+<li data-end="1804" data-start="1770">
+<p data-end="1804" data-start="1772">All placed images are affected</p>
+</li>
+<li data-end="1860" data-start="1805">
+<p data-end="1860" data-start="1807">Image frames and their contents are scaled together</p>
+</li>
+<li data-end="1914" data-start="1861">
+<p data-end="1914" data-start="1863">A fixed relative reduction of <strong data-end="1901" data-start="1893">−10%</strong> is applied</p>
+</li>
+</ul>
+<p data-end="1983" data-start="1916">No decisions are made per image.<br data-end="1951" data-start="1948" />
+Everything is treated uniformly.</p>
+<hr data-end="1988" data-start="1985" />
+<h3 data-end="2017" data-start="1990">3.2 What It Does Not Do</h3>
+<p data-end="2052" data-start="2019">This script intentionally avoids:</p>
+<ul data-end="2190" data-start="2054">
+<li data-end="2089" data-start="2054">
+<p data-end="2089" data-start="2056">Processing only selected images</p>
+</li>
+<li data-end="2130" data-start="2090">
+<p data-end="2130" data-start="2092">Letting the user choose a percentage</p>
+</li>
+<li data-end="2171" data-start="2131">
+<p data-end="2171" data-start="2133">Handling exceptions or special cases</p>
+</li>
+<li data-end="2190" data-start="2172">
+<p data-end="2190" data-start="2174">Providing a UI</p>
+</li>
+</ul>
+<p data-end="2305" data-start="2192">These features may be convenient, but they introduce additional decisions.<br data-end="2269" data-start="2266" />
+This example avoids them on purpose.</p>
+<hr data-end="2310" data-start="2307" />
+<h2 data-end="2370" data-start="2312">4. Why the Frame Must Be Scaled Together with the Image</h2>
+<p data-end="2426" data-start="2372">Shrinking only the image content is rarely sufficient.</p>
+<p data-end="2564" data-start="2428">If the frame size remains unchanged, shrinking the image simply increases surrounding whitespace.<br data-end="2528" data-start="2525" />
+The layout pressure does not change.</p>
+<p data-end="2654" data-start="2566">What affects layout flow is <strong data-end="2628" data-start="2594">the area occupied by the frame</strong>, not the image inside it.</p>
+<p data-end="2755" data-start="2656">That is why the script treats the frame and its contents as a single unit and scales them together.</p>
+<hr data-end="2760" data-start="2757" />
+<h2 data-end="2786" data-start="2762">5. The Minimal Script</h2>
+<p data-end="2826" data-start="2788">This approach may feel risky at first.</p>
+<p data-end="2939" data-start="2828">Shrinking all placed images at once will also affect anchored objects, logos, and icons.<br data-end="2919" data-start="2916" />
+That is intentional.</p>
+<p data-end="3072" data-start="2941">This script is not meant to produce a final, polished layout.<br data-end="3005" data-start="3002" />
+It is a rough operation designed to reduce overall layout pressure.</p>
+<p data-end="3200" data-start="3074">In practice, fixing a few broken spots afterward is often much faster<br data-end="3146" data-start="3143" />
+than adjusting every image by hand from the beginning.</p>
+<p data-end="3325" data-start="3202">In real production workflows, certain images might be excluded —<br data-end="3269" data-start="3266" />
+for example, logos or icons identified by name or layer.</p>
+<p data-end="3440" data-start="3327">That kind of filtering can make a script more convenient.<br data-end="3387" data-start="3384" />
+However, it also introduces more rules and decisions.</p>
+<p data-end="3559" data-start="3442">This example intentionally avoids that.<br data-end="3484" data-start="3481" />
+Its purpose is to demonstrate a scalable fallback, not a complete solution.</p>
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+(function () {
+    var docs = app.documents;
+
+    if (docs.length === 0) {
+        alert("No documents are currently open.");
+        return;
+    }
+
+    for (var d = 0; d &lt; docs.length; d++) {
+        try {
+            scaleAllPlacedGraphicsInDoc(docs[d]);
+        } catch (e) {
+            continue;
+        }
+    }
+
+    alert("Completed");
+
+    function scaleAllPlacedGraphicsInDoc(doc) {
+        var pages = doc.pages;
+
+        for (var i = 0; i &lt; pages.length; i++) {
+            var graphics = pages[i].allGraphics;
+
+            for (var j = 0; j &lt; graphics.length; j++) {
+                try {
+                    var frame = graphics[j].parent;
+
+                    // Reset relative scaling to 100%
+                    frame.redefineScaling();
+
+                    // Apply relative -10% scaling
+                    frame.horizontalScale = 90;
+                    frame.verticalScale   = 90;
+
+                    // Fix the result as the new 100%
+                    frame.redefineScaling();
+
+                } catch (e2) {
+                    continue;
+                }
+            }
+        }
+    }
+})();</code>
+</pre>
+<p data-end="4741" data-start="4707">The choice of 10% is not critical.</p>
+<p data-end="4860" data-start="4743">There is no special meaning in that number.<br data-end="4789" data-start="4786" />
+What matters is deciding on a single rule and applying it consistently.</p>
+<p data-end="4935" data-start="4862">A UI would invite further decisions.<br data-end="4901" data-start="4898" />
+This script avoids that by design.</p>
+<hr data-end="4940" data-start="4937" />
+<h2 data-end="5004" data-start="4942">6. Another Escape Hatch: Preparing Smaller Paragraph Styles</h2>
+<p data-end="5073" data-start="5006">Images are not the only place where escape hatches can be prepared.</p>
+<p data-end="5251" data-start="5075">Text-related pressure can often be reduced earlier by preparing paragraph styles with smaller font sizes.<br data-end="5183" data-start="5180" />
+Loading these styles in advance creates another controlled fallback.</p>
+<p data-end="5298" data-start="5253">This approach is discussed in more detail in:</p>
+<p data-end="5375" data-start="5300"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_15.html">Scaling Multilingual DTP by Automating Style Reloads Before Translation</a><br /></p>
+<p data-end="5480" data-start="5377">The underlying idea is the same:<br data-end="5412" data-start="5409" />
+prepare scalable options before manual adjustment becomes necessary.</p>
+<hr data-end="5485" data-start="5482" />
+<h2 data-end="5529" data-start="5487">7. Combining Escape Hatches in Practice</h2>
+<p data-end="5584" data-start="5531">In practice, these escape hatches work best together.</p>
+<ul data-end="5726" data-start="5586">
+<li data-end="5659" data-start="5586">
+<p data-end="5659" data-start="5588">Text volume can be absorbed by switching to prepared paragraph styles</p>
+</li>
+<li data-end="5726" data-start="5660">
+<p data-end="5726" data-start="5662">Image-heavy pages can gain space through uniform image scaling</p>
+</li>
+</ul>
+<p data-end="5817" data-start="5728">Only after these global adjustments does it make sense to perform individual fine tuning.</p>
+<p data-end="5888" data-start="5819">This ordering significantly reduces the number of decisions required.</p>
+<hr data-end="5893" data-start="5890" />
+<h2 data-end="5945" data-start="5895">8. Closing: Scaling Is About Reducing Decisions</h2>
+<p data-end="6018" data-start="5947">The main obstacle to scaling is not complexity, but <strong data-end="6017" data-start="5999">decision count</strong>.</p>
+<p data-end="6147" data-start="6020">Scripts like this are not about convenience.<br data-end="6067" data-start="6064" />
+They are about fixing rules in advance so that fewer decisions are needed later.</p>
+<p data-end="6236" data-start="6149">Instead of perfecting each page, create room first —<br data-end="6204" data-start="6201" />
+and adjust only where necessary.</p>
+<p data-end="6294" data-start="6238">That is what allows multilingual DTP workflows to scale.</p>

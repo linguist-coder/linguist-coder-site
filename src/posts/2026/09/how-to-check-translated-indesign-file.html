@@ -1,0 +1,85 @@
+---
+title: "How to Check a Translated InDesign File in a Language You Cannot Read"
+date: 2026-09-19T16:14:42.973-07:00
+updated: 2026-09-19T16:14:42.973-07:00
+permalink: "/2026/09/how-to-check-translated-indesign-file.html"
+tags: ["IDML", "InDesign", "low judgment", "translation"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-831323855954215381"
+layout: post.njk
+---
+<p>A translated InDesign file comes back from the vendor. You are responsible for it, and you cannot read it. Most of the advice I found on this question ends the same way: have a native speaker review it. That is right for one part of the job. It leaves out the part you can do yourself.</p>
+
+<p>Whether the translation is correct needs someone who reads the language. Without reading it, you can still compare the document's structure, check strings that were agreed in advance, and identify items that need review. These checks do not establish that every passage was translated.</p>
+
+<p>You do not need InDesign for most of this. An IDML file (InDesign's interchange format, a ZIP of XML files) can be inspected in a text editor, and the returned PDF can be searched. The overset check below uses InDesign's Preflight panel or an InDesign script. If you do not have InDesign, ask the vendor to run the check and report the results.</p>
+
+<h2>First, confirm the container survived</h2>
+
+<p>Before looking at any text, compare the document's structure: the stories (a story is one continuous flow of text, possibly running through several linked frames), the row and column counts of each table, the number of footnotes and anchored figures per story, and the set of paragraph styles in use. None of this requires reading. The checklist, including how to read the counts out of the IDML file without InDesign, is in <a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a>. Resolve missing stories or tables before linguistic review.</p>
+
+<h2>Compare agreed strings and values</h2>
+
+<p>Check part numbers, model names, quantities with units, URLs, email addresses, phone numbers, product names, and trademarks against the agreed conventions and exceptions. Some of these change form by locale, and some names are translated or transliterated by policy.</p>
+
+<p>In many locales the decimal separator is a comma and the thousands separator is a period or a space, so <code>3.5 mm</code> becomes <code>3,5 mm</code> and <code>1,000</code> becomes <code>1.000</code>. Dates change order. Ask the vendor for the list of names that were translated or transliterated on purpose, and record it with the conventions. Without this step, formatting differences may be mistaken for discrepancies.</p>
+
+<p>For a short document, search the returned PDF or the target's story XML for each item by hand. For a manual with hundreds of part numbers, extract them from the story XML of both IDML archives with a script and compare the two lists. After accounting for the agreed conventions, record unmatched values for review. A value present in both files is not evidence that the sentence around it is right.</p>
+
+<h2>Search the target for your own language</h2>
+
+<p>You cannot read the target, but you can recognize the source. Pick sentences and distinctive phrases from the source that were meant to be translated, and search for them in the target. A hit is a candidate to look at in context. No hits do not establish that nothing was left untranslated; a sentence that was half translated will not match a search for the whole sentence.</p>
+
+<p>Some source-language text is supposed to be there: product names, code samples, trademarks, text the vendor was told not to translate. Keep that list next to the exceptions list from the previous step, so that a hit can be classified quickly.</p>
+
+<p>If you have the returned PDF, start by searching it. It does not include overset text (see the next section). The story XML inside the IDML archive also contains story text that is absent from the PDF. One caution when searching the XML directly: the text of a paragraph is split into separate elements wherever the formatting changes, so a sentence with a bold word in the middle will not match as one string. Try shorter phrases when formatting splits a sentence. Record searches you cannot complete as unchecked.</p>
+
+<h2>Look for text you cannot see</h2>
+
+<p>Translated text is often longer than the source. When it no longer fits its frame, InDesign keeps it but does not display it, and it is not included in an exported PDF. InDesign's Preflight panel reports overset text, and a short script can list which pages have it: <a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">Your First InDesign Script: Which Pages Have Overset Text?</a>. Check this in the target before the reviewer opens it, because a reviewer reading the PDF cannot see what the PDF does not contain.</p>
+
+<p>Also check text on hidden layers, master pages, and the pasteboard. That text is in the IDML archive whether or not it shows on the page. In the Okapi filter I use, separate settings control extraction of text on hidden layers, master spreads, and hidden pasteboard items. Ask the vendor whether those locations were included in the translation. If the source has text there that matters, search the target's story files for the source-language text, as in the previous section. I wrote about finding those objects in <a href="https://www.linguist-coder.com/2026/04/scaling-multilingual-dtp-by-detecting.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Detecting Objects Outside the Layout</a>.</p>
+
+<h2>If you have reference strings, use them</h2>
+
+<p>Two kinds of target-language text can be checked without reading, because someone else already approved them.</p>
+
+<p>If you have approved target-language wording for a required notice or statement, search for it in the required location. I described automating this for PDFs in <a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_21.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Mandatory Text Checks in PDFs Before Delivery</a>.</p>
+
+<p>If the vendor was given a glossary of source terms and their required target terms, you can search the target for each target term. Use exact matching for terms that are required to appear unchanged. For languages that inflect, an exact search may fail to find a correctly inflected form; treat a missing match as a question for the reviewer, not as an error.</p>
+
+<p>For both kinds, a match elsewhere does not confirm the required occurrence. If you cannot locate the required occurrence in the target, record it as unchecked.</p>
+
+<h2>What none of this tells you</h2>
+
+<p>A paragraph can have every number in place, no source text left in it, and the approved terms, and still say something the source does not. That is the reviewer's job, and nothing above replaces it.</p>
+
+<p>Machine translation back into your language gives you a rough reading of the target. It cannot tell you the translation is correct, because you would be judging a translation of a translation. Before using an online service, check whether you are permitted to upload the document.</p>
+
+<p>When you hand the file to the reviewer, hand over the record of which checks were completed and which questions remain.</p>
+
+<h2>What to ask the vendor for</h2>
+
+<p>Ask the vendor to confirm the number conventions and the exceptions: strings intentionally left untranslated and names intentionally translated or transliterated. If you do not have InDesign, request the overset check results. Send any search results you cannot classify to the vendor for clarification.</p>
+
+<h2>The order</h2>
+
+<ol>
+<li>Container: stories, tables, footnotes, anchored objects, styles.</li>
+<li>Agreed strings and values: part numbers, quantities, URLs, and names, using the agreed conventions and exceptions.</li>
+<li>Source-language text left in the target.</li>
+<li>Text that does not show: overset, hidden layers, master pages, pasteboard.</li>
+<li>Reference strings: required wording, glossary terms, checked at the location where they are required.</li>
+<li>Linguistic review by someone who reads the target language.</li>
+</ol>
+
+<p>Steps 1 to 5 can be run without reading the target language, using agreed conventions and approved references. Some of what they find still needs the vendor or the reviewer to resolve.</p>
+
+<p>I am developing a tool that does step 1 for two IDML files and reports, for each item, whether it compared it or could not. The current trial and the testing request are in <a href="https://www.linguist-coder.com/2026/09/seeking-testers-comparing-idml-files.html" target="_blank" rel="noopener">a separate post</a>.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a></li>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_21.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Mandatory Text Checks in PDFs Before Delivery</a></li>
+<li><a href="https://www.linguist-coder.com/2026/05/a-rule-first-approach-to-ai-assisted.html" target="_blank" rel="noopener">A Rule-First Approach to AI-Assisted Terminology QA</a></li>
+</ul>

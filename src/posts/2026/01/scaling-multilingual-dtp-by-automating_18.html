@@ -1,0 +1,219 @@
+---
+title: "Scaling Multilingual DTP by Automating Language-Based Image Relinking in InDesign"
+date: 2026-01-18T17:43:00.000-08:00
+updated: 2026-03-26T13:43:39.975-07:00
+permalink: "/2026/01/scaling-multilingual-dtp-by-automating_18.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-6848158863568770115"
+layout: post.njk
+---
+<div style="text-align: left;">When working on multilingual documents, it’s common for placed images to exist in language-specific variants.</div><p data-end="319" data-start="173">
+A typical pattern looks like this:</p><ul data-end="356" data-start="321">
+<li data-end="338" data-start="321">
+<p data-end="338" data-start="323"><code data-end="338" data-start="323">diagram_EN.ai</code></p>
+</li>
+<li data-end="356" data-start="339">
+<p data-end="356" data-start="341"><code data-end="356" data-start="341">diagram_DE.ai</code></p>
+</li>
+</ul><p data-end="534" data-start="358">Before or after translation, these images must be relinked to the correct language version.<br data-end="452" data-start="449" />
+Doing this manually works for a single file — but it quickly breaks down at scale.</p><hr data-end="539" data-start="536" /><h3 data-end="585" data-start="541">Why manual image relinking doesn’t scale</h3><p data-end="660" data-start="587">In InDesign, relinking a single image is trivial.<br data-end="639" data-start="636" />
+But in real projects:</p><ul data-end="807" data-start="662">
+<li data-end="714" data-start="662">
+<p data-end="714" data-start="664">One document can contain dozens of placed images</p>
+</li>
+<li data-end="752" data-start="715">
+<p data-end="752" data-start="717">A Book can contain many documents</p>
+</li>
+<li data-end="807" data-start="753">
+<p data-end="807" data-start="755">Missing just one image can cause serious QA issues</p>
+</li>
+</ul><p data-end="894" data-start="809">As the number of files grows, <strong data-end="893" data-start="839">manual relinking becomes both slow and error-prone</strong>.</p><hr data-end="899" data-start="896" /><h3 data-end="957" data-start="901">Why not just replace images with the same filenames?</h3><p data-end="995" data-start="959">At this point, some readers may ask:</p><blockquote data-end="1096" data-start="997">
+<p data-end="1096" data-start="999">“Why not keep all image filenames identical and simply replace the contents of the Links folder?”</p>
+</blockquote><p data-end="1244" data-start="1098">This approach does exist in real production environments. I have encountered multiple cases where companies have organised their data in this way.</p><p data-end="1244" data-start="1098">However, in practice, it introduces serious risks.</p><p data-end="1349" data-start="1298">When all language variants share the same filename:</p><ul data-end="1670" data-start="1351">
+<li data-end="1455" data-start="1351">
+<p data-end="1455" data-start="1353">Once an image is replaced, there is no longer any visible indication of which language it belongs to</p>
+</li>
+<li data-end="1528" data-start="1456">
+<p data-end="1528" data-start="1458">If a replacement mistake occurs, tracing the error becomes difficult</p>
+</li>
+<li data-end="1670" data-start="1529">
+<p data-end="1670" data-start="1531">When a designer or operator needs to make even a small visual correction, it is no longer obvious which language version they are editing</p>
+</li>
+</ul><p data-end="1728" data-start="1672">In multilingual production, these situations are common:</p><ul data-end="1869" data-start="1730">
+<li data-end="1778" data-start="1730">
+<p data-end="1778" data-start="1732">A regulatory label needs a minor wording fix</p>
+</li>
+<li data-end="1822" data-start="1779">
+<p data-end="1822" data-start="1781">A UI screenshot requires a small update</p>
+</li>
+<li data-end="1869" data-start="1823">
+<p data-end="1869" data-start="1825">A diagram needs a slight annotation change</p>
+</li>
+</ul><p data-end="1974" data-start="1871">Without explicit language identifiers in filenames, such fixes can easily be applied to the wrong file.</p><p data-end="2172" data-start="1976">By contrast, language-suffixed filenames such as <code data-end="2030" data-start="2025">_EN</code>, <code data-end="2037" data-start="2032">_DE</code>, or <code data-end="2048" data-start="2042">_JPN</code> make the language immediately visible.<br data-end="2090" data-start="2087" />
+This improves traceability, reduces mistakes, and makes version control far safer.</p><p data-end="2324" data-start="2174">For this reason, I deliberately prefer <strong data-end="2275" data-start="2213">language-coded filenames combined with automated relinking</strong>, rather than relying on silent file replacement.</p><p data-end="2447" data-start="2326">Automation works best when the rules are explicit — and filename conventions are among the most reliable rules available.</p><hr data-end="2452" data-start="2449" /><h3 data-end="2481" data-start="2454">The automation approach</h3><p data-end="2576" data-start="2483">In many production environments, image naming rules are fixed and predictable.<br data-end="2564" data-start="2561" />
+For example:</p><ul data-end="2641" data-start="2578">
+<li data-end="2595" data-start="2578">
+<p data-end="2595" data-start="2580"><code data-end="2585" data-start="2580">_EN</code> → <code data-end="2593" data-start="2588">_DE</code></p>
+</li>
+<li data-end="2619" data-start="2596">
+<p data-end="2619" data-start="2598">Same file extension</p>
+</li>
+<li data-end="2641" data-start="2620">
+<p data-end="2641" data-start="2622">Same Links folder</p>
+</li>
+</ul><p data-end="2726" data-start="2643">When these assumptions hold, relinking can be automated safely with a small script.</p><p data-end="2747" data-start="2728">The idea is simple:</p><ul data-end="2927" data-start="2749">
+<li data-end="2807" data-start="2749">
+<p data-end="2807" data-start="2751">Detect linked images ending with <code data-end="2792" data-start="2784">_EN.ai</code> or <code data-end="2805" data-start="2796">_EN.psd</code></p>
+</li>
+<li data-end="2841" data-start="2808">
+<p data-end="2841" data-start="2810">Replace the suffix with <code data-end="2839" data-start="2834">_DE</code></p>
+</li>
+<li data-end="2879" data-start="2842">
+<p data-end="2879" data-start="2844">Relink the file only if it exists</p>
+</li>
+<li data-end="2927" data-start="2880">
+<p data-end="2927" data-start="2882">Repeat for all open documents when required</p>
+</li>
+</ul><hr data-end="2932" data-start="2929" /><h3 data-end="2971" data-start="2934">Minimal script example (AI + PSD)</h3><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="319" src="https://www.youtube.com/embed/KFsSbjMHvAQ" width="483" youtube-src-id="KFsSbjMHvAQ"></iframe></div><p data-end="3085" data-start="2973">The following script demonstrates the core idea.</p><p data-end="3085" data-start="2973">
+It is intentionally minimal and designed for educational use.</p><ul data-end="3263" data-start="3087">
+<li data-end="3119" data-start="3087">
+<p data-end="3119" data-start="3089">Targets <strong data-end="3117" data-start="3097">AI and PSD files</strong></p>
+</li>
+<li data-end="3168" data-start="3120">
+<p data-end="3168" data-start="3122">Uses a <strong data-end="3150" data-start="3129">fixed naming rule</strong> (<code data-end="3157" data-start="3152">_EN</code> → <code data-end="3165" data-start="3160">_DE</code>)</p>
+</li>
+<li data-end="3216" data-start="3169">
+<p data-end="3216" data-start="3171">Assumes the same extension and Links folder</p>
+</li>
+<li data-end="3263" data-start="3217">
+<p data-end="3263" data-start="3219">Includes only a simple confirmation dialog</p>
+</li>
+</ul><p data-end="3309" data-start="3265"><strong data-end="3277" data-start="3265">License:</strong> MIT<br data-end="3284" data-start="3281" />
+<strong data-end="3309" data-start="3284">Use at your own risk.</strong></p>
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+(function () {
+
+    if (app.documents.length === 0) {
+        alert("No documents are open.");
+        return;
+    }
+
+    var processAll = true;
+
+    if (app.documents.length &gt; 1) {
+        processAll = confirm(
+            "Multiple documents are open.\n\nProcess all open documents?"
+        );
+    }
+
+    var docs = processAll ? app.documents : [app.activeDocument];
+
+    for (var d = 0; d &lt; docs.length; d++) {
+        relinkImages(docs[d]);
+    }
+
+    alert("Relinking completed.");
+
+    function relinkImages(doc) {
+
+        var pages = doc.pages;
+
+        for (var i = 0; i &lt; pages.length; i++) {
+            var graphics = pages[i].allGraphics;
+
+            for (var j = 0; j &lt; graphics.length; j++) {
+                try {
+                    var link = graphics[j].itemLink;
+                    if (!link) continue;
+
+                    var name = link.name;
+
+                    // Target: _EN.ai / _EN.psd
+                    if (!name.match(/_EN\.(ai|psd)$/i)) continue;
+
+                    var newName = name.replace(
+                        /_EN\.(ai|psd)$/i,
+                        "_DE.$1"
+                    );
+
+                    var newFile = new File(
+                        doc.filePath + "/Links/" + newName
+                    );
+
+                    if (!newFile.exists) continue;
+
+                    link.relink(newFile);
+
+                } catch (e) {
+                    // Skip problematic links safely
+                    continue;
+                }
+            }
+        }
+    }
+
+})();</code>
+</pre>
+
+
+<hr data-end="4874" data-start="4871" /><h3 data-end="4929" data-start="4876">What this looks like in real production workflows</h3><p data-end="5027" data-start="4931">In actual production environments, this logic is typically part of a larger automation pipeline.</p><p data-end="5055" data-start="5029">Common extensions include:</p><ul data-end="5179" data-start="5057">
+<li data-end="5086" data-start="5057">
+<p data-end="5086" data-start="5059">Language selection via UI</p>
+</li>
+<li data-end="5113" data-start="5087">
+<p data-end="5113" data-start="5089">Validation and logging</p>
+</li>
+<li data-end="5139" data-start="5114">
+<p data-end="5139" data-start="5116">Support for additional naming rules</p></li>
+</ul><p data-end="5237" data-start="5181">Those topics are intentionally left out of this article.</p><hr data-end="5242" data-start="5239" /><h3 data-end="5264" data-start="5244">Related articles</h3><p data-end="5358" data-start="5266">If you are interested in scaling multilingual DTP workflows, you may also find these useful:</p><p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</p><ul data-end="5528" data-start="5360">
+<li data-end="5440" data-start="5360">
+<p data-end="5440" data-start="5362"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_15.html">Scaling Multilingual DTP by Eliminating Manual InDesign Text Overset Fixes</a><br /></p>
+</li>
+<li data-end="5528" data-start="5441">
+<p data-end="5528" data-start="5443"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating.html">Scaling Multilingual DTP by Automating Trados-Ready IDML Export from InDesign Books</a><br /></p></li></ul>

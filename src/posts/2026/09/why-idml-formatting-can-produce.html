@@ -1,0 +1,78 @@
+---
+title: "Why IDML Formatting Can Produce Translation Tags, and What to Check in InDesign"
+date: 2026-09-18T15:18:59.981-07:00
+updated: 2026-09-18T15:18:59.982-07:00
+permalink: "/2026/09/why-idml-formatting-can-produce.html"
+tags: ["IDML", "InDesign", "Trados", "translation"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-2666785441472436221"
+layout: post.njk
+---
+<p>A document goes out for translation as IDML and the translator writes back: the file is full of tags. Some segments have a tag pair around a single letter. Others have a dozen tags in one sentence. The translator asks whether they can be deleted. The layout side asks why they are there at all.</p>
+
+<p>This post is about the second question, and about what to check in InDesign before the next export.</p>
+
+<h2>Where the tags in an IDML come from</h2>
+
+<p>IDML is a ZIP archive. Inside it, the <code>Stories/</code> folder holds one XML file per story, and each paragraph is a <code>ParagraphStyleRange</code> element. Inside the paragraph, the text is split into <code>CharacterStyleRange</code> elements. A range is a run of text in which every character attribute is the same. Where an attribute changes, InDesign closes the range and opens a new one.</p>
+
+<p>A paragraph set entirely in its paragraph style, with no breaks or inline objects in it, is one range. Put one word in bold and it becomes three ranges: the text before the word, the word, the text after it.</p>
+
+<p>Character formatting changes therefore create range boundaries in the IDML before any translation tool has touched the file. The example below shows how the Okapi IDML filter renders two of them as paired inline codes; it does not establish how Trados or memoQ will display the same IDML.</p>
+
+<h2>Which formatting changes create a range boundary</h2>
+
+<p>Any character attribute that differs from the text around it starts a new range. In the story XML these show up as attributes on the <code>CharacterStyleRange</code> element or in its <code>Properties</code> child. Attributes to inspect include <code>AppliedCharacterStyle</code>, <code>FontStyle</code>, <code>PointSize</code>, <code>AppliedFont</code>, <code>Position</code>, <code>KerningValue</code>, <code>Tracking</code>, <code>BaselineShift</code>, <code>HorizontalScale</code>, <code>Leading</code> and <code>AppliedLanguage</code>.</p>
+
+<p>The attribute name does not tell you why it is there. A <code>Tracking</code> value may be a fix for one line of English that ran a word too long, or the consistent treatment of a product name. A local <code>PointSize</code> may be a deliberate emphasis or a squeeze to fit a caption. An <code>AppliedLanguage</code> difference may not be visible in the layout at all, and it can be an unintended difference or an intentional setting, since the language controls hyphenation and the spelling dictionary.</p>
+
+<p>Formatting is also not the only source of tags. In the Okapi output for the test file below, a footnote marker and an anchored rectangle each appeared as a placeholder code (<code>ph</code>). These codes represent document structure that needs to be preserved.</p>
+
+<h2>Why a tag appears in the middle of a word</h2>
+
+<p>Manual kerning can produce this pattern. Kerning is applied between two characters, so InDesign usually stores it as a range that contains a single character with a <code>KerningValue</code> attribute. (A kerning value applied across a longer run of text produces a longer range; the single-character form is the common one.) That range differs from the text on both sides.</p>
+
+<p>To see what that looks like in a bilingual file, I took a one-paragraph IDML exported from InDesign and added two settings directly to the XML: a kerning value on the letter <em>p</em> in "copper", and a local bold on "winter". Extracted with the Okapi IDML filter, the segment reads:</p>
+
+<pre style="overflow:auto;"><code>Independent frame BRAVO describes a co&lt;bpt id="1"&gt;&amp;lt;content-1&gt;&lt;/bpt&gt;p&lt;ept id="1"&gt;&amp;lt;/content-1&gt;&lt;/ept&gt;per telescope aimed at &lt;bpt id="2"&gt;&amp;lt;content-2&gt;&lt;/bpt&gt;winter&lt;ept id="2"&gt;&amp;lt;/content-2&gt;&lt;/ept&gt; stars.</code></pre>
+
+<p>(<code>bpt</code> and <code>ept</code> are XLIFF's begin and end markers for a paired inline code; the <code>content-1</code> inside them is the filter's name for the range.)</p>
+
+<p>The first pair records a kerning setting between two letters of one word. The second pair records a bold setting on a word that, in this example, is meant to stay bold in the translation. The <code>bpt</code> and <code>ept</code> markers alone do not explain why either setting was applied.</p>
+
+<h2>Which source formatting to keep or clear before export</h2>
+
+<p>Decide what the formatting is for before clearing it. Preserve formatting intended to follow the content: a word that is bold because it is a warning, a product name in a character style, a superscript that is part of a unit. Clear an adjustment only when you have identified it as a fix for the source-language layout: kerning between two letters of an English word, tracking that pulled the last word of a line back up, a local leading change on three lines that were too tall. Where you cannot tell, leave it alone.</p>
+
+<h2>How to find and clear the overrides in InDesign</h2>
+
+<p>Work on a copy of the InDesign document.</p>
+
+<p>The IDML you are about to send is one way to inspect the source formatting. Copy it, rename the copy to <code>.zip</code>, extract it, and search the <code>Stories/</code> folder with find-in-files for <code>KerningValue=</code>, <code>Tracking=</code>, <code>BaselineShift=</code>, <code>HorizontalScale=</code> and <code>AppliedLanguage=</code>. These attributes are written only where the text departs from its styles, so each hit is a local override. The searches identify ranges to inspect; they do not tell you what each override is for, and they are not a complete check of all character- and paragraph-level overrides. A uniform override across a whole paragraph does not, by itself, create an internal range boundary.</p>
+
+<p>In InDesign, the tool for clearing local formatting is the <strong>Clear Overrides in Selection</strong> button on the Paragraph Styles panel. It removes every override in the selection, character-level and paragraph-level, and returns the text to what its styles define. That includes overrides you meant to keep, which is why the order matters.</p>
+
+<ol>
+<li>Define a character style for each kind of formatting you intend to keep. A Bold character style that leaves point size unspecified does not set the text size; after overrides are cleared, the size follows the paragraph style unless the character style defines it. If your emphasis also changes the point size, that change has to be in a style as well, which may mean one style per size. Paragraph-level formatting you need to keep belongs in paragraph styles in the same way.</li>
+<li>Convert the local formatting to those styles with Find/Change. If you are preserving different point sizes, process each size separately with the matching character style; the following example applies where one Bold character style is sufficient. On the Text tab, leave <em>Find what</em> and <em>Change to</em> empty, set <em>Search</em> to Document, set <em>Find Format</em> to Font Style: Bold, and set <em>Change Format</em> to apply the Bold character style. Use <em>Find Next</em> on the first few matches to confirm they are the emphasis you expect before you use <em>Change All</em>. Repeat for italic. Other formatting you want to keep needs its own search criteria and its own style.</li>
+<li>Review the <code>AppliedLanguage</code> hits from the XML search. A local language override is cleared along with the other overrides. Where a language difference is intentional, preserve it together with the other attributes required for that text.</li>
+<li>Clear all overrides in a story only after you have confirmed that every remaining override in it can be removed. If any are unresolved, leave that story unchanged. Once that condition is met, place the cursor in the story, select all of its text, and click Clear Overrides in Selection. The character styles you applied in step 2 are not overrides, so they stay; the remaining kerning, tracking and baseline shifts go. Check footnotes, table cells and text inside anchored frames separately before treating the cleanup as complete.</li>
+<li>Export the IDML again and repeat the XML searches. Look at what is still there and decide whether each remaining hit is one you chose to keep.</li>
+</ol>
+
+<p>This changes the layout of the copy. Lines that were held together by tracking will break differently.</p>
+
+<h2>What cannot be removed</h2>
+
+<p>Footnote references, anchored objects, index markers, cross-references and inline tables all appear as tags, and they have to. They are structure, and the target document needs them in the corresponding places. Character styles that mark meaning also stay.</p>
+
+<h2>If you are the translator</h2>
+
+<p>If you receive the IDML for translation, do not delete tags simply because they interrupt a word. Ask the document owner to review the source formatting. The cleanup described here takes place in InDesign, before a new IDML is exported.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Trados-Ready IDML Export from InDesign Books</a></li>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_15.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Style Reloads Before Translation</a></li>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-maintenance.html" target="_blank" rel="noopener">Scaling Multilingual DTP – Maintenance / Recovery: When and How to Clean Up InDesign Files with IDML</a></li>
+</ul>

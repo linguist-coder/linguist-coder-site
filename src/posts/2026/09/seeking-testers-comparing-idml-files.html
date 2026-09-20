@@ -1,0 +1,56 @@
+---
+title: "Seeking Testers: Comparing IDML Files Before and After Translation"
+date: 2026-09-14T21:02:20.523-07:00
+updated: 2026-09-19T21:56:07.415-07:00
+permalink: "/2026/09/seeking-testers-comparing-idml-files.html"
+tags: ["automation", "IDML", "InDesign", "translation"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-483632675869041105"
+layout: post.njk
+---
+<p>I'm developing a tool that compares two IDML files: the InDesign document you sent out for translation, and the one that came back. It runs on Windows, the current build is unsigned, and the trial is free. I plan to offer a paid version later. What I need now is feedback from people who can run it locally on a real translation job. I'm a technical writer based in Japan, with 17 years in multilingual document production; this blog is where I write about that work.</p>
+
+<h2>Why I'm building this</h2>
+
+<p>This tool grew out of a question from my translation work: when a document comes back, what changed structurally, and is anything missing? I have not found that question answered by the tools I use, so I started building one.</p>
+
+<h2>What the tool checks</h2>
+
+<p>It compares the source IDML and the returned IDML for:</p>
+
+<ul>
+<li>missing stories, text frames and tables where a match can be established; emptied story or table-cell text; changes in footnote and anchored-object counts per story</li>
+<li>changes in paragraph counts, table row and column counts, applied paragraph styles, and the sequence of character styles within a paragraph</li>
+<li>paragraphs, footnotes and table cells whose text is still identical to the source, subject to a word-count threshold (short unchanged text and untranslated text mixed into an otherwise translated paragraph are not reported, and the check is ineffective for text without word spaces, such as Japanese or Chinese)</li>
+</ul>
+
+<p>The comparison runs without launching InDesign, reads the two IDML files without modifying them, and sends nothing over the network. It does not assess translation quality, layout geometry, images or links. Every report lists what was checked and what was not compared, even when it found nothing.</p>
+
+<p>Testing so far has used synthetic documents, not real translation jobs. That is the gap I am trying to close. I'm asking for feedback, not copies of your files or reports.</p>
+
+<h2>Getting the trial</h2>
+
+<p>The trial and Quick Start are on GitHub Releases: <a href="https://github.com/linguist-coder/localisation-qa/releases/latest" rel="noopener" target="_blank">linguist-coder/localisation-qa</a>. You can download and try it without contacting me first. Because the build is unsigned, Windows may show an Open File security warning or a SmartScreen warning; the Quick Start covers both. The trial runs all checks and counts every finding; it shows one finding per rule with its page, object and content, and lists the rest by rule only. Re-running the same pair does not reveal more details. The included sample pair has planted defects and always produces a full report, so you can try it before using your own files.</p>
+
+<p>The trial build does not expire, and there is no deadline for feedback. Running the included sample takes a few minutes, most of it reading the report; a real document pair depends on its size.</p>
+
+<p>So you can decide whether this is worth your time: the paid version is planned as a one-time purchase, about $99, sold under the same name as this blog (Linguist Coder). It runs on your machine and does not send files anywhere. If any of that rules it out for your workplace, I would still like to hear why; that is useful feedback on its own.</p>
+
+<h2>Two limits to know before you try it</h2>
+
+<ol>
+<li><strong>IDML only.</strong> It does not read INDD. You need the source and returned versions as IDML, exported from InDesign if necessary.</li>
+<li><strong>Matching depends on identifiers.</strong> The tool uses labels added by the included script, or InDesign's internal IDs when labels are absent. In a tested workflow using Okapi, internal IDs survived the translation round trip; they were reassigned when the IDML was then opened in InDesign and re-exported. An existing pair without labels may therefore have objects that cannot be matched; these are reported as "could not be compared", not as clean. For future jobs, run the included script in InDesign before exporting the source IDML you send out; matching then uses those labels if the returned file retains them.</li>
+</ol>
+
+<h2>How to send feedback</h2>
+
+<p>If you try it, a brief note on these four questions is all I need:</p>
+
+<ol>
+<li>Did you use files from a real translation job, or only the sample?</li>
+<li>Did ZIP extraction, launch and analysis all complete? If not, where did it stop?</li>
+<li>How do you currently check returned files?</li>
+<li>Did it show anything your current check had missed? "No" or "couldn't tell" is useful too; please mention any false alarms.</li>
+</ol>
+
+<p>Email your feedback to hi@linguist-coder.com, or reply to <a href="https://x.com/linguist_coder/status/2099711656192565320" rel="noopener" target="_blank">the announcement post on X</a> (@linguist_coder). Please leave out client names and document text when describing your results; replies on X are public. I won't publish feedback sent by email without your permission.</p>

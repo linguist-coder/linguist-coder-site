@@ -1,0 +1,428 @@
+---
+title: "A Rule-First Approach to AI-Assisted Terminology QA"
+date: 2026-05-11T14:33:00.000-07:00
+updated: 2026-09-18T16:03:57.680-07:00
+permalink: "/2026/05/a-rule-first-approach-to-ai-assisted.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-5234063141688112558"
+layout: post.njk
+---
+<p>Terminology errors are rarely dramatic.</p>
+
+<p>They usually appear as small inconsistencies: one deprecated term, one preferred phrase that was missed, one verbose expression that should have been simplified, or one word that does not match the approved glossary.</p>
+
+<p>In technical documentation, these small issues matter. They affect consistency, readability, translation quality, and sometimes even product safety.</p>
+
+<p>The problem is that terminology checks are repetitive. They are also easy to miss when reviewing long documents manually.</p>
+
+<p>That makes terminology QA a good candidate for automation.</p>
+
+<p>But there is an important design question:</p>
+
+<blockquote>
+  <p>Should AI be the first checker?</p>
+</blockquote>
+
+<p>My answer is: usually, no.</p>
+
+<p>For production-oriented QA, terminology checking should start with explicit rules. AI should be used as a second-pass confirmation layer, not as the primary source of detection.</p>
+
+<p>This is the design idea behind a small terminology checker I recently built and published on GitHub. The repository is available here: <a href="https://github.com/linguist-coder/terminology-checker" rel="noopener" target="_blank">Terminology Checker</a>.</p>
+
+<h2>The Problem with Manual Terminology Checks</h2>
+
+<p>A terminology rule often looks simple.</p>
+
+<p>For example:</p>
+
+<ul>
+  <li>Use “use” instead of “utilize”</li>
+  <li>Use “before” instead of “prior to”</li>
+  <li>Use “because” instead of “due to the fact that”</li>
+  <li>Avoid inconsistent product names</li>
+  <li>Avoid deprecated technical terms</li>
+</ul>
+
+<p>In theory, these rules are easy to check.</p>
+
+<p>In practice, they become difficult for several reasons.</p>
+
+<p>First, documents are long. Even if a reviewer knows the correct terminology, checking every occurrence manually is slow and unreliable.</p>
+
+<p>Second, terminology rules are often scattered. Some rules live in a glossary, some in a style guide, some in a client-specific instruction file, and some only exist as reviewer experience.</p>
+
+<p>Third, final deliverables are not always checked in the same environment where translation was performed. A document may pass QA in a CAT tool, but still need to be checked again after layout, PDF generation, or DOCX formatting.</p>
+
+<p>This is especially common in multilingual production workflows.</p>
+
+<p>A CAT tool can check the translation environment.<br />
+But the final PDF or DOCX is what the client actually receives.</p>
+
+<p>That gap is where lightweight QA tools can help.</p>
+
+<h2>Why AI Should Not Be the First Checker</h2>
+
+<p>It is tempting to ask AI a simple question:</p>
+
+<blockquote>
+  <p>“Please check this document for terminology errors.”</p>
+</blockquote>
+
+<p>For a short document, this may work well enough.</p>
+
+<p>For production QA, however, this approach has several weaknesses.</p>
+
+<ul>
+  <li>
+    <strong>Lack of repeatability</strong><br />
+    The same input may not always produce the same output. This makes it difficult to use AI-only checking as a stable QA process.
+  </li>
+  <li>
+    <strong>Unclear rule traceability</strong><br />
+    It may be hard to tell which glossary entry, style rule, or client instruction caused a finding.
+  </li>
+  <li>
+    <strong>Over-detection and under-detection</strong><br />
+    AI may over-interpret harmless phrases, while also missing simple rule violations that a deterministic search would catch.
+  </li>
+  <li>
+    <strong>Difficult review history</strong><br />
+    If the finding is not tied to an explicit rule, it becomes harder to review, compare, or improve the result later.
+  </li>
+  <li>
+    <strong>Unclear cost and scope</strong><br />
+    Sending entire documents to AI for open-ended checking can be inefficient, especially when many issues can be detected by simple rules.
+  </li>
+</ul>
+
+<p>This matters because QA needs repeatability.</p>
+
+<p>A terminology checker should answer basic questions clearly:</p>
+
+<ul>
+  <li>Which rule was checked?</li>
+  <li>Which term was found?</li>
+  <li>Where was it found?</li>
+  <li>What is the suggested replacement?</li>
+  <li>Was the finding confirmed or rejected?</li>
+  <li>Can the result be reviewed later?</li>
+</ul>
+
+<p>If AI is used as the first checker, these questions become harder to control.</p>
+
+<p>For this reason, I prefer a rule-first approach.</p>
+
+<p>The rules should find candidates first.<br />
+AI can then help confirm whether each candidate is actually a problem in context.</p>
+
+<h2>A Two-Pass Approach</h2><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/05/a-rule-first-approach-to-ai-assisted/01.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="941" data-original-width="1672" height="180" src="/images/2026/05/a-rule-first-approach-to-ai-assisted/01.png" width="320" /></a></div><div>The terminology checker uses a simple two-pass structure.</div>
+
+<pre><code>Document
+  ↓
+Rule-based candidate detection
+  ↓
+AI-based confirmation
+  ↓
+CSV report</code></pre>
+
+<p>The first pass is rule-based.</p>
+
+<p>The tool reads a glossary file and searches the document for defined terms or phrases. This step is deterministic. If the same document and the same glossary are used, the same candidates should be detected.</p>
+
+<p>The second pass is AI-assisted.</p>
+
+<p>After the rule-based pass finds candidates, AI can review the surrounding context and help reduce false positives.</p>
+
+<p>This separation is important.</p>
+
+<p>The rule layer provides repeatability.<br />
+The AI layer provides context sensitivity.<br />
+The report layer keeps the result reviewable.</p>
+
+<p>That combination is more practical than relying on AI alone.</p>
+
+<h2>A Simple Example</h2>
+
+<p>Suppose a glossary contains this rule:</p>
+
+<pre><code>wrong_term,correct_term,notes
+utilize,use,Use plain English where possible</code></pre>
+
+<p>A rule-based checker can easily find every occurrence of “utilize.”</p>
+
+<p>But not every occurrence has the same priority.</p>
+
+<p>For example:</p>
+
+<pre><code>We will utilize this tool to check the document.</code></pre>
+
+<p>In this case, the preferred wording is probably:</p>
+
+<pre><code>We will use this tool to check the document.</code></pre>
+
+<p>The rule-based layer can detect the candidate.<br />
+The AI confirmation layer can then check the surrounding sentence and confirm that this is likely a real style issue.</p>
+
+<p>Now consider a different case:</p>
+
+<pre><code>The report discusses asset utilization in manufacturing environments.</code></pre>
+
+<p>A simple search may still detect a related term pattern, depending on the glossary rule. But the surrounding context may show that this is part of a technical expression, not a simple “utilize → use” replacement.</p>
+
+<p>This is where AI can be useful.</p>
+
+<p>Not as a magic checker.<br />
+Not as the source of truth.<br />
+But as a context filter.</p>
+
+<p>The goal is to reduce the number of items that a human reviewer needs to inspect manually.</p>
+
+<h2>What This Terminology Checker Does</h2>
+
+<p>The tool is a small web app and command-line utility for terminology QA.</p>
+
+<p>It can check:</p>
+
+<ul>
+  <li>PDF files</li>
+  <li>DOCX files</li>
+  <li>TXT files</li>
+</ul>
+
+<p>It uses a CSV glossary with entries such as:</p>
+
+<pre><code>wrong_term,correct_term,notes
+utilize,use,Use plain English
+prior to,before,Simplify the phrase
+due to the fact that,because,Avoid verbose expressions</code></pre>
+
+<p>The tool extracts text from the document, checks it against the glossary, and generates a CSV report.</p>
+
+<p>The report can then be reviewed by a human.</p>
+
+<p>This is intentional. The tool does not automatically rewrite the document. It focuses on detection, confirmation, and reporting.</p>
+
+<p>In QA workflows, that distinction matters.</p>
+
+<p>Automatic fixing may be useful in some controlled cases, but terminology QA often requires human judgment. The goal is not to remove the reviewer. The goal is to reduce repetitive checking and make possible issues easier to review.</p>
+
+<h2>Web UI and CLI</h2>
+
+<p>The tool includes a simple web interface built with Gradio.</p>
+
+<p>The web UI is useful when the goal is quick checking:</p>
+
+<ol>
+  <li>Upload a document</li>
+  <li>Upload a glossary CSV</li>
+  <li>Run the check</li>
+  <li>Download the result report</li>
+</ol>
+
+<p>The tool also supports command-line execution.</p>
+
+<p>This is useful if the checker is later integrated into a more structured workflow, such as:</p>
+
+<ul>
+  <li>project-level QA folders</li>
+  <li>repeated checks for the same client</li>
+  <li>batch processing</li>
+  <li>automated report generation</li>
+  <li>local production pipelines</li>
+</ul>
+
+<p>The web UI makes the tool easier to try.<br />
+The CLI makes it easier to extend.</p>
+
+<h2>Why This Matters in Multilingual Production</h2>
+
+<p>Terminology QA is not only a translation issue.</p>
+
+<p>It is also a production issue.</p>
+
+<p>In a multilingual workflow, text may move through several stages:</p>
+
+<pre><code>Source document
+  ↓
+Translation
+  ↓
+CAT tool QA
+  ↓
+Layout / DTP
+  ↓
+PDF or DOCX output
+  ↓
+Final review</code></pre>
+
+<p>A terminology issue can appear, disappear, or become harder to detect at different stages.</p>
+
+<p>For example, a term may be correct in the CAT tool but become difficult to verify after layout. A PDF may introduce line breaks or extraction noise. A final DOCX may contain manually edited text that was not checked in the translation environment.</p>
+
+<p>This is why final-document QA matters.</p>
+
+<p>The terminology checker is not meant to replace CAT-tool QA.<br />
+It is a final-document QA layer.</p>
+
+<p>It is designed to help check deliverable formats such as PDF, DOCX, and plain text against explicit terminology rules.</p>
+
+<p>That makes it useful as a bridge between translation QA and final production QA.</p>
+
+<h2>Rule-Based Detection Is Still Valuable</h2>
+
+<p>AI is powerful, but rule-based detection is still extremely useful.</p>
+
+<p>A rule is clear.<br />
+A rule is reviewable.<br />
+A rule can be versioned.<br />
+A rule can be reused across projects.</p>
+
+<p>For example, if a client says that “utilize” should be replaced with “use,” that rule does not need creative interpretation. It should simply be checked.</p>
+
+<p>In such cases, using AI as the first detection layer adds unnecessary uncertainty.</p>
+
+<p>A better design is:</p>
+
+<pre><code>Explicit rule:
+“utilize” → “use”
+
+Detection:
+Find occurrences of “utilize”
+
+AI confirmation:
+Check whether this occurrence is actually a problem in context
+
+Human review:
+Accept, reject, or revise</code></pre>
+
+<p>This keeps the workflow understandable.</p>
+
+<p>It also makes the QA result easier to explain to another reviewer, translator, client, or production manager.</p>
+
+<h2>AI as a Smart Filter</h2>
+
+<p>AI becomes more useful when its role is limited.</p>
+
+<p>Instead of asking AI to invent the checklist, the tool gives AI a narrower task:</p>
+
+<blockquote>
+  <p>This term was found by a rule.<br />
+  Based on the surrounding context, does it look like a real terminology issue?</p>
+</blockquote>
+
+<p>This is a better use of AI in QA.</p>
+
+<p>The AI is not replacing the glossary.<br />
+It is not replacing the reviewer.<br />
+It is not deciding the entire QA policy.</p>
+
+<p>It is only helping with context confirmation.</p>
+
+<p>In other words, AI works best here as a smart filter.</p>
+
+<p>The rule-based layer finds possible issues.<br />
+The AI layer helps prioritize them.<br />
+The human reviewer makes the final decision.</p>
+
+<p>This role separation makes the workflow easier to trust.</p>
+
+<h2>Current Limitations</h2>
+
+<p>This is still a small MVP.</p>
+
+<p>There are several limitations.</p>
+
+<p>First, PDF text extraction is not always perfect. If the PDF contains complex layouts, unusual encoding, scanned pages, or broken text order, the extracted text may not reflect the visible page accurately.</p>
+
+<p>Second, AI confirmation requires an external API. This means confidential documents should not be checked with AI confirmation unless the workflow allows it.</p>
+
+<p>For sensitive documents, the rule-based mode is safer because it can be used without sending document text to an external AI service.</p>
+
+<p>Third, the tool does not automatically apply corrections. This is by design. At this stage, the output is a report, not a rewritten document.</p>
+
+<p>Fourth, glossary management is still simple. The current CSV format is easy to understand, but larger workflows may need Excel support, rule categories, severity levels, client profiles, and version control.</p>
+
+<p>These limitations are useful because they clarify the next design step.</p>
+
+<h2>Future Direction</h2>
+
+<p>The interesting part of this tool is not the web UI itself.</p>
+
+<p>The important part is the structure:</p>
+
+<pre><code>Rules
+  ↓
+Detection
+  ↓
+Context confirmation
+  ↓
+Reviewable report</code></pre>
+
+<p>This structure can become a reusable QA module.</p>
+
+<p>Possible future improvements include:</p>
+
+<ul>
+  <li>Excel glossary support</li>
+  <li>batch checking for multiple files</li>
+  <li>project-specific rule profiles</li>
+  <li>severity levels</li>
+  <li>false-positive feedback</li>
+  <li>highlighted PDF output</li>
+  <li>DOCX comments</li>
+  <li>QA history logs</li>
+  <li>local AI model support</li>
+  <li>integration with other multilingual DTP checks</li>
+</ul>
+
+<p>The long-term goal is not just to build another checker.</p>
+
+<p>The goal is to make terminology QA more structured, repeatable, and easier to connect with other parts of multilingual production.</p>
+
+<p>A terminology checker can become one module in a larger local QA workflow.</p>
+
+<p>For example:</p>
+
+<pre><code>Terminology check
+  +
+PDF text check
+  +
+layout issue detection
+  +
+overset / missing link checks
+  +
+QA logs
+  =
+local multilingual production QA layer</code></pre>
+
+<p>That is the direction I am interested in.</p>
+
+<p>Not just one-off automation, but reusable workflow components.</p>
+
+<h2>Conclusion</h2>
+
+<p>Terminology QA should not depend only on human memory.<br />
+It should also not depend entirely on AI judgment.</p>
+
+<p>A more practical approach is to start with explicit rules, detect candidates consistently, then use AI only where context matters.</p>
+
+<p>That is the idea behind this terminology checker.</p>
+
+<p>Rules provide structure.<br />
+AI provides context support.<br />
+Reports keep the process reviewable.</p>
+
+<p>For multilingual technical documentation, this balance is important.</p>
+
+<p>The goal is not to automate judgment away.<br />
+The goal is to make judgment easier to apply consistently.</p>
+
+<p><strong>GitHub:</strong><br />
+<a href="https://github.com/linguist-coder/terminology-checker" rel="noopener" target="_blank">https://github.com/linguist-coder/terminology-checker</a></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/05/a-rule-first-approach-to-ai-assisted/01.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="941" data-original-width="1672" height="180" src="/images/2026/05/a-rule-first-approach-to-ai-assisted/01.png" width="320" /></a></div><br />
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/why-idml-formatting-can-produce.html" target="_blank" rel="noopener">Why IDML Formatting Can Produce Translation Tags, and What to Check in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_21.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Automating Mandatory Text Checks in PDFs Before Delivery</a></li>
+</ul>

@@ -1,0 +1,153 @@
+---
+title: "Your First InDesign Script: Which Pages Have Overset Text?"
+date: 2026-07-28T17:18:19.631-07:00
+updated: 2026-07-28T17:33:28.831-07:00
+permalink: "/2026/07/your-first-indesign-script-which-pages.html"
+tags: ["automation", "ExtendScript", "InDesign", "overset", "scripting basics"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-72809826086504377"
+layout: post.njk
+---
+<p>Most InDesign scripting tutorials open with a finished script. This one opens a step earlier: with the smallest useful thing a script can do, and with the decision of what to leave out of it.</p>
+
+<p>The goal is one dialog that tells you which pages of the open document contain overset text. To be precise about what that means, since precision is most of the point here: it checks the text frames that belong directly to each page, and nothing else. It is not a complete document-wide audit. It will not mark anything, it will not fix anything, and it will not write a log file. Those are not missing features. They are the boundary I drew before writing the first line.</p>
+
+<p>If you already write ExtendScript, you may want <a href="https://www.linguist-coder.com/2026/02/detecting-text-overset-in-indesign.html" rel="noopener" target="_blank">the production-shaped version I published earlier</a> instead. This post is for the reader who has not yet run a script in InDesign at all.</p>
+
+<h2>The one property that does the work</h2>
+
+<p>Overset text is text that has nowhere to go. A story contains more than its available frames can display, and the surplus sits outside the layout, invisible. In a single frame it appears once the story exceeds what the frame can hold; in a threaded chain of frames it appears after the last frame in the chain. InDesign shows you this as a red plus sign in the frame's out port.</p>
+
+<p>InDesign already knows. You do not have to measure anything, compare anything, or compose anything. You only have to ask:</p>
+
+<pre style="overflow: auto;"><code>textFrame.overflows</code></pre>
+
+<p>It returns <code>true</code> or <code>false</code>.</p>
+
+<p>Reading the property is the easy part. The work in this post is deciding which objects to ask, and how to report what comes back — which turns out to be where all the interesting decisions live.</p>
+
+<h2>Running a script at all</h2>
+
+<p>If you have never run one, here is the whole setup.</p>
+
+<ol>
+<li>Open the Scripts panel: <strong>Window &gt; Utilities &gt; Scripts</strong>.</li>
+<li>Right-click the <strong>User</strong> folder and choose <strong>Reveal in Explorer</strong> (Windows) or <strong>Reveal in Finder</strong> (macOS).</li>
+<li>Save a plain text file into that folder with a <code>.jsx</code> extension.</li>
+<li>Back in the Scripts panel, double-click the file to run it.</li>
+</ol>
+
+<p>Two things to know before you type anything.</p>
+
+<p><strong>ExtendScript is an old dialect of JavaScript.</strong> Roughly ES3. There is no <code>let</code>, no <code>const</code>, no arrow functions, and no <code>Array.prototype.forEach</code>. You write <code>var</code> and you write <code>for</code> loops. Code copied from a modern JavaScript tutorial will often fail here for reasons that have nothing to do with InDesign.</p>
+
+<p><strong>Save it as plain text, and watch two separate things.</strong></p>
+
+<p>The first is your quotes. Many editors, and every word processor, replace straight quotes (<code>"</code> and <code>'</code>) with typographic ones as you type. Those are different characters, and JavaScript will not accept them as string delimiters. If you paste code from a web page and get a syntax error on a line that looks perfectly correct, this is usually why.</p>
+
+<p>The second is the file's encoding. Save as UTF-8, and confirm your editor is actually writing UTF-8 rather than quietly using something else. Older ExtendScript environments can behave inconsistently when a script contains non-ASCII characters, sometimes reporting a syntax error on a line that has nothing wrong with it. Keeping comments in ASCII avoids that particular source of trouble. If you want Japanese or accented text in your dialogs, that is fine — just be deliberate about how the file gets saved.</p>
+
+<h2>Step 1: ask one frame</h2>
+
+<p>Select a text frame on the page, then run this:</p>
+
+<pre style="overflow: auto;"><code>(function () {
+    alert(app.selection[0].overflows);
+})();</code></pre>
+
+<p>You get a dialog saying <code>true</code> or <code>false</code>. That is the entire mechanism.</p>
+
+<p>The wrapper is worth explaining. <code>(function () { ... })();</code> defines a function and calls it immediately. Anything you declare with <code>var</code> at the top level of a script goes onto the global object, which is shared by everything running in the same ExtendScript engine — and whether those leftovers outlive your script depends on which engine InDesign used to run it. The wrapper means you never have to know. Your variables stay yours, and the script becomes a self-contained unit you can drop into a larger one later without renaming anything.</p>
+
+<p>This version breaks if nothing is selected, or if you selected a rectangle instead of a text frame. That is fine. It exists to prove the property works, and then it goes away.</p>
+
+<h2>Step 2: ask every page</h2>
+
+<p>The obvious next move is two loops: every page, and every text frame on that page.</p>
+
+<pre style="overflow: auto;"><code>var doc = app.activeDocument;
+
+for (var i = 0; i &lt; doc.pages.length; i++) {
+    var frames = doc.pages[i].textFrames;
+
+    for (var j = 0; j &lt; frames.length; j++) {
+        if (frames[j].overflows) {
+            alert("Overset on page " + doc.pages[i].name);
+        }
+    }
+}</code></pre>
+
+<p>This works, and it is unusable. A document with thirty overset frames gives you thirty dialogs, each one waiting for a click. The script is correct and the experience is wrong, which is a distinction worth learning early.</p>
+
+<p>The fix is to separate finding from reporting. Collect everything first, then say it once.</p>
+
+<p>Note also <code>doc.pages[i].name</code> rather than <code>i + 1</code>. If the document uses sections — front matter in roman numerals, a chapter that restarts at 1 — then <code>i + 1</code> gives you a number that appears nowhere in the page box, and you will go looking for page 7 and not find it. <code>page.name</code> is the label you actually see in the Pages panel.</p>
+
+<p>The tradeoff is that page names are not guaranteed to be unique. In a document where every chapter restarts at 1, a result of <code>1, 1, 3</code> is entirely possible and tells you less than you want. For most documents this never comes up; when it does, you have outgrown this script.</p>
+
+<h2>The script</h2>
+
+<pre style="overflow: auto;"><code>// Reports which pages contain an overset text frame.
+(function () {
+    if (app.documents.length === 0) {
+        alert("Open a document first.");
+        return;
+    }
+
+    var doc = app.activeDocument;
+    var hits = [];
+
+    for (var i = 0; i &lt; doc.pages.length; i++) {
+        var page = doc.pages[i];
+        var frames = page.textFrames;
+
+        for (var j = 0; j &lt; frames.length; j++) {
+            if (frames[j].overflows) {
+                hits.push(page.name);   // page.name respects section numbering
+                break;                  // one report per page is enough
+            }
+        }
+    }
+
+    if (hits.length === 0) {
+        alert("No overset text frames found.");
+    } else {
+        alert("Overset text on page(s): " + hits.join(", "));
+    }
+})();</code></pre>
+
+<p>Two lines are worth pointing at.</p>
+
+<p>The <code>break</code> stops scanning a page as soon as one overset frame turns up. You already know the answer for that page, and the question is which pages to look at, not how many frames are involved. It also means each page object is added to the list at most once, without any deduplication logic.</p>
+
+<p>The guard at the top costs three lines and removes an entire class of confusing failure. <code>app.activeDocument</code> throws when nothing is open, and the resulting error dialog says nothing useful to someone who has run four scripts in their life.</p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/your-first-indesign-script-which-pages/01.gif" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="945" data-original-width="1427" height="212" src="/images/2026/07/your-first-indesign-script-which-pages/01.gif" width="320" /></a></div><br /><div class="separator" style="clear: both; text-align: center;"><br /></div>
+
+<h2>What I left out, on purpose</h2>
+
+<p><strong>It reports pages, not frames.</strong> The question this script answers is "where do I need to look." A page number answers that. A frame identifier would need coordinates or labels to mean anything, and then I would be building a different tool.</p>
+
+<p><strong>It shows a dialog, not a log file.</strong> A file needs a path, a format, a write permission, and a story about what happens to it next week. A dialog needs none of those. Every one of them is a decision I did not have to make. The ceiling is real, though: a document with sixty overset pages produces a dialog you cannot comfortably read or copy out of. That is the point at which writing to a file, or building a scrollable window, stops being optional.</p>
+
+<p><strong>It does not fix anything.</strong> This is the limit I would defend hardest. Detection and correction fail differently, and at different prices. A detection that fires when it should not costs you a look. A detection that stays quiet when it should not — the failure mode every exclusion in the next section produces — leaves overset text sitting in the file. A correction that goes wrong changes the layout itself. Keeping detection and correction in separate scripts is what lets you weigh those three risks one at a time instead of all at once.</p>
+
+<p>Small scope is not a stage you pass through on the way to a real script. It is the thing that lets a short script be finished.</p>
+
+<h2>Where the script stops seeing</h2>
+
+<p>Being honest about the edges is part of the design, so here is what this one does not catch.</p>
+
+<ul>
+<li><strong>Frames inside a group.</strong> <code>page.textFrames</code> returns the frames the page owns directly. A frame nested in a group is owned by the group.</li>
+<li><strong>Anchored frames.</strong> A text frame anchored into another story lives in that story, not on the page, for the same reason.</li>
+<li><strong>Frames on the pasteboard.</strong> They belong to the spread rather than to any page, so the page loop never reaches them.</li>
+<li><strong>Frames on parent pages that have not been overridden.</strong> Parent pages — still called master spreads in the scripting DOM — are a separate collection.</li>
+<li><strong>Overset inside a table cell.</strong> The cell hides the surplus text without the containing frame reporting <code>overflows</code> at all. Cells carry their own <code>overflows</code> property, so a fuller version has to walk tables separately.</li>
+<li><strong>Threads.</strong> In a chain of linked frames, normally only the last one returns <code>true</code>. You learn the page where the text ran out, not the page where the pressure started.</li>
+</ul>
+
+<p>These are deliberate exclusions, not oversights — but they turn into defects the moment the script gets described as a complete overset audit, which is why I put the scope in the first paragraph rather than here. A script that answers one question cleanly and a tool that covers a workflow are different objects, and most of the frustration in scripting comes from expecting one to behave like the other.</p>
+
+<p>If you want the version that walks the whole document, parent pages included, and marks what it finds directly on the page, that is the <a href="https://www.linguist-coder.com/2026/02/detecting-text-overset-in-indesign.html" rel="noopener" target="_blank">earlier post</a>.</p>
+
+<h2>Next</h2>
+
+<p>Finding overset is the easy half. In Part 2, I take the most obvious way to fix it — condensing the type horizontally until the text fits — write that script with the same discipline about limits, and then look at exactly where the approach stops working.</p>

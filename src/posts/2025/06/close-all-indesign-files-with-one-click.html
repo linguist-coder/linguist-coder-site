@@ -1,0 +1,55 @@
+---
+title: "🦊Close All InDesign Files with One Click: A Script for Busy Designers"
+date: 2025-06-28T18:00:00.000-07:00
+updated: 2025-07-04T14:52:01.704-07:00
+permalink: "/2025/06/close-all-indesign-files-with-one-click.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-9074428583558276902"
+layout: post.njk
+---
+<p data-end="775" data-start="530">As a technical writer and InDesign user, I often find myself working with a large number of open InDesign files at the same time.<br data-end="662" data-start="659" />
+You might know the feeling—at the end of a busy day, you just want to close everything quickly and call it a day.</p><p data-end="1020" data-start="777">Of course, you can always use <strong data-end="817" data-start="807">Ctrl+Q</strong> to quit InDesign entirely. But then, when you want to get back to work, you have to launch InDesign all over again, which can be a bit of a hassle, especially if you need to continue working right away.</p><p data-end="1210" data-start="1022">That’s why I created this simple script. It allows you to <strong data-end="1137" data-start="1080">close all open InDesign documents with a single click</strong>—but it leaves InDesign itself running, so you can stay in your workflow.</p><p data-end="1388" data-start="1212">When I shared this script with my colleagues, it got some surprisingly positive feedback!<br data-end="1304" data-start="1301" />
+It’s a small, handy tool, so I’ve decided to make it available to everyone for free.</p><span></span><span></span><hr data-end="1867" data-start="1864" /><p data-end="1388" data-start="1212">﻿<span style="font-family: courier;">#target indesign</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;"><br /></span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">try {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; var docs = app.documents;</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; for (var i = docs.length - 1; i &gt;= 0; i--) {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; var doc = docs[i];</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; if (doc.saved) {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; doc.close(SaveOptions.yes);</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; } else {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Skip (do not close unsaved documents)</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; }</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">} catch (e) {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; alert(e);</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">}</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;"><br /></span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">var flag = confirm("Do you want to close all open Books as well?");</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;"><br /></span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">if (flag == true) {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; while (app.books.length &gt; 0) {</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; &nbsp; &nbsp; app.activeBook.close(SaveOptions.yes);</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">&nbsp; &nbsp; }</span></p><p data-end="1388" data-start="1212"><span style="font-family: courier;">}</span></p><hr data-end="1867" data-start="1864" /><div><strong data-end="1407" data-start="1390"><br /></strong></div><div><strong data-end="1407" data-start="1390">How it works:</strong></div><ul data-end="1715" data-start="1410">
+<li data-end="1487" data-start="1410">
+<p data-end="1487" data-start="1412">The script closes all open InDesign documents that have already been saved.</p>
+</li>
+<li data-end="1715" data-start="1488">
+<p data-end="1715" data-start="1490">If there are any unsaved documents—such as newly created files or files right after format conversion—they will be skipped (left open) to prevent accidental data loss.<br data-end="1660" data-start="1657" />
+&nbsp;&nbsp;&nbsp;<em data-end="1715" data-start="1678">Please be aware of this limitation!</em></p>
+</li>
+</ul><p data-end="1862" data-start="1717">After closing the documents, the script will also ask if you want to close any open Books. If you confirm, all open Books will be closed as well.</p><hr data-end="1867" data-start="1864" /><h3 data-end="1891" data-start="1869">Tested Environment</h3><p data-end="2151" data-start="1893">This script was tested with the <strong data-end="1974" data-start="1925">Windows versions of InDesign CC 2023 and 2024</strong>.<br data-end="1978" data-start="1975" />
+It should also work with other recent versions of InDesign, although I have not verified every version.<br data-end="2084" data-start="2081" />
+<em data-end="2151" data-start="2084">I have not tested it on Mac OS, but it should work there as well.</em></p><hr data-end="2156" data-start="2153" /><h3 data-end="2172" data-start="2158">How to Use</h3><ol data-end="2331" data-start="2174">
+<li data-end="2209" data-start="2174">
+<p data-end="2209" data-start="2177">Download the script (see below).</p>
+</li>
+<li data-end="2260" data-start="2210">
+<p data-end="2260" data-start="2213">Place the file in your InDesign Scripts folder.</p>
+</li>
+<li data-end="2331" data-start="2261">
+<p data-end="2331" data-start="2264">Double-click the script in the Scripts Panel in InDesign to run it.</p>
+</li>
+</ol><hr data-end="2336" data-start="2333" /><h3 data-end="2350" data-start="2338">Download</h3>
+<p>
+  <a href="https://drive.google.com/file/d/1EaA2nmHIzCU9CnPZyJoD7hvmmVHoL3I8/view?usp=sharing" target="_blank">
+    Download the script here (closeAllDocsAndBooks_saved.jsx)
+  </a>
+</p><hr data-end="2429" data-start="2426" /><h3 data-end="2445" data-start="2431">Final Note</h3><p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</p><p data-end="2638" data-start="2447">I hope this little tool saves you some time!&nbsp;</p>

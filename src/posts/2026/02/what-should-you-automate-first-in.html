@@ -1,0 +1,235 @@
+---
+title: "What Should You Automate First in Multilingual DTP?"
+date: 2026-02-28T14:45:00.000-08:00
+updated: 2026-03-21T14:57:21.289-07:00
+permalink: "/2026/02/what-should-you-automate-first-in.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-9019555604551887553"
+layout: post.njk
+---
+<p>&nbsp;</p><h2 style="text-align: left;">Introduction</h2>
+<p data-end="97" data-start="72">Automation is everywhere.</p>
+<p data-end="215" data-start="99">You can automate layout adjustments, file packaging, PDF export, translation import, style cleanup—the list is long.</p>
+<p data-end="324" data-start="217">But if you automate the wrong thing first, your workflow doesn’t scale.<br data-end="291" data-start="288" />
+It just becomes more complicated.</p>
+<p data-end="354" data-start="326">So here’s the real question:</p>
+<p data-end="445" data-start="356"><strong data-end="445" data-start="356">If you could automate only one thing in multilingual DTP this year, what would it be?</strong></p>
+<p data-end="513" data-start="447">This is not a technical question.<br data-end="483" data-start="480" />
+It’s a prioritization problem.</p>
+<hr data-end="518" data-start="515" />
+<h2 data-end="569" data-start="520">Common Mistakes When Choosing What to Automate</h2>
+<p data-end="634" data-start="571">Before defining criteria, it helps to look at what <em data-end="627" data-start="622">not</em> to do.</p>
+<h3 data-end="677" data-start="636">1) Starting with something impressive</h3>
+<p data-end="736" data-start="679">I once tried to automate text importing across documents.</p>
+<p data-end="862" data-start="738">The idea was clean: writers prepare text files, and a script finds placeholders in InDesign and replaces them automatically.</p>
+<p data-end="887" data-start="864">Technically, it worked.</p>
+<p data-end="928" data-start="889">Practically, it didn’t move the needle.</p>
+<p data-end="1132" data-start="930">Copy-paste was often faster. And the real friction didn’t come from importing text—it came <em data-end="1033" data-start="1021">afterwards</em>: overset text, layout breaks, exceptions in tables, grouped objects, and all the messy edge cases.</p>
+<p data-end="1194" data-start="1134">It was a wide-scope automation, but not a high-leverage one.</p>
+<hr data-end="1199" data-start="1196" />
+<h3 data-end="1239" data-start="1201">2) Automating a one-time emergency</h3>
+<p data-end="1351" data-start="1241">At one point, I wrote a script that reduced every paragraph style’s point size by 1pt to solve a layout issue.</p>
+<p data-end="1370" data-start="1353">It saved the day.</p>
+<p data-end="1377" data-start="1372">Once.</p>
+<p data-end="1439" data-start="1379">But that wasn’t a scalable improvement. It was a workaround.</p>
+<p data-end="1505" data-start="1441">One-off automation often optimizes a single fire—not the system.</p>
+<hr data-end="1510" data-start="1507" />
+<h3 data-end="1550" data-start="1512">3) Prioritizing what is “possible”</h3>
+<p data-end="1640" data-start="1552">I also built a date-change script with a UI that let users choose multiple update modes.</p>
+<p data-end="1661" data-start="1642">It looked flexible.</p>
+<p data-end="1687" data-start="1663">Later, I removed the UI.</p>
+<p data-end="1693" data-start="1689">Why?</p>
+<p data-end="1760" data-start="1695">Because in actual usage, the requirement was almost always fixed:</p>
+<ul data-end="1876" data-start="1762">
+<li data-end="1816" data-start="1762">
+<p data-end="1816" data-start="1764">If the date contains “xx”, update to today’s date.</p>
+</li>
+<li data-end="1876" data-start="1817">
+<p data-end="1876" data-start="1819">Otherwise, set the day to “xx” while updating month/year.</p>
+</li>
+</ul>
+<p data-end="1980" data-start="1878">The extra flexibility added friction. I built it because I could—not because it improved the workflow.</p>
+<p data-end="2029" data-start="1982">“Can be done” is not the same as “worth doing.”</p>
+<hr data-end="2034" data-start="2031" />
+<h2 data-end="2079" data-start="2036">Three Criteria for Your First Automation</h2>
+<p data-end="2167" data-start="2081">If you want automation that actually scales multilingual DTP, use these three filters:</p>
+<h3 data-end="2190" data-start="2169">1) High Frequency</h3>
+<p data-end="2213" data-start="2192">It must happen often.</p>
+<p data-end="2293" data-start="2215">If you only encounter the task twice a year, it’s rarely your first candidate.</p>
+<h3 data-end="2318" data-start="2295">2) High Instability</h3>
+<p data-end="2359" data-start="2320">The task behaves differently each time.</p>
+<p data-end="2411" data-start="2361">In multilingual production, instability is common:</p>
+<ul data-end="2562" data-start="2413">
+<li data-end="2449" data-start="2413">
+<p data-end="2449" data-start="2415">text expansion after translation</p>
+</li>
+<li data-end="2483" data-start="2450">
+<p data-end="2483" data-start="2452">language-specific line breaks</p>
+</li>
+<li data-end="2528" data-start="2484">
+<p data-end="2528" data-start="2486">tables breaking differently per language</p>
+</li>
+<li data-end="2562" data-start="2529">
+<p data-end="2562" data-start="2531">layout shifts across versions</p>
+</li>
+</ul>
+<p data-end="2646" data-start="2564">Instability does not mean the rule is complex.<br data-end="2613" data-start="2610" />
+It means the <em data-end="2637" data-start="2626">condition</em> changes.</p>
+<p data-end="2723" data-start="2648">The condition may be unpredictable—but the rule to fix it should be simple.</p>
+<h3 data-end="2744" data-start="2725">3) Low Judgment</h3>
+<p data-end="2801" data-start="2746">The task does not require complex human interpretation.</p>
+<p data-end="2915" data-start="2803">If the decision can be expressed as rules, conditions, or predictable logic, it’s a strong automation candidate.</p>
+<p data-end="3031" data-start="2917">If it requires contextual understanding, regulatory interpretation, or content nuance, it’s not your first target.</p>
+<p data-end="3154" data-start="3033">Look for tasks where at least two of these forces strongly overlap.<br data-end="3103" data-start="3100" />
+The strongest candidates usually satisfy all three.</p>
+<hr data-end="3159" data-start="3156" />
+<h2 data-end="3197" data-start="3161">Applying the Criteria in Practice</h2>
+<h3 data-end="3232" data-start="3199">Case 1: Minimal Date Update</h3>
+<p data-end="3259" data-start="3233">(Frequency × Low Judgment)</p>
+<p data-end="3338" data-start="3261">Date updates happen repeatedly, and the correct behavior is often rule-based.</p>
+<p data-end="3392" data-start="3340">In my case, most updates followed predictable logic:</p>
+<ul data-end="3516" data-start="3394">
+<li data-end="3452" data-start="3394">
+<p data-end="3452" data-start="3396"><strong data-end="3450" data-start="3396">If the date contains “xx”, update to today’s date.</strong></p>
+</li>
+<li data-end="3516" data-start="3453">
+<p data-end="3516" data-start="3455"><strong data-end="3516" data-start="3455">Otherwise, set the day to “xx” while updating month/year.</strong></p>
+</li>
+</ul>
+<p data-end="3618" data-start="3518">Instead of adding options, I removed them.<br data-end="3563" data-start="3560" />
+I embedded the decision logic directly into the script.</p>
+<p data-end="3631" data-start="3620">The result:</p>
+<ul data-end="3693" data-start="3633">
+<li data-end="3649" data-start="3633">
+<p data-end="3649" data-start="3635">fewer clicks</p>
+</li>
+<li data-end="3669" data-start="3650">
+<p data-end="3669" data-start="3652">fewer decisions</p>
+</li>
+<li data-end="3693" data-start="3670">
+<p data-end="3693" data-start="3672">less room for error</p>
+</li>
+</ul>
+<p data-end="3900" data-start="3695">This example uses a simple English date format for clarity.<br data-end="3757" data-start="3754" />
+In multilingual environments, it is often better to create separate minimal scripts per language rather than adding complex UI branching logic.</p>
+<p data-end="3972" data-start="3902">Here’s a minimal example (no UI, no options—just rule-based behavior):</p>
+<div><div style="background: rgb(31, 41, 55); border-radius: 10px; border: 1px solid rgb(55, 65, 81); color: #f9fafb; margin: 20px 0px; padding: 18px;">
+  <div style="color: #f9fafb; font-size: 18px; font-weight: 700; margin-bottom: 8px;">
+    Want the ready-to-use version?
+  </div>
+  <div style="color: #d1d5db; font-size: 15px; line-height: 1.6; margin-bottom: 14px;">
+    Skip the copy-paste and download the script directly from Gumroad.
+  </div>
+  <a href="https://linguistcoder.gumroad.com/l/indesign-date-toggle-script" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
+    Download on Gumroad (Free) →
+  </a>
+</div>
+
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+if (app.selection.length === 0) {
+    alert("Please select text containing a date.");
+    exit();
+}
+
+var sel = app.selection[0];
+if (!sel.hasOwnProperty("contents")) {
+    alert("Selected object does not contain editable text.");
+    exit();
+}
+
+var text = sel.contents;
+
+// Match: "xx Xxx 20xx" or "12 Jan 2025" etc.
+var regex = /([0-9xX]{2})\s+([A-Za-z]{3})\s+([0-9xX]{4})/;
+var match = text.match(regex);
+
+if (!match) {
+    alert("No date pattern found (expected: dd MMM yyyy).");
+    exit();
+}
+
+var oldDay = match[1];
+var oldMonth = match[2];
+var oldYear = match[3];
+
+var hasX = /x/i.test(oldDay + oldMonth + oldYear);
+
+var now = new Date();
+var dayNum = now.getDate();
+var day2 = (dayNum &lt; 10) ? ("0" + dayNum) : String(dayNum);
+
+var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var curMonth = months[now.getMonth()];
+var curYear = String(now.getFullYear());
+
+var newDate;
+
+if (hasX) {
+    // If the date contains "xx" (or any x), update to today's full date.
+    newDate = day2 + " " + curMonth + " " + curYear;
+} else {
+    // Otherwise, set the day to "xx" while updating month/year.
+    newDate = "xx " + curMonth + " " + curYear;
+}
+
+sel.contents = text.replace(regex, newDate);
+
+alert("Date updated to: " + newDate);</code>
+</pre>
+
+
+<p data-end="5348" data-start="5276">This is not sophisticated automation.<br data-end="5316" data-start="5313" />
+It is targeted friction removal.<br /></p><p data-end="5348" data-start="5276">This shows the script in action:</p><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/56s0U8sN8jg" width="320" youtube-src-id="56s0U8sN8jg"></iframe></div><br /><p data-end="5348" data-start="5276"><br /></p>
+<hr data-end="5353" data-start="5350" />
+<h3 data-end="5412" data-start="5355">Case 2: From a Font-Shrinking Hack to Overset Fixer</h3>
+<p data-end="5453" data-start="5413">(Frequency × Instability × Low Judgment)</p>
+<p data-end="5501" data-start="5455">Shrinking all paragraph styles was a reaction.</p>
+<p data-end="5547" data-start="5503">Overset text after translation is a pattern.</p>
+<p data-end="5641" data-start="5549">The real issue wasn’t “make text smaller.”<br data-end="5594" data-start="5591" />
+It was that translated layouts become unstable.</p>
+<p data-end="5809" data-start="5643">Different languages expand differently.<br data-end="5685" data-start="5682" />
+Tables overflow unpredictably.<br data-end="5718" data-start="5715" />
+Anchored objects behave inconsistently.<br data-end="5760" data-start="5757" />
+Even small upstream changes can shift pagination.</p>
+<p data-end="5889" data-start="5811">Overset is both frequent and unstable—making it a strong automation candidate.</p>
+<p data-end="5982" data-start="5891">Although overset behaves differently each time, the handling logic can still be rule-based:</p>
+<ul data-end="6048" data-start="5984">
+<li data-end="6002" data-start="5984">
+<p data-end="6002" data-start="5986">detect overset</p>
+</li>
+<li data-end="6035" data-start="6003">
+<p data-end="6035" data-start="6005">apply controlled adjustments</p>
+</li>
+<li data-end="6048" data-start="6036">
+<p data-end="6048" data-start="6038">re-check</p>
+</li>
+</ul>
+<p data-end="6104" data-start="6050">The judgment required is procedural, not interpretive.</p>
+<p data-end="6209" data-start="6106">Instead of a destructive global font reduction, the solution evolved toward a more controlled approach:</p>
+<ul data-end="6305" data-start="6211">
+<li data-end="6238" data-start="6211">
+<p data-end="6238" data-start="6213">detect overset reliably</p>
+</li>
+<li data-end="6263" data-start="6239">
+<p data-end="6263" data-start="6241">adjust strategically</p>
+</li>
+<li data-end="6305" data-start="6264">
+<p data-end="6305" data-start="6266">preserve design intent where possible</p>
+</li>
+</ul>
+<p data-end="6350" data-start="6307">The difference is not technical complexity.</p>
+<p data-end="6423" data-start="6352">It is alignment with frequency, instability, and low-judgment handling.</p><p data-end="6423" data-start="6352">I’ve written <a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html">separately</a> about how this thinking evolved into a more structured overset-handling approach.</p>
+<hr data-end="6428" data-start="6425" />
+<h2 data-end="6470" data-start="6430">Where the Bottleneck Eventually Moves</h2>
+<p data-end="6531" data-start="6472">Once repetitive friction is reduced, the constraint shifts.</p>
+<p data-end="6575" data-start="6533">Not to file handling.<br data-end="6557" data-start="6554" />
+Not to formatting.</p>
+<p data-end="6593" data-start="6577">But to judgment.</p>
+<p data-end="6634" data-start="6595">What should change—and what should not?</p>
+<p data-end="6728" data-start="6636">Automation can remove mechanical repetition.<br data-end="6683" data-start="6680" />
+It cannot replace structured decision design.</p>
+<p data-end="6769" data-start="6730">And that is where scaling truly begins.</p>
+<hr data-end="6774" data-start="6771" />
+<p data-end="6939" data-start="6776">If you had to choose just one thing to automate this year, choose the one that happens often, behaves unpredictably in input, but can be handled with simple rules.</p>
+<p data-end="6953" data-is-last-node="" data-is-only-node="" data-start="6941">Start there.</p></div>

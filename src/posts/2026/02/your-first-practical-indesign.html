@@ -1,0 +1,228 @@
+---
+title: "Your First Practical InDesign Automation: Opening and Closing Multiple Files"
+date: 2026-02-20T14:24:00.000-08:00
+updated: 2026-03-21T14:53:04.205-07:00
+permalink: "/2026/02/your-first-practical-indesign.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-5698423579850684831"
+layout: post.njk
+---
+<h2 style="text-align: left;">0. Who This Article Is For</h2>
+<p data-end="266" data-start="205">This is the second article in the beginner automation series.</p>
+<p data-end="404" data-start="268">It assumes you already know how to run a simple <code data-end="322" data-start="316">.jsx</code> file in InDesign.<br data-end="343" data-start="340" />
+(If not, please read the<a href="https://www.linguist-coder.com/2026/01/how-to-run-javascript-in-adobe-indesign.html"> first article in this series</a> first.)</p>
+<p data-end="452" data-start="406">You do not need advanced JavaScript knowledge.</p>
+<p data-end="572" data-start="454">If you work with InDesign Books and regularly open multiple documents for checking or review, this article is for you.</p>
+<p data-end="593" data-start="574">The goal is simple:</p>
+<p data-end="620" data-start="595">Remove repeated friction.</p>
+<hr data-end="625" data-start="622" />
+<h2 data-end="671" data-start="627">1. The Problem: Opening 15 Files Manually</h2>
+<p data-end="696" data-start="673">Imagine this situation:</p>
+<ul data-end="772" data-start="698">
+<li data-end="715" data-start="698">
+<p data-end="715" data-start="700">One Book file</p>
+</li>
+<li data-end="748" data-start="716">
+<p data-end="748" data-start="718">15 InDesign documents inside</p>
+</li>
+<li data-end="772" data-start="749">
+<p data-end="772" data-start="751">5 language versions</p>
+</li>
+</ul>
+<p data-end="865" data-start="774">After translation, you need to open every file to check layout, overset, images, or styles.</p>
+<p data-end="960" data-start="867">Opening 15 files once is not a problem.<br data-end="909" data-start="906" />
+Opening them 100 times over a project lifecycle is.</p>
+<p data-end="1016" data-start="962">The action itself is trivial.<br data-end="994" data-start="991" />
+The repetition is not.</p>
+<hr data-end="1021" data-start="1018" />
+<h2 data-end="1051" data-start="1023">2. Why This Doesn’t Scale</h2>
+<p data-end="1088" data-start="1053">Automation is not about complexity.</p>
+<p data-end="1113" data-start="1090">It is about repetition.</p>
+<p data-end="1138" data-start="1115">Opening files manually:</p>
+<ul data-end="1177" data-start="1140">
+<li data-end="1149" data-start="1140">
+<p data-end="1149" data-start="1142">Click</p>
+</li>
+<li data-end="1158" data-start="1150">
+<p data-end="1158" data-start="1152">Wait</p>
+</li>
+<li data-end="1168" data-start="1159">
+<p data-end="1168" data-start="1161">Click</p>
+</li>
+<li data-end="1177" data-start="1169">
+<p data-end="1177" data-start="1171">Wait</p>
+</li>
+</ul>
+<p data-end="1257" data-start="1179">This pattern seems small, but in multilingual workflows it multiplies quickly.</p>
+<p data-end="1319" data-start="1259">Scaling means removing actions that do not require judgment.</p>
+<p data-end="1421" data-start="1321">Opening and closing files require no judgment.<br data-end="1370" data-start="1367" />
+Therefore, they are good candidates for automation.</p>
+<hr data-end="1426" data-start="1423" />
+<h2 data-end="1456" data-start="1428">3. Minimal Script Example</h2>
+<div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/kdcBjltVlv8" width="320" youtube-src-id="kdcBjltVlv8"></iframe></div><p data-end="1496" data-start="1458">Before using these scripts, make sure:</p>
+<ul data-end="1542" data-start="1498">
+<li data-end="1518" data-start="1498">
+<p data-end="1518" data-start="1500">InDesign is open</p>
+</li>
+<li data-end="1542" data-start="1519">
+<p data-end="1542" data-start="1521">A Book file is open</p>
+</li>
+</ul>
+<p data-end="1623" data-start="1544">(You already know how to run a <code data-end="1581" data-start="1575">.jsx</code> file from the <a href="https://www.linguist-coder.com/2026/01/how-to-run-javascript-in-adobe-indesign.html">previous beginner article</a>.)</p>
+<hr data-end="1628" data-start="1625" />
+<h3 data-end="1675" data-start="1630">3.1 Open All Documents in the Active Book</h3>
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+// Open all documents in the active Book (.indb)
+//
+// Beginner version:
+// - No GUI (no dialogs)
+// - Minimal guards
+// - No heavy error handling
+// - No OS-specific path logic
+
+(function () {
+    if (app.books.length === 0) {
+        alert("No Book is currently open.\nOpen a .indb file first, then run this script.");
+        return;
+    }
+
+    var book = app.activeBook;
+    var contents = book.bookContents;
+
+    if (contents.length === 0) {
+        alert("The active Book has no documents.");
+        return;
+    }
+
+    for (var i = 0; i &lt; contents.length; i++) {
+        // Opens the INDD referenced by the Book content.
+        // If the document is already open, InDesign may show a notice or simply activate it.
+        app.open(contents[i].fullName);
+    }
+
+    alert("Completed.\nOpened: " + contents.length + " document(s).");
+})();</code>
+</pre>
+<p data-end="2197" data-start="2185">This script:</p>
+<ul data-end="2284" data-start="2199">
+<li data-end="2229" data-start="2199">
+<p data-end="2229" data-start="2201">Assumes one Book is active</p>
+</li>
+<li data-end="2264" data-start="2230">
+<p data-end="2264" data-start="2232">Loops through all bookContents</p>
+</li>
+<li data-end="2284" data-start="2265">
+<p data-end="2284" data-start="2267">Opens each file</p>
+</li>
+</ul>
+<p data-end="2299" data-start="2286">Nothing more.</p>
+<hr data-end="2304" data-start="2301" />
+<h3 data-end="2350" data-start="2306">3.2 Close All Open Documents (and Books)</h3>
+<pre class="overflow-visible! px-0!" data-end="2935" data-start="2352"><div class="w-full my-4"><div><div class="relative"><div class="h-full min-h-0 min-w-0"><div class="h-full min-h-0 min-w-0"><div class="border corner-superellipse/1.1 border-token-border-light bg-token-bg-elevated-secondary rounded-3xl"><div class="pointer-events-none absolute inset-x-4 top-12 bottom-4"><div class="pointer-events-none sticky z-40 shrink-0 z-1!"><div class="sticky bg-token-border-light"></div></div></div><div class="pointer-events-none absolute inset-x-px top-0 bottom-96"><div class="pointer-events-none sticky z-40 shrink-0 z-1!"><div class="sticky bg-token-bg-elevated-secondary"></div></div></div><div class="corner-superellipse/1.1 rounded-3xl bg-token-bg-elevated-secondary"><div class="relative z-0 flex max-w-full"><div class="q9tKkq_viewer cm-editor z-10 light:cm-light dark:cm-light flex h-full w-full flex-col items-stretch ͼk ͼy" dir="ltr" id="code-block-viewer"><div class="cm-scroller"><div class="cm-content q9tKkq_readonly">#target indesign
+// Close all open documents (without forcing a save)
+// Optional: close all open Books as well
+//
+// Beginner version:
+// - Does NOT force saving (SaveOptions.NO)
+// - Skips unsaved documents (new/dirty) to avoid risky loss
+// - Loops backward to avoid index shifting while closing
+
+(function () {
+    if (app.documents.length === 0 &amp;&amp; app.books.length === 0) {
+        alert("Nothing to close.\nNo documents or Books are currently open.");
+        return;
+    }
+
+    // Close documents (backward loop is important)
+    var docs = app.documents;
+    var closedDocs = 0;
+    var skippedDocs = 0;
+
+    for (var i = docs.length - 1; i &gt;= 0; i--) {
+        var doc = docs[i];
+
+        // doc.saved is true when the document has no unsaved changes.
+        // We only close "clean" documents in this beginner example.
+        if (doc.saved) {
+            doc.close(SaveOptions.NO);
+            closedDocs++;
+        } else {
+            skippedDocs++;
+        }
+    }
+
+    // Optional: close Books too (also without forcing a save)
+    var closeBooks = confirm("Documents closed: " + closedDocs +
+        "\nSkipped (unsaved/dirty): " + skippedDocs +
+        "\n\nDo you want to close all open Books as well?");
+
+    var closedBooks = 0;
+
+    if (closeBooks) {
+        // Close all open Books (backward loop to be safe)
+        for (var b = app.books.length - 1; b &gt;= 0; b--) {
+            app.books[b].close(SaveOptions.NO);
+            closedBooks++;
+        }
+        alert("Completed.\nClosed Books: " + closedBooks);
+    } else {
+        alert("Completed.\nClosed Docs: " + closedDocs + "\nSkipped Docs: " + skippedDocs);
+    }
+})();</div></div></div></div></div></div></div></div><div><div></div></div></div></div></div></pre>
+<h3 data-end="2959" data-start="2937">Why loop backward?</h3>
+<p data-end="3019" data-start="2961">When closing items inside a collection, the index changes.</p>
+<p data-end="3049" data-start="3021">If you close from the front:</p>
+<ul data-end="3134" data-start="3051">
+<li data-end="3071" data-start="3051">
+<p data-end="3071" data-start="3053">You close item 0</p>
+</li>
+<li data-end="3113" data-start="3072">
+<p data-end="3113" data-start="3074">What used to be item 1 becomes item 0</p>
+</li>
+<li data-end="3134" data-start="3114">
+<p data-end="3134" data-start="3116">The loop skips one</p>
+</li>
+</ul>
+<p data-end="3165" data-start="3136">Looping backward avoids this.</p>
+<hr data-end="3170" data-start="3167" />
+<h2 data-end="3199" data-start="3172">4. What This Teaches You</h2>
+<p data-end="3249" data-start="3201">Even this small script introduces core concepts:</p>
+<ul data-end="3303" data-start="3251">
+<li data-end="3258" data-start="3251">
+<p data-end="3258" data-start="3253"><code data-end="3258" data-start="3253">app</code></p>
+</li>
+<li data-end="3268" data-start="3259">
+<p data-end="3268" data-start="3261"><code data-end="3268" data-start="3261">books</code></p>
+</li>
+<li data-end="3282" data-start="3269">
+<p data-end="3282" data-start="3271"><code data-end="3282" data-start="3271">documents</code></p>
+</li>
+<li data-end="3290" data-start="3283">
+<p data-end="3290" data-start="3285">loops</p>
+</li>
+<li data-end="3303" data-start="3291">
+<p data-end="3303" data-start="3293">conditions</p>
+</li>
+</ul>
+<p data-end="3355" data-start="3305">You do not need complex logic to start automating.</p>
+<p data-end="3389" data-start="3357">You need to identify repetition.</p>
+<hr data-end="3394" data-start="3391" />
+<h2 data-end="3418" data-start="3396">5. Where This Leads</h2>
+<p data-end="3455" data-start="3420">From here, you can extend the idea:</p>
+<ul data-end="3602" data-start="3457">
+<li data-end="3497" data-start="3457">
+<p data-end="3497" data-start="3459">Open only files matching a condition</p>
+</li>
+<li data-end="3523" data-start="3498">
+<p data-end="3523" data-start="3500">Skip certain chapters</p>
+</li>
+<li data-end="3567" data-start="3524">
+<p data-end="3567" data-start="3526">Run a check automatically after opening</p>
+</li>
+<li data-end="3602" data-start="3568">
+<p data-end="3602" data-start="3570">Combine open → process → close</p>
+</li>
+</ul>
+<p data-end="3633" data-start="3604">This is how automation grows.</p>
+<p data-end="3667" data-start="3635">Not by jumping to complex tools.</p>
+<p data-end="3708" data-start="3669">But by removing friction, step by step.</p>

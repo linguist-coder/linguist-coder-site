@@ -1,0 +1,259 @@
+---
+title: "When InDesign Fails to Export: Start by Finding the Broken Page"
+date: 2026-07-14T16:06:19.585-07:00
+updated: 2026-09-18T16:11:04.509-07:00
+permalink: "/2026/07/when-indesign-fails-to-export-start-by.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-4352494592269012459"
+layout: post.njk
+---
+<!--Blogger: switch the post editor to "HTML view" and paste everything below.-->
+<!--Put the post title in Blogger's Title field: Finding the Page That Breaks an InDesign PDF Export-->
+
+<style>
+.idx-post { line-height: 1.7; }
+.idx-post h2 { margin-top: 1.8em; margin-bottom: 0.5em; }
+.idx-post p, .idx-post ul, .idx-post ol { margin: 0.8em 0; }
+.idx-post li { margin: 0.35em 0; }
+.idx-post pre {
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+.idx-post pre code { font-size: 0.9em; }
+.idx-post code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.idx-post :not(pre) > code {
+  background: #f0f0f0;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+</style>
+
+<div class="idx-post">
+
+<p>InDesign export failures can be difficult to diagnose. A document may open normally, but fail when you try to export it as a PDF. The file may hang partway through, crash the application, or produce an incomplete PDF with no clear error message.</p>
+
+<p>When this happens, the first problem is often not fixing the file. The first problem is finding where the failure starts.</p>
+
+<p><strong>A note on scope.</strong> This article is about one specific situation: a <em>PDF (or print) export</em> that fails in a way you can reproduce with a specific page range. That scope matters, because the core technique below — testing page ranges — only works for outputs that accept a page range. IDML export and ordinary "Save As" failures do not; there is no "export only pages 1–150 to IDML." Those require a different isolation method based on duplicating the document and removing pages or content, which I touch on at the end but do not cover in depth here.</p>
+
+<p>A damaged InDesign document can fail for many reasons: a corrupted object, a broken placed file, a font issue, a complex table, an anchored object, a parent-page item, threaded text, transparency settings, or internal document corruption. Trying to repair everything at once is rarely efficient. A better first step is to narrow the search area.</p>
+
+<h2>Why diagnosis should come before repair</h2>
+
+<p>When an export fails, it is tempting to start deleting objects, replacing links, changing fonts, or exporting to IDML immediately. Sometimes that works. But it also changes the document before you understand the problem, which can make troubleshooting harder. You may spend time on pages unrelated to the failure, or apply a repair that appears to work temporarily without addressing the cause.</p>
+
+<p>Before repairing the file, it is usually better to answer two smaller questions in order:</p>
+
+<ol>
+  <li>Is this actually a page-local <em>content</em> problem at all?</li>
+  <li>If so, which page should I inspect first?</li>
+</ol>
+
+<p>The first question is the one most people skip — so let's start there.</p>
+
+<h2>First, rule out the environment</h2>
+
+<p>Before you bisect a 300-page document, confirm that the failure is caused by the document's content and not by something around it. A PDF export can fail for reasons that have nothing to do with any page:</p>
+
+<ul>
+  <li>the output folder's permissions, or a network / cloud-sync destination</li>
+  <li>low disk space</li>
+  <li>corrupt InDesign preferences</li>
+  <li>a third-party plugin</li>
+  <li>one specific PDF preset</li>
+  <li>memory pressure on large jobs</li>
+  <li>a problem with the InDesign install itself</li>
+</ul>
+
+<p>If one of these is the real cause, page bisection may never converge — or worse, converge on a misleading suspect range. So run a short gate first:</p>
+
+<ul>
+  <li><strong>Reproduce on a copy.</strong> Duplicate the <code>.indd</code> and confirm the failure still happens. Work on the copy from here on.</li>
+  <li><strong>Export to a plain local folder.</strong> If it now succeeds, the problem was the destination, not the document.</li>
+  <li><strong>Test the preset in isolation.</strong> Create a new one-page document and export it with the <em>same</em> preset. If that fails too, suspect the preset or the environment, not your file.</li>
+  <li><strong>Try a known-good preset.</strong> If your file exports fine under a different preset, you've narrowed it to preset-specific handling (fonts, transparency, color conversion, compression).</li>
+  <li><strong>Classify the failure.</strong> Is it a clean error dialog, a hang, a crash, or a silently incomplete PDF? These are different problems, and you'll treat them differently below.</li>
+  <li><strong>Test the same range twice.</strong> If the same export sometimes passes and sometimes fails, the failure is non-deterministic — and, as you'll see, bisection cannot be trusted in that case.</li>
+</ul>
+
+<p>Only once the failure survives this gate — reproducible, document-specific, deterministic — is page-range bisection the right tool.</p>
+
+<h2>Common causes, once it <em>is</em> the document</h2>
+
+<p>When the cause is inside the file, it is often hidden. The page can look normal, and the error message rarely names the responsible object. Candidates include:</p>
+
+<ul>
+  <li>corrupted page items</li>
+  <li>missing or damaged linked images</li>
+  <li>damaged placed PDF, AI, or EPS files</li>
+  <li>font problems</li>
+  <li>complex tables</li>
+  <li>anchored objects</li>
+  <li>parent-page (formerly "master page") items</li>
+  <li>threaded-text problems</li>
+  <li>transparency or effect settings</li>
+  <li>internal document history or file corruption</li>
+</ul>
+
+<p>One item deserves a caveat: <strong>overset text</strong> is frequently blamed, but it usually causes <em>missing output</em> rather than a halted export. Keep "the export failed" and "the output is incomplete" as separate problems; they don't always have the same cause.</p>
+
+<h2>Why a script can't do this whole job unattended</h2>
+
+<p>If you write InDesign automation, your instinct here is probably to script it: loop through the pages, export each one, catch the error on the bad page, write a report. It's worth being precise about what a script can and cannot do, because the honest answer is <em>both</em>, depending on how the export fails.</p>
+
+<p>InDesign export failures don't share one failure mode:</p>
+
+<ul>
+  <li><strong>A catchable scripting exception.</strong> <code>exportFile()</code> throws, control returns to your script, <code>try/catch</code> works, and you can log the result. A script handles this case fine.</li>
+  <li><strong>An asynchronous failure.</strong> <code>asynchronousExportFile()</code> returns a background task and reports problems later, decoupled from the calling <code>try/catch</code>. The error may surface well after the line that started it.</li>
+  <li><strong>A hang.</strong> The InDesign process is still alive but unresponsive. Your script is stuck inside the same process and never returns.</li>
+  <li><strong>A hard crash.</strong> The native InDesign process terminates rather than raising a catchable exception, taking your script down with it before it can log anything.</li>
+</ul>
+
+<p>For diagnosis, it helps to take the asynchronous path off the table — and how you do that differs for manual tests versus scripts. For manual <strong>File &gt; Export</strong> tests, you can disable desktop background PDF export: quit InDesign, place an empty file named <code>DisableAsyncExports.txt</code> in the application folder (on macOS, inside the app's <code>Contents/MacOS/</code>; on Windows, the InDesign program folder, which usually needs administrator rights), then relaunch. PDF export will then run in the <em>foreground</em> and block the InDesign UI until it finishes. In a script, there's no file to place — the choice is explicit: <code>exportFile()</code> for a synchronous call, <code>asynchronousExportFile()</code> for a background task.</p>
+
+<p>Either way, a foreground/synchronous export ties any <em>catchable</em> error directly to the export attempt, instead of it being reported later by a background-task alert — easier to observe, time, and trap. (A hang or hard crash can still prevent control from returning; running in the foreground only helps with the errors that are catchable in the first place.)</p>
+
+<p>The hang and the hard crash are the two that break the "just script it" plan. When the host process hangs or dies, an in-process script cannot record a post-export result or continue to the next page. In a hang, the script never regains control; in a crash, the process and the script terminate outright. Either way, nothing gets logged after the fact.</p>
+
+<p>But notice the limit precisely, because it is narrower than "scripting is useless here." A script <em>can</em> still write the range it is <strong>about to</strong> test and persist that line to disk <strong>before</strong> starting the export. What it cannot do is complete an unattended full sweep in a single process: after a crash it needs to be relaunched and resumed. So the honest framing is not "manual instead of script." It's: <strong>an in-process script can preserve state, but it cannot recover and continue on its own.</strong> The dependable, low-effort method for that recovery loop is your own hands.</p>
+
+<h2>The manual method: page-range bisection</h2>
+
+<p>The most dependable approach is to divide the document into smaller page ranges and test them by hand. Because you are the one clicking Export, a crash costs you a relaunch — not your entire record.</p>
+
+<p><strong>A precondition first.</strong> Bisection is reliable only when two things hold: the failure is <em>reproducible</em>, and there is at least one <em>local, independent</em> trigger — a page or contiguous range that still fails when it is tested inside one of the two halves on its own. ("Local" here means it can be reproduced within a sub-range by itself, not merely that it's "visible on the same page.") There can be more than one such trigger, which is why removing one may not make every other range pass. As long as at least one local trigger holds, the search is efficient:</p>
+
+<ol>
+  <li>Export the whole document (you did this in the gate above).</li>
+  <li>If it fails, export only the first half.</li>
+  <li>If the first half succeeds, a trigger is in the second half — split <em>that</em>.</li>
+  <li>If the first half fails, split <em>it</em>.</li>
+  <li>Repeat until the failing range is a single page or spread.</li>
+</ol>
+
+<figure style="margin: 1.6em 0px; text-align: center;">
+  <div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/when-indesign-fails-to-export-start-by/01.png" style="margin-left: 1em; margin-right: 1em;"><img alt="" data-original-height="941" data-original-width="1672" height="180" src="/images/2026/07/when-indesign-fails-to-export-start-by/01.png" width="320" /></a></div><br />
+  <figcaption style="color: #666666; font-size: 0.9em; margin-top: 0.5em;">Page-range bisection: follow the failing half down, splitting each time, until one suspect page is left.</figcaption>
+</figure>
+
+<p>Each test roughly halves the search area, so a 300-page document usually collapses to one suspect page in about nine splits (plus the initial full-document test).</p>
+
+<p>That locality assumption is exactly what breaks in the hard cases, so watch for these — where bisection can point at the wrong range, or at no range at all:</p>
+
+<ul>
+  <li>the export fails only when two specific pages are <strong>both</strong> present (an interaction — a cross-reference or shared resource — so neither half fails on its own)</li>
+  <li>the failure depends on <strong>total load</strong>: memory exhaustion that only appears on large ranges, or accumulates across many sequential exports</li>
+  <li>results <strong>vary</strong> between runs (a non-deterministic failure)</li>
+  <li>the tested pages depend on <strong>adjacent-page or document-wide state</strong> — parent-page items, threaded stories, shared swatches, cross-references</li>
+  <li>the <strong>whole</strong> document fails but neither half does — the trigger is not independently page-local; it may be document-level state, a cross-range interaction, or total workload</li>
+</ul>
+
+<p>One case looks like a breakage but isn't: <strong>multiple independent bad pages.</strong> Bisection still finds one of them just fine — the catch is that fixing that page won't fix the document, because another remains. That's exactly why the last habit below matters.</p>
+
+<p>A few habits keep the manual search reliable:</p>
+
+<ul>
+  <li><strong>Record every range and its result</strong> in a two-column note. After a crash forces a relaunch, this note is the only thing stopping you from repeating tests.</li>
+  <li><strong>Fix one preset for the whole session</strong> — the one you actually need — and note which it was.</li>
+  <li><strong>Test spreads, not single pages, for spread-based layouts.</strong></li>
+  <li><strong>Relaunch cleanly after a crash</strong> and reopen the copy fresh before the next test.</li>
+  <li><strong>After isolating one page, re-test the whole document with that page removed</strong> to check for a <em>second</em> bad page.</li>
+</ul>
+
+<h2>Record your intent before each risky export</h2>
+
+<p>There is one place where a little automation helps, and it does not contradict anything above — because it does its work <em>before</em> the export, not after.</p>
+
+<p>Keep a log, and write the next line <strong>and save it to disk</strong> immediately before each export attempt. The key word is <em>save</em>: an unsaved editor buffer is not durable against an editor crash, a system crash, or power loss (an InDesign-only crash usually spares an external editor, but don't count on it). Use a log format that distinguishes states rather than just "OK/Failed":</p>
+
+<pre><code>STARTED    range=151-300
+COMPLETED  range=151-300  output=exists, pages=150, opens=yes
+FAILED     range=151-300  error=&lt;message&gt;
+TIMEOUT    range=151-300</code></pre>
+
+<p>If InDesign crashes, the log's last line will be a <code>STARTED</code> with no matching <code>COMPLETED</code>. That tells you which range was being attempted when it stopped — a strong <em>suspect</em>, not a proven cause. Two refinements matter:</p>
+
+<ul>
+  <li>A <code>STARTED</code>-only entry means only that no completion was recorded for that attempt. The cause could be a crash, a hang followed by a forced quit, a system interruption, or even a logging failure — so treat it as a candidate, not a verdict.</li>
+  <li>Beware the success-then-crash case: if the PDF finished but InDesign crashed before writing <code>COMPLETED</code>, the range looks failed but isn't. Check whether the PDF exists, has a plausible size, opens, and has the expected page count — that distinguishes a finished export from an interrupted one, though it still doesn't prove every page rendered correctly.</li>
+</ul>
+
+<p>You can maintain this log by hand or with a tiny helper that only appends-and-flushes a line (that part never touches the failing export, so it's safe either way).</p>
+
+<h2>If you want to push it further: an external driver</h2>
+
+<p>To actually <em>recover and continue</em> across crashes without you at the keyboard, the automation has to live <strong>outside</strong> InDesign, so it survives the crash. This is a real option, but it is considerably more work than the manual loop, and worth doing only if you hit these failures often.</p>
+
+<p>On Windows, InDesign exposes a COM automation interface onto substantially the same scripting object model the JavaScript engine uses, with language-specific mappings — so an external Python process (via <code>win32com</code>, <code>Dispatch("InDesign.Application")</code>) can drive it directly. On macOS, the equivalent path is AppleScript / Apple Events. (Note that you can't simply drop a <code>.py</code> file in the Scripts panel; Python isn't a natively supported in-panel language, so it drives InDesign through that external COM/AppleScript layer.)</p>
+
+<p>A production-grade driver needs more than a liveness check, because <strong>a hang is not a crash</strong>: the process stays alive but never returns, so "is InDesign still running?" won't detect it. At minimum it needs to handle launch-completion detection, modal/recovery dialogs, a per-range timeout, output-file validation (exists, size, page count, opens as a valid PDF), forced termination, relaunch, and a persisted state file so it can resume the sweep.</p>
+
+<p>For genuinely unattended, high-volume automation, the intended tool is <strong>InDesign Server</strong>, the headless, UI-less product (commonly driven over SOAP). But it is a separate product and license, and it does not guarantee it will reproduce a desktop InDesign failure identically — so it's a scaling path, not a drop-in diagnostic for a single broken desktop file. (Note too that asynchronous export is a desktop-only feature; InDesign Server exports synchronously.)</p>
+
+<h2>After isolating the page: go object by object</h2>
+
+<p>Once you have a suspect page, keep bisecting — this time at the object level, and always on a <strong>duplicate of the original</strong>. (Copying suspect objects into a <em>new</em> document can silently regenerate their structure and "heal" the corruption, giving a false pass; deleting or hiding within a duplicate of the original preserves the problem.)</p>
+
+<ul>
+  <li>Check the <strong>Links</strong> panel on that page for missing or modified links.</li>
+  <li>Hide or delete <strong>half the objects</strong> on the page, re-test, and narrow down — the same bisection idea, one level lower.</li>
+  <li>Temporarily swap placed <strong>PDF / AI / EPS</strong> files for a low-res proxy or a known-good file.</li>
+  <li>Remove <strong>parent-page</strong> items from the page and test.</li>
+  <li>Check <strong>bleed, slug, and pasteboard</strong> items that print but are easy to overlook.</li>
+  <li>Inspect <strong>tables, anchored objects, and grouped objects</strong>.</li>
+  <li>Re-test with the <strong>same preset</strong> after each change.</li>
+</ul>
+
+<p>This is still investigative — but now the search area is one page, then a handful of objects, not a whole book.</p>
+
+<h2>What the result does and doesn't tell you</h2>
+
+<p>Isolating a page is useful, but interpret it carefully.</p>
+
+<p>A failing range is a strong candidate for inspection. A range that passed is <em>not</em> proof the document is healthy. And even a single isolated page is a <strong>failure-triggering page</strong>, not necessarily the root cause — the actual cause may be a parent page, a shared swatch, document structure, total export load, or an interaction with another page. Call it a <em>suspect page</em> or <em>trigger range</em>, and don't attribute the root cause to the page itself until you've confirmed it at the object level.</p>
+
+<p>There's also a practical cost: for very large documents, many manual exports take time, and each crash means a relaunch. Bisection keeps the number of tests low, but budget for the relaunches.</p>
+
+<h2>Why this matters for scalable DTP workflows</h2>
+
+<p>In multilingual DTP and production work, file failures are usually handled as one-off emergencies. Someone investigates, tries a few repairs, finds a workaround — and the knowledge disappears when the job ships.</p>
+
+<p>A written diagnostic record changes that, even when the whole process was manual. But to be <em>reusable</em>, the record needs more than "page 3 failed." Capture:</p>
+
+<ul>
+  <li>InDesign version and build, and the OS</li>
+  <li>output format and the exact preset name/settings</li>
+  <li>output destination (local vs network/sync)</li>
+  <li>failure classification: error, hang, crash, or incomplete PDF</li>
+  <li>reproducibility rate (always, or intermittently?)</li>
+  <li>the suspect range/page and, if found, the object</li>
+  <li>relevant link and font versions</li>
+</ul>
+
+<p>Do this a few times and patterns emerge — the same placed-file type, the same font, the same parent page. That's the beginning of a repeatable document-health practice, and it doesn't require a single line of working script.</p>
+
+<h2>Conclusion</h2>
+
+<p>When InDesign fails to export a PDF, the most important first step is not always to fix the file. It's to rule out the environment, then narrow the document until only a suspect page — and then a suspect object — is left.</p>
+
+<p>The instinct to automate that is understandable, and partly right: a script can preserve state before each risky export. What it can't do is recover and continue on its own after the process hangs or dies, which is exactly what the hard failures do. So the dependable core is a manual bisection, backed by a log that records your intent <em>before</em> each export and distinguishes a crash from a genuine failure.</p>
+
+<p>Good troubleshooting doesn't always fix the problem directly. Often the most valuable thing it does is shrink the search until there's only one page left to suspect — and make sure a crash can never erase the fact that you got that far.</p>
+
+</div>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-maintenance.html" target="_blank" rel="noopener">Scaling Multilingual DTP – Maintenance / Recovery: When and How to Clean Up InDesign Files with IDML</a></li>
+<li><a href="https://www.linguist-coder.com/2026/04/scaling-multilingual-dtp-by-detecting.html" target="_blank" rel="noopener">Scaling Multilingual DTP by Detecting Objects Outside the Layout (Low Judgment Workflows)</a></li>
+<li><a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">Your First InDesign Script: Which Pages Have Overset Text?</a></li>
+</ul>

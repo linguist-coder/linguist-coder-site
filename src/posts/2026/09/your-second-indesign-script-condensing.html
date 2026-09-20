@@ -1,0 +1,226 @@
+---
+title: "Your Second InDesign Script: Condensing Text Until It Fits"
+date: 2026-09-09T22:23:38.333-07:00
+updated: 2026-09-09T22:23:38.333-07:00
+permalink: "/2026/09/your-second-indesign-script-condensing.html"
+tags: ["automation", "ExtendScript", "InDesign", "overset", "scripting basics"]
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-2214119206196965931"
+layout: post.njk
+---
+<p><a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">Part 1</a> reported which pages contained overset text without changing the document. This post changes it: the script below lowers the horizontal scale of the selected frame's entire story, one percentage point at a time, until the overset clears or it reaches a limit you choose.</p>
+
+<p>Two things are worth knowing before you read another line:</p>
+
+<ul>
+<li><strong>It changes the whole story, not the frame.</strong> If the story runs through three linked frames, all three get restyled. The reason is structural and I come back to it below.</li>
+<li><strong>It expects a frame that reports overset</strong> — in practice, an unthreaded frame, or the last frame in a chain. A frame in the middle of a thread passes its surplus along and does not report anything.</li>
+</ul>
+
+<p>This edit needs an explicit limit, and a defined outcome for the case where the text still does not fit.</p>
+
+<p>So the interesting question is not how to condense text. It is how far you are willing to go, what the script should do when that is not far enough, and what "putting it back" actually means.</p>
+
+<h2>One number, one typographic decision</h2>
+
+<p>Horizontal scale is a percentage. At 100 the type is drawn as designed. Below that, every character gets narrower while its height stays the same.</p>
+
+<p>That is the appeal and the problem in the same sentence. It always makes text occupy less width. It never asks whether the result still looks like the typeface you chose.</p>
+
+<p>In my work I go by the following rough rules of thumb, not measured thresholds, and the exact numbers depend on the typeface, the size, the measure, and how forgiving the job is. A couple of percent goes unremarked in body copy. Ten percent is visible to someone who sets type for a living. By a quarter, the letterforms no longer carry the proportions the designer drew. A display line at 24pt gives you away sooner than a caption at 7pt.</p>
+
+<p>None of that is InDesign's business to enforce. It is yours, and the script should say where you drew the line.</p>
+
+<h2>The overset text is not in the frame</h2>
+
+<p>Here is the part that trips people up.</p>
+
+<p>You have a frame. You want to condense the text in that frame. So you reach for the frame's text:</p>
+
+<pre style="overflow:auto;"><code>frame.characters
+frame.lines</code></pre>
+
+<p>Both of these reach the text the frame actually holds — the composed, visible text. But overset text is, by definition, the text the frame does not hold. It belongs to the story and it is waiting outside. Scale only what the frame contains and you are working on the wrong characters; some of the surplus may flow in as the visible text narrows, but you are shrinking the part that already fit in order to rescue the part that did not.</p>
+
+<p>So you go one level up, to the story:</p>
+
+<pre style="overflow:auto;"><code>frame.parentStory</code></pre>
+
+<p>And that has a consequence worth stating plainly: <strong>if that story flows through three linked frames, you just restyled all three.</strong> This is not a bug you can fix by choosing a narrower scope. The story owns the characters; the frame only decides how a portion of them is displayed. A script that condenses overset text is always a story-level operation wearing a frame-level interface, and the honest thing to do is say so rather than let the selection imply otherwise.</p>
+
+<h2>The loop needs a second exit</h2>
+
+<p>The naive version writes itself:</p>
+
+<pre style="overflow:auto;"><code>var frame = app.selection[0];
+
+while (frame.overflows) {
+    frame.parentStory.texts[0].horizontalScale -= 1;
+}</code></pre>
+
+<p>Do not run that.</p>
+
+<p>The only stop condition written into this loop is that the frame no longer reports overset. It names no minimum acceptable scale, and no outcome for text that still does not fit. Its one exit depends entirely on the document changing its mind, and horizontal scale cannot go down forever.</p>
+
+<p>This is a general lesson worth taking out of InDesign with you: <strong>a loop whose exit depends on the world responding needs a second exit that does not.</strong> The complete script adds both — a floor, and a defined outcome when the floor is reached.</p>
+
+<h2>The floor is not a safety hack</h2>
+
+<pre style="overflow:auto;"><code>var MIN_SCALE = 90;</code></pre>
+
+<p>It is tempting to read that as loop protection, and it does serve that purpose. But it is really the typographic decision from earlier, written down.</p>
+
+<p>A lower floor permits more horizontal compression, and buys the appearance of a higher success rate by widening what you are willing to ship. Reaching the floor without clearing the overset is not a malfunction: it means this lever failed within the limit you chose, and the frame needs a different kind of fix.</p>
+
+<p>Ninety is not a standard. It is a starting point for the kind of work I do, and it is the first number you should change for yours.</p>
+
+<p>That is the value of putting it on the first line as a named constant. The most visible judgment call in the script sits where you can argue about it.</p>
+
+<h2>What "putting it back" can and cannot mean</h2>
+
+<p>This is the part I would have skipped a few years ago, and it matters more than the loop.</p>
+
+<p>When the script gives up and writes the original value back:</p>
+
+<pre style="overflow:auto;"><code>story.texts[0].horizontalScale = original;</code></pre>
+
+<p>the number you see in the Character panel returns to where it was. The question is what else came back with it.</p>
+
+<p>Does the text then go back to following its paragraph style, or does the assignment leave a local override sitting on top of the style? That is not a question to reason about from first principles. I tested it.</p>
+
+<p>I ran these tests in InDesign 21.5.1.73, on one machine, in one session; I have not checked other versions or platforms. The test is not to look at the page, which shows nothing either way. It is to change the paragraph style's horizontal scale afterwards and see whether that change reaches the text.</p>
+
+<p>Starting from a story that inherited 100% from its style: condense it to 97% and leave it there, and a later change to the style <strong>does not reach the text</strong> — an override is sitting on it. Write the 100% back, which is what the failure branch does, and the change <strong>reaches the text again</strong>. Write 90% onto text that already inherits 90%, and nothing is created at all.</p>
+
+<p><strong>A successful fit still needs your approval.</strong> The test shows why checking whether the text fits is not enough: keeping 97% also changed how the text responded to later style edits. These results do not establish how every combination of styles and existing overrides behaves.</p>
+
+<p>What the restore genuinely cannot do is put back <em>differences</em>. It writes one value across the whole story, so if the story had disagreed with itself before the run, that disagreement is gone. This is the same problem as the mixed-scale check below, seen from the other end, and it is why the script refuses to start on a story whose runs disagree: the only restore it has is a single number.</p>
+
+<p>The script also groups its edits into a single undo step.</p>
+
+<pre style="overflow:auto;"><code>app.doScript(condenseToFit, ScriptLanguage.JAVASCRIPT, undefined,
+             UndoModes.ENTIRE_SCRIPT, "Condense to fit");</code></pre>
+
+<p><code>UndoModes.ENTIRE_SCRIPT</code> groups the operation into one undo step. That matters most after a run that worked: in the same test, undoing a successful run let later changes to the paragraph style reach the text again.</p>
+
+<p>It is worth being precise about what that covers. The restore branch handles one outcome: text that still overflows at the floor. It is not an exception handler. Locked objects or layers can interrupt the run, and the restore line never runs if the failure happens before it. Automatic rollback after an exception is undocumented and unverified here. The recovery instructions in this post describe a run that completed, not a tested recovery procedure for an interrupted one.</p>
+
+<h2>The script</h2>
+
+<p>Use the setup steps in <a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">Part 1</a> to save the code below as <code>condense-to-fit.jsx</code>. For the first run, work on a copy of a document. With the Selection tool, select one overset text frame — an unthreaded frame, or the last frame in a thread — then run the script from the Scripts panel.</p>
+
+<pre style="overflow:auto;"><code>// Condenses the selected frame's story horizontally until the overset clears.
+(function () {
+    var MIN_SCALE = 90;   // percent - the most distortion you are willing to ship
+    var STEP = 1;
+
+    function condenseToFit() {
+        var sel = app.selection;
+        if (sel.length !== 1 || !(sel[0] instanceof TextFrame)) {
+            alert("Select exactly one text frame with the Selection tool.");
+            return;
+        }
+
+        var frame = sel[0];
+        if (!frame.overflows) {
+            alert("That frame is not overset.");
+            return;
+        }
+
+        // The overset text sits outside the frame, so the story is the only handle.
+        var story = frame.parentStory;
+
+        // Asking the story for its horizontal scale does not tell you whether the
+        // story agrees with itself: a mixed story hands back its first run's value.
+        // So compare the runs instead of trusting the effective value.
+        var runs = story.textStyleRanges;
+        var original = runs[0].horizontalScale;
+        for (var i = 1; i &lt; runs.length; i++) {
+            if (runs[i].horizontalScale !== original) {
+                alert("This story already mixes horizontal scales. Not handled.");
+                return;
+            }
+        }
+        if (original &lt; MIN_SCALE) {
+            alert("This story is already below " + MIN_SCALE + "%. Not handled.");
+            return;
+        }
+
+        var scale = original;
+        while (frame.overflows &amp;&amp; scale &gt; MIN_SCALE) {
+            scale = Math.max(scale - STEP, MIN_SCALE);   // never step past the floor
+            story.texts[0].horizontalScale = scale;
+        }
+
+        if (!frame.overflows) {
+            alert("Fitted at " + scale + "%.");
+        } else if (scale === original) {
+            alert("Already at the " + MIN_SCALE + "% floor. Nothing was changed.");
+        } else {
+            story.texts[0].horizontalScale = original;
+            alert("Could not fit at " + MIN_SCALE + "% or above.\n"
+                + "The scale is back at " + original + "%, but the document is still marked as modified.\n"
+                + "Use Undo once to undo this run.");
+        }
+    }
+
+    if (app.documents.length === 0) {
+        alert("Open a document first.");
+        return;
+    }
+
+    app.doScript(condenseToFit, ScriptLanguage.JAVASCRIPT, undefined,
+                 UndoModes.ENTIRE_SCRIPT, "Condense to fit");
+})();</code></pre>
+
+<p><strong>"Fitted at X%" is not the end of the job.</strong> It means the selected frame no longer reports overset. Before you keep the result, look at every frame in that story — all of them were restyled — and decide whether you accept the horizontal-scale change. In the style-inherited case tested above, keeping the fitted value also meant keeping a local override. To reject the run, press Ctrl+Z once.</p>
+
+<p>Three more small things are doing real work.</p>
+
+<p><strong>Clamping the step.</strong> The starting scale is not necessarily a whole number — a story sitting at 90.5% is perfectly ordinary. Subtract one and you are at 89.5%, below the floor you just spent a section defending, and if the text happens to fit there the script reports success. <code>Math.max(scale - STEP, MIN_SCALE)</code> prevents a step from going below the floor. If the text fits sooner, the loop stops there. A floor you can step over is not a floor.</p>
+
+<p><strong>Restoring only what was written.</strong> If the story starts at exactly the floor, the loop makes no assignment at all. So the restore is guarded: that branch skips it and reports that nothing was changed — which is the point. A run that changed nothing should not ask you to go and check anything.</p>
+
+<p><strong>Comparing the runs before writing.</strong> If part of the story is already condensed and part is not, the script has no business scaling the whole thing from a single starting number. My first version treated a numeric result as evidence of a uniform scale: it asked the story for its horizontal scale and refused if the answer was not a number.</p>
+
+<p>The mixed-run tests showed that check does not detect the differences. In a story with three runs at 100, 95 and 100, <code>story.texts[0].horizontalScale</code> returned the number <code>100</code>. Flip the order so the runs read 95, 100, 100 and it returned <code>95</code>. <strong>In these tests the property returned the first run's value rather than any marker for mixed values</strong>, so the check never fired and the run went on to flatten a difference it had not noticed.</p>
+
+<p>The check has to compare the runs itself — this is the excerpt from <code>condenseToFit</code> above:</p>
+
+<pre style="overflow:auto;"><code>var runs = story.textStyleRanges;
+var original = runs[0].horizontalScale;
+for (var i = 1; i &lt; runs.length; i++) {
+    if (runs[i].horizontalScale !== original) {
+        alert("This story already mixes horizontal scales. Not handled.");
+        return;
+    }
+}</code></pre>
+
+<p>The guard compares horizontal-scale values, not the number of runs. In the six-run test, the text differed in weight, size and color, but every run started at 100% horizontal scale. The script accepted it and fitted the text at 95%.</p>
+
+<p>Note also what the check does not buy you. It confirms the runs agree on a value. It says nothing about whether that value came from a style or an override, which is the distinction from the section above. Uniform on screen is not the same as uniform underneath.</p>
+
+<h2>Where this stops working</h2>
+
+<p>Run it on real pages and you will meet the edges quickly.</p>
+
+<ul>
+<li><strong>Condensing does not always help.</strong> What it buys is width, so it works by changing where lines break. When the overset is governed by vertical constraints rather than by line length, narrowing the characters may buy very little. The script reports that it could not clear the overset within your limit, but not which kind of problem you had — and "it did not work" and "it cannot work" look identical from the outside.</li>
+<li><strong>A version with several adjustment methods needs more than the methods.</strong> Tracking, leading, point size and the size of the frame itself all buy space, and each buys a different amount at a different cost. Applying several of them on each pass can change more than necessary: the text may fit after one adjustment, before the others are applied. So such a version needs a limit for each method and a rule for the order they are tried in. This script implements one method, which is why it can get away with one number.</li>
+<li><strong>One percentage point at a time is coarse.</strong> A frame that would have cleared at 99.4% gets taken to 99%. Fine here; not fine if you are trying to prove you used the minimum distortion necessary.</li>
+<li><strong>This is advice about horizontal Latin text.</strong> The 90% starting point reflects my work with it. A composite font can cover several scripts under one setting, so do not assume that a limit acceptable for one of them is acceptable for the rest. Choose and review a limit for the text in the job in front of you rather than carrying this one across a language boundary.</li>
+<li><strong>Locked objects and locked layers can cause an exception.</strong> This script does not check their lock state before writing. A production version checks first, which is the difference between recovering from a problem and not having one.</li>
+<li><strong>One frame at a time.</strong> Part 1 hands you a list of pages. If there are forty overset frames on them, this script asks you to click forty times.</li>
+<li><strong>A document-wide version has to rescan and repeat.</strong> Fixing one frame can change what fits elsewhere: expanding a frame can make its text overlap nearby content, and condensing a story recomposes every frame that story runs through. Once a lever changes geometry, the fix stops being local, so a version that works on a whole document needs to rescan and repeat until nothing changes — with a limit on the number of passes, so that it stops instead of thrashing.</li>
+</ul>
+
+<h2>What the two scripts are for</h2>
+
+<p>Part 1 defined what to inspect and what its report meant. Part 2 defines what to change, how far to change it, and what happens when the text still does not fit.</p>
+
+<p>The floor is only one part of that decision. Before running the script, accept its story-wide scope. After a fit, review the result and decide whether to keep the horizontal-scale change. If the text still does not fit, the script writes the starting scale back — in the case tested above the text followed later style changes again, though the document stays marked as modified — and one Undo reverses the whole run.</p>
+
+<p>Those choices belong to the person running the script. The code only makes them explicit.</p>
+
+<p>What neither script covers is the case that actually eats the day — a hundred frames across a dozen documents in five languages, where several methods have to be tried in a defined order, the results recorded, and anything unfixable handed back to a human with its page number attached. I discuss <a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html" target="_blank" rel="noopener">broader multilingual production workflows in this earlier post</a>.</p>
+
+<p>I also sell <a href="https://aescripts.com/overset-fixer-pro/" target="_blank" rel="noopener">Overset Fixer Pro</a>, a paid script for document-wide fitting with multiple adjustment methods and reports of what was fitted, left overset, or skipped.</p>

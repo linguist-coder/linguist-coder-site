@@ -1,0 +1,567 @@
+[
+ {
+  "path": "/2026/09/how-to-check-translated-indesign-file.html",
+  "title": "How to Check a Translated InDesign File in a Language You Cannot Read",
+  "published": "2026-09-19T16:14:42.973-07:00",
+  "updated": "2026-09-19T16:14:42.973-07:00",
+  "tags": [
+   "IDML",
+   "InDesign",
+   "low judgment",
+   "translation"
+  ],
+  "raw_sha256": "f80419aeab82137867bd367ea0b88a9d18d2ad9437f67ad564c30715b0584913",
+  "rewritten_sha256": "f80419aeab82137867bd367ea0b88a9d18d2ad9437f67ad564c30715b0584913",
+  "raw_len": 9170,
+  "images": {},
+  "file": "src/posts/2026/09/how-to-check-translated-indesign-file.html"
+ },
+ {
+  "path": "/2026/09/why-idml-formatting-can-produce.html",
+  "title": "Why IDML Formatting Can Produce Translation Tags, and What to Check in InDesign",
+  "published": "2026-09-18T15:18:59.981-07:00",
+  "updated": "2026-09-18T15:18:59.982-07:00",
+  "tags": [
+   "IDML",
+   "InDesign",
+   "Trados",
+   "translation"
+  ],
+  "raw_sha256": "ca1e59139d8b3bc4d45ca7312d1f7440236673fad718c595239d3488c51cbe3a",
+  "rewritten_sha256": "ca1e59139d8b3bc4d45ca7312d1f7440236673fad718c595239d3488c51cbe3a",
+  "raw_len": 9635,
+  "images": {},
+  "file": "src/posts/2026/09/why-idml-formatting-can-produce.html"
+ },
+ {
+  "path": "/2026/09/comparing-indesign-files-after.html",
+  "title": "Comparing InDesign Files After Translation: What to Check",
+  "published": "2026-09-15T14:26:12.878-07:00",
+  "updated": "2026-09-15T14:26:12.879-07:00",
+  "tags": [
+   "IDML",
+   "InDesign",
+   "low judgment",
+   "translation"
+  ],
+  "raw_sha256": "c03a8934b39e6c9ed4afe0969466f3094f78547daca40ce0ed0b74f72e839932",
+  "rewritten_sha256": "c03a8934b39e6c9ed4afe0969466f3094f78547daca40ce0ed0b74f72e839932",
+  "raw_len": 10597,
+  "images": {},
+  "file": "src/posts/2026/09/comparing-indesign-files-after.html"
+ },
+ {
+  "path": "/2026/09/seeking-testers-comparing-idml-files.html",
+  "title": "Seeking Testers: Comparing IDML Files Before and After Translation",
+  "published": "2026-09-14T21:02:20.523-07:00",
+  "updated": "2026-09-19T21:56:07.415-07:00",
+  "tags": [
+   "automation",
+   "IDML",
+   "InDesign",
+   "translation"
+  ],
+  "raw_sha256": "fd950bdde8031c3e8fdb480a7329d06c2a07279417cbb864d2fe736f552744e7",
+  "rewritten_sha256": "fd950bdde8031c3e8fdb480a7329d06c2a07279417cbb864d2fe736f552744e7",
+  "raw_len": 4974,
+  "images": {},
+  "file": "src/posts/2026/09/seeking-testers-comparing-idml-files.html"
+ },
+ {
+  "path": "/2026/09/where-indesign-script-should-stop.html",
+  "title": "Where an InDesign Script Should Stop",
+  "published": "2026-09-10T20:30:49.015-07:00",
+  "updated": "2026-09-10T20:30:49.015-07:00",
+  "tags": [
+   "automation",
+   "InDesign",
+   "low judgment",
+   "overset"
+  ],
+  "raw_sha256": "c9757811dc70299fc7f37e8d7aebf77e68101cbedc948ad2d2f2456ef12c5be8",
+  "rewritten_sha256": "c9757811dc70299fc7f37e8d7aebf77e68101cbedc948ad2d2f2456ef12c5be8",
+  "raw_len": 10699,
+  "images": {},
+  "file": "src/posts/2026/09/where-indesign-script-should-stop.html"
+ },
+ {
+  "path": "/2026/09/your-second-indesign-script-condensing.html",
+  "title": "Your Second InDesign Script: Condensing Text Until It Fits",
+  "published": "2026-09-09T22:23:38.333-07:00",
+  "updated": "2026-09-09T22:23:38.333-07:00",
+  "tags": [
+   "automation",
+   "ExtendScript",
+   "InDesign",
+   "overset",
+   "scripting basics"
+  ],
+  "raw_sha256": "ddc6a4266eacc64a218bd49de603d4ed825669d6f8bc579049154b8c1f7dae19",
+  "rewritten_sha256": "ddc6a4266eacc64a218bd49de603d4ed825669d6f8bc579049154b8c1f7dae19",
+  "raw_len": 18314,
+  "images": {},
+  "file": "src/posts/2026/09/your-second-indesign-script-condensing.html"
+ },
+ {
+  "path": "/2026/08/indesign-will-not-warn-you-about.html",
+  "title": "InDesign Will Not Warn You About External Links",
+  "published": "2026-08-21T17:10:57.340-07:00",
+  "updated": "2026-08-21T17:10:57.340-07:00",
+  "tags": [
+   "automation",
+   "InDesign",
+   "links",
+   "low judgment"
+  ],
+  "raw_sha256": "98ca1b14d20ec0df7a97bf24893b86a6401dd7d8f46022d96ae966e90fed4859",
+  "rewritten_sha256": "98ca1b14d20ec0df7a97bf24893b86a6401dd7d8f46022d96ae966e90fed4859",
+  "raw_len": 11735,
+  "images": {},
+  "file": "src/posts/2026/08/indesign-will-not-warn-you-about.html"
+ },
+ {
+  "path": "/2026/07/your-first-indesign-script-which-pages.html",
+  "title": "Your First InDesign Script: Which Pages Have Overset Text?",
+  "published": "2026-07-28T17:18:19.631-07:00",
+  "updated": "2026-07-28T17:33:28.831-07:00",
+  "tags": [
+   "automation",
+   "ExtendScript",
+   "InDesign",
+   "overset",
+   "scripting basics"
+  ],
+  "raw_sha256": "f74a88f14037f0a6460b980f17d38ed349facaee62ba68ea557a695a85072d53",
+  "rewritten_sha256": "24d46639bbfc126375c005975a7be4117865339f76b68e0e0b6909ac4b9be90f",
+  "raw_len": 12361,
+  "images": {
+   "oversetDetection.gif": {
+    "local": "/images/2026/07/your-first-indesign-script-which-pages/01.gif",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiXzfWfsvbhxgqUADVf-bLqW_2KbOHMA6XmjW5k5graBuSNDeOJNOVpqISBuIng0oQcD4XsAJWV6OuFzeamLbWK7h5kwOajsT-t-zffupFAMwBt039XpOY9KFG7lsqyY8P0ACTKkssQuGy-MCo_eLkNRfCOj0UrVR4IujX5BBcTNCeAAbcpEu-DlkT2/s1427/oversetDetection.gif",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiXzfWfsvbhxgqUADVf-bLqW_2KbOHMA6XmjW5k5graBuSNDeOJNOVpqISBuIng0oQcD4XsAJWV6OuFzeamLbWK7h5kwOajsT-t-zffupFAMwBt039XpOY9KFG7lsqyY8P0ACTKkssQuGy-MCo_eLkNRfCOj0UrVR4IujX5BBcTNCeAAbcpEu-DlkT2/s320/oversetDetection.gif"
+    ]
+   }
+  },
+  "file": "src/posts/2026/07/your-first-indesign-script-which-pages.html"
+ },
+ {
+  "path": "/2026/07/when-indesign-fails-to-export-start-by.html",
+  "title": "When InDesign Fails to Export: Start by Finding the Broken Page",
+  "published": "2026-07-14T16:06:19.585-07:00",
+  "updated": "2026-09-18T16:11:04.509-07:00",
+  "tags": [],
+  "raw_sha256": "02b7338d14ab91daf56278560ba885c7e846d875453e31f9b40a69891f3c22ad",
+  "rewritten_sha256": "7aee1e5bfdcb09223a3790c16bf7cd15101e4ea737298d1b379ef347b40134f7",
+  "raw_len": 22084,
+  "images": {
+   "AVvXsEgSNRmddxf9sb3fwJAnlCb8FNhgIJABeUl6DKCKtzEdKop3PbxwDPDiJmYCytJLoc_f0_CtPCMzBUcQmMELVuujkC4aA8KRFCQHrFPsVfeYpXXS7VO4PMkMblzBCLU7rTfv_vVUEdqe1T-UV7jm9X-RGjVfn3XE7fk-SN3N9tiXdoPe7GuAAr6udpxm": {
+    "local": "/images/2026/07/when-indesign-fails-to-export-start-by/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEgSNRmddxf9sb3fwJAnlCb8FNhgIJABeUl6DKCKtzEdKop3PbxwDPDiJmYCytJLoc_f0_CtPCMzBUcQmMELVuujkC4aA8KRFCQHrFPsVfeYpXXS7VO4PMkMblzBCLU7rTfv_vVUEdqe1T-UV7jm9X-RGjVfn3XE7fk-SN3N9tiXdoPe7GuAAr6udpxm"
+    ]
+   }
+  },
+  "file": "src/posts/2026/07/when-indesign-fails-to-export-start-by.html"
+ },
+ {
+  "path": "/2026/07/the-expensive-part-of-multilingual-dtp.html",
+  "title": "The Expensive Part of Multilingual DTP Isn't Only the Translation",
+  "published": "2026-07-07T21:05:06.982-07:00",
+  "updated": "2026-09-18T16:15:10.475-07:00",
+  "tags": [],
+  "raw_sha256": "3ff48b58f44374c4264567bb0bcb0ffbdac9799f6b08f60b80b8b52e31409e80",
+  "rewritten_sha256": "3ff48b58f44374c4264567bb0bcb0ffbdac9799f6b08f60b80b8b52e31409e80",
+  "raw_len": 7717,
+  "images": {},
+  "file": "src/posts/2026/07/the-expensive-part-of-multilingual-dtp.html"
+ },
+ {
+  "path": "/2026/07/how-print-pdf-should-be-built-from-html.html",
+  "title": "How a Print PDF Should Be Built from HTML",
+  "published": "2026-07-01T13:37:10.691-07:00",
+  "updated": "2026-07-01T13:37:10.692-07:00",
+  "tags": [],
+  "raw_sha256": "15f0d6b2f89cfa4b13fa1ab929a06ace0b51cacb90dd2e604b8f802957586bea",
+  "rewritten_sha256": "bf9bb9d549b0df9b8a2a5fc76f8edecf9ea378d7914b399fd84a0b2fef4b7140",
+  "raw_len": 8987,
+  "images": {
+   "01-cover.png": {
+    "local": "/images/2026/07/how-print-pdf-should-be-built-from-html/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEqMa9l9mq07U1qafUVvaYp7Misk-S_xT3YnBbnc_O709xbOZiv2X3fAivPZtCAMfbcUxshGF0qiNEYFkJcunxcQ50aAeV-bMw040wOK3arVSA2caZpplp8g-VOmXfz_bIuyA5Yj5Uj8ZH1_0ayKX2vg3QEwS6AEKtRYMVUXBD3A_Fi4o3DbpDIt2g/s1853/01-cover.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEqMa9l9mq07U1qafUVvaYp7Misk-S_xT3YnBbnc_O709xbOZiv2X3fAivPZtCAMfbcUxshGF0qiNEYFkJcunxcQ50aAeV-bMw040wOK3arVSA2caZpplp8g-VOmXfz_bIuyA5Yj5Uj8ZH1_0ayKX2vg3QEwS6AEKtRYMVUXBD3A_Fi4o3DbpDIt2g/s320/01-cover.png"
+    ]
+   },
+   "03-body-centered-folio.png": {
+    "local": "/images/2026/07/how-print-pdf-should-be-built-from-html/02.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8I0UKzndjGe2Ef169KmY-WSiy6q-5lr_XmdNvM4EmGI3HupwBTWTCLCFhcwPBfVmYfptD0Vzo71FV2w2h6itrJZrTb3Z2mVkjXoWhY9SnOMGcsC6DJ8p0sUibkV1yGZ8zlJuyWz3EaAh8N3PKNOFYHmBqq-O6aZOLjY7KxG4fFXIFPPQ-uQWpTWk3/s1853/03-body-centered-folio.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8I0UKzndjGe2Ef169KmY-WSiy6q-5lr_XmdNvM4EmGI3HupwBTWTCLCFhcwPBfVmYfptD0Vzo71FV2w2h6itrJZrTb3Z2mVkjXoWhY9SnOMGcsC6DJ8p0sUibkV1yGZ8zlJuyWz3EaAh8N3PKNOFYHmBqq-O6aZOLjY7KxG4fFXIFPPQ-uQWpTWk3/s320/03-body-centered-folio.png"
+    ]
+   },
+   "02-toc-computed.png": {
+    "local": "/images/2026/07/how-print-pdf-should-be-built-from-html/03.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhf7-UEoc5SLhdxMvZ0OPJEYzPqZ7d5oYHVgZ-LXlbU4Bx9C0OpGfI9-HZzD_zteKRIIHLuafDaVYdhJBBp5yQuasRt-wkrtpDM30dV4nsgOdve0r4GkcQIyEzt31CKC3Ij3tHN0De9MVtGjE6SkAtkkXEqB37Tic8LgxNM0QsK0SbsWLqn0yCOFJvH/s1853/02-toc-computed.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhf7-UEoc5SLhdxMvZ0OPJEYzPqZ7d5oYHVgZ-LXlbU4Bx9C0OpGfI9-HZzD_zteKRIIHLuafDaVYdhJBBp5yQuasRt-wkrtpDM30dV4nsgOdve0r4GkcQIyEzt31CKC3Ij3tHN0De9MVtGjE6SkAtkkXEqB37Tic8LgxNM0QsK0SbsWLqn0yCOFJvH/s320/02-toc-computed.png"
+    ]
+   }
+  },
+  "file": "src/posts/2026/07/how-print-pdf-should-be-built-from-html.html"
+ },
+ {
+  "path": "/2026/06/when-font-replacement-should-happen-at.html",
+  "title": "When Font Replacement Should Happen at the Definition Level in InDesign",
+  "published": "2026-06-15T19:05:17.436-07:00",
+  "updated": "2026-06-15T19:05:17.436-07:00",
+  "tags": [],
+  "raw_sha256": "97d42ccaff80783d7643dd6f1e4065856abd344560301d59f2a564a2597ee509",
+  "rewritten_sha256": "97d42ccaff80783d7643dd6f1e4065856abd344560301d59f2a564a2597ee509",
+  "raw_len": 145836,
+  "images": {},
+  "file": "src/posts/2026/06/when-font-replacement-should-happen-at.html"
+ },
+ {
+  "path": "/2026/05/a-rule-first-approach-to-ai-assisted.html",
+  "title": "A Rule-First Approach to AI-Assisted Terminology QA",
+  "published": "2026-05-11T14:33:00.000-07:00",
+  "updated": "2026-09-18T16:03:57.680-07:00",
+  "tags": [],
+  "raw_sha256": "2ed4ee1bbc4563cfa10adf3e880724249af4f4176a3e109178335a8ae6b5b7d9",
+  "rewritten_sha256": "c4cf23a2a7671b72a7f2f63a186947ab33dc9dea490b5a9ad7d2cc0f1b048066",
+  "raw_len": 16755,
+  "images": {
+   "terminologyChecker.png": {
+    "local": "/images/2026/05/a-rule-first-approach-to-ai-assisted/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8SVGoFpmrIFgpEtXOV3qfkOyhacXw5RYhCDYcA772sTzwyIk84m8pBB806kxMw3mnwf0cWabW4Rt84ZeKLif351vmjsAge-9cWsC_dhCJRLvVhRN5txW_Cp0vYmCKXwwel095-9pMkA5kLSYzn8ni0LzxGlfOsvDyUgilbGRiv6ZHRhbRvYxWol9P/s1672/terminologyChecker.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8SVGoFpmrIFgpEtXOV3qfkOyhacXw5RYhCDYcA772sTzwyIk84m8pBB806kxMw3mnwf0cWabW4Rt84ZeKLif351vmjsAge-9cWsC_dhCJRLvVhRN5txW_Cp0vYmCKXwwel095-9pMkA5kLSYzn8ni0LzxGlfOsvDyUgilbGRiv6ZHRhbRvYxWol9P/s320/terminologyChecker.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjuW4Hfg03KiEY2zWl9nQqaF6i3ytzEo07aovtLI0oR27mniIMH_fAVsXC6-ssyVPYI-tBUQTV7IKy9CvF7WhKpY7VXsjkpZenXtJn2D52ReMNNTam8HSq-iHX1KnEsA5EHYRbUTL28ZQVQJeKAp_u1QkjWDxYXccZpz4VkyKJ2r-2bcQvYvD08AMP0/s1672/terminologyChecker.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjuW4Hfg03KiEY2zWl9nQqaF6i3ytzEo07aovtLI0oR27mniIMH_fAVsXC6-ssyVPYI-tBUQTV7IKy9CvF7WhKpY7VXsjkpZenXtJn2D52ReMNNTam8HSq-iHX1KnEsA5EHYRbUTL28ZQVQJeKAp_u1QkjWDxYXccZpz4VkyKJ2r-2bcQvYvD08AMP0/s320/terminologyChecker.png"
+    ]
+   }
+  },
+  "file": "src/posts/2026/05/a-rule-first-approach-to-ai-assisted.html"
+ },
+ {
+  "path": "/2026/04/why-toc-is-hard-to-automate-in-indesign.html",
+  "title": "Why TOC Is Hard to Automate in InDesign",
+  "published": "2026-04-17T14:36:00.000-07:00",
+  "updated": "2026-04-17T14:36:43.403-07:00",
+  "tags": [],
+  "raw_sha256": "049a153b19928484d4d8c9cfde9e56632d3f95c5ba75aebe43a604045d783f85",
+  "rewritten_sha256": "f0029032941880ccf5229f59c6d4268579753956508b01c85a9a82957ded3580",
+  "raw_len": 14024,
+  "images": {
+   "bridgingthegap.png": {
+    "local": "/images/2026/04/why-toc-is-hard-to-automate-in-indesign/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjpFuLQBEU7zWGjCz3_Y7N9_6QbstfE7BVnx7DGKDP-KCpzsdOJDjzTcl_ynireShWNJ5A9tyN10AXvHyvA9y_QPBhuGN_P7DhZ-ygRxMbH8VvUU6Pnji9o_vlTwi5SZMXndz882hSR4tDoEaXVLRVN5QazVfUx_hSV7v1i3oXqBnuUO0y82jt3Stqv/s1408/bridgingthegap.png",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjpFuLQBEU7zWGjCz3_Y7N9_6QbstfE7BVnx7DGKDP-KCpzsdOJDjzTcl_ynireShWNJ5A9tyN10AXvHyvA9y_QPBhuGN_P7DhZ-ygRxMbH8VvUU6Pnji9o_vlTwi5SZMXndz882hSR4tDoEaXVLRVN5QazVfUx_hSV7v1i3oXqBnuUO0y82jt3Stqv/w566-h310/bridgingthegap.png"
+    ]
+   }
+  },
+  "file": "src/posts/2026/04/why-toc-is-hard-to-automate-in-indesign.html"
+ },
+ {
+  "path": "/2026/04/scaling-multilingual-dtp-by-detecting.html",
+  "title": "Scaling Multilingual DTP by Detecting Objects Outside the Layout (Low Judgment Workflows)",
+  "published": "2026-04-10T15:48:00.000-07:00",
+  "updated": "2026-04-10T15:48:28.515-07:00",
+  "tags": [],
+  "raw_sha256": "d6ff391686d4b1867a1dca032fc9ec0c1d5ebfcbd9850b252c57265c9e8df555",
+  "rewritten_sha256": "d6ff391686d4b1867a1dca032fc9ec0c1d5ebfcbd9850b252c57265c9e8df555",
+  "raw_len": 13562,
+  "images": {},
+  "file": "src/posts/2026/04/scaling-multilingual-dtp-by-detecting.html"
+ },
+ {
+  "path": "/2026/03/high-instability-in-multilingual-dtp.html",
+  "title": "High Instability in Multilingual DTP",
+  "published": "2026-03-28T15:25:00.000-07:00",
+  "updated": "2026-03-28T15:25:33.323-07:00",
+  "tags": [],
+  "raw_sha256": "4f71099179a1a21f7c1eca80cd45d012191f8284660a1191e304a99647483bb8",
+  "rewritten_sha256": "e3b1178e2a3c97f08a4bc6b36757933396310e03ef38bad860621e2955a8bd97",
+  "raw_len": 16694,
+  "images": {
+   "textFrameThreading.gif": {
+    "local": "/images/2026/03/high-instability-in-multilingual-dtp/01.gif",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiS3lcxo3j0KYooMuezboCLLXdln1_Ymr4uWDRWPU1sIEepxaWRz_8a_W5GMlkoYmnGajccImz4DJm1zV2GL2et61el-DnGgV1d-VN3arosAjqFNj4Cf6AT9C9kO_Gw6Yynv7WcddNxkskYtNWVp0SK-wesu4wnQwjMe_lCxa1pqDFFCZm2oXWN-uqN/s851/textFrameThreading.gif",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiS3lcxo3j0KYooMuezboCLLXdln1_Ymr4uWDRWPU1sIEepxaWRz_8a_W5GMlkoYmnGajccImz4DJm1zV2GL2et61el-DnGgV1d-VN3arosAjqFNj4Cf6AT9C9kO_Gw6Yynv7WcddNxkskYtNWVp0SK-wesu4wnQwjMe_lCxa1pqDFFCZm2oXWN-uqN/s320/textFrameThreading.gif"
+    ]
+   },
+   "AVvXsEiXMeB3o5TOUdk0V_TPDXtjj2C5qN282-p9CKY6ksBW8_EyllE6TywBwX0oY6sZRUwnL0NZyaz6Q1-GG6LmOCFORieSdyDH44lNJVG2TViNihZ02DlRgun8cNwUL-KPYcgO-oau4tpdNF-JWBPUYfxKBP7k3j4xpqPTugS9eWmDOHy5q8bzznICjnGQ": {
+    "local": "/images/2026/03/high-instability-in-multilingual-dtp/02.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEiXMeB3o5TOUdk0V_TPDXtjj2C5qN282-p9CKY6ksBW8_EyllE6TywBwX0oY6sZRUwnL0NZyaz6Q1-GG6LmOCFORieSdyDH44lNJVG2TViNihZ02DlRgun8cNwUL-KPYcgO-oau4tpdNF-JWBPUYfxKBP7k3j4xpqPTugS9eWmDOHy5q8bzznICjnGQ"
+    ]
+   },
+   "splitStory.gif": {
+    "local": "/images/2026/03/high-instability-in-multilingual-dtp/03.gif",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjjU-Ml10BjDKK2iux1g0BQzjGiQVoSrlzdE6yuA91zohIhl5PE_aISgkpJbzl8SUcJkh-sPFMNjsXQVuVA9GT4oHmxVThYaYs806wWySM2ZTiPPnHRS6ZWwKvjYplW9UUXigMGaxMQi4ZemKCdC3X_C9yqYh2EHb_2oJIZGhl9fnShR-TW64Z3FauO/s1023/splitStory.gif",
+     "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjjU-Ml10BjDKK2iux1g0BQzjGiQVoSrlzdE6yuA91zohIhl5PE_aISgkpJbzl8SUcJkh-sPFMNjsXQVuVA9GT4oHmxVThYaYs806wWySM2ZTiPPnHRS6ZWwKvjYplW9UUXigMGaxMQi4ZemKCdC3X_C9yqYh2EHb_2oJIZGhl9fnShR-TW64Z3FauO/s320/splitStory.gif"
+    ]
+   },
+   "AVvXsEjbHRXeciB0xwNlAl-bplHvg7H_g1X4AkUjgoJMv83kgugD4OCwGaDpA0XBsrcJ1e8dAi1fZuHH0N2O8CKMxwi8st5JdtmJfmn8hoAHWf9M-HWAQEELkgSEMuYnrF0yG4m13JJd_23sVAezlnp9UsoteAGloUx43ZSdqQcYiyIDxTISWaMRHFKXhH1s": {
+    "local": "/images/2026/03/high-instability-in-multilingual-dtp/04.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEjbHRXeciB0xwNlAl-bplHvg7H_g1X4AkUjgoJMv83kgugD4OCwGaDpA0XBsrcJ1e8dAi1fZuHH0N2O8CKMxwi8st5JdtmJfmn8hoAHWf9M-HWAQEELkgSEMuYnrF0yG4m13JJd_23sVAezlnp9UsoteAGloUx43ZSdqQcYiyIDxTISWaMRHFKXhH1s"
+    ]
+   },
+   "AVvXsEj_EUhNt4Utz9JftR0f01m8PaY-lvjdk06LtrP5c4vI89bNEQjxSapVwjtzehq3tuqq9HCFNTDnpLoOc6NZyshf5JC1XR2qLCMmlNtvaQeQl-cZI2IBK_ZEV-oOcDZ1pglXUdaI_eMJ2L_k_Ha5RnbDmTKqG-78mQV7mNsBV5zjYdMnmIh6pVY6jKoJ": {
+    "local": "/images/2026/03/high-instability-in-multilingual-dtp/05.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEj_EUhNt4Utz9JftR0f01m8PaY-lvjdk06LtrP5c4vI89bNEQjxSapVwjtzehq3tuqq9HCFNTDnpLoOc6NZyshf5JC1XR2qLCMmlNtvaQeQl-cZI2IBK_ZEV-oOcDZ1pglXUdaI_eMJ2L_k_Ha5RnbDmTKqG-78mQV7mNsBV5zjYdMnmIh6pVY6jKoJ"
+    ]
+   }
+  },
+  "file": "src/posts/2026/03/high-instability-in-multilingual-dtp.html"
+ },
+ {
+  "path": "/2026/03/high-frequency-tasks-worth-automating.html",
+  "title": "High Frequency Tasks Worth Automating in Multilingual DTP",
+  "published": "2026-03-16T17:44:00.000-07:00",
+  "updated": "2026-03-21T14:57:37.502-07:00",
+  "tags": [],
+  "raw_sha256": "ea036539e54ee3595f1db2733684571fa41c86b10350814c284c40d745ea2de4",
+  "rewritten_sha256": "ea036539e54ee3595f1db2733684571fa41c86b10350814c284c40d745ea2de4",
+  "raw_len": 11534,
+  "images": {},
+  "file": "src/posts/2026/03/high-frequency-tasks-worth-automating.html"
+ },
+ {
+  "path": "/2026/02/what-should-you-automate-first-in.html",
+  "title": "What Should You Automate First in Multilingual DTP?",
+  "published": "2026-02-28T14:45:00.000-08:00",
+  "updated": "2026-03-21T14:57:21.289-07:00",
+  "tags": [],
+  "raw_sha256": "289db3545a290125187cf0c31ce5030bf63d92678d9f76dde583bfdc948e9a96",
+  "rewritten_sha256": "289db3545a290125187cf0c31ce5030bf63d92678d9f76dde583bfdc948e9a96",
+  "raw_len": 14154,
+  "images": {},
+  "file": "src/posts/2026/02/what-should-you-automate-first-in.html"
+ },
+ {
+  "path": "/2026/02/your-first-practical-indesign.html",
+  "title": "Your First Practical InDesign Automation: Opening and Closing Multiple Files",
+  "published": "2026-02-20T14:24:00.000-08:00",
+  "updated": "2026-03-21T14:53:04.205-07:00",
+  "tags": [],
+  "raw_sha256": "0213a9eb5e4fb0f12f77ce66be2f4f5b3a31a40930b27f2f5fcc1458f9ae1d26",
+  "rewritten_sha256": "0213a9eb5e4fb0f12f77ce66be2f4f5b3a31a40930b27f2f5fcc1458f9ae1d26",
+  "raw_len": 11128,
+  "images": {},
+  "file": "src/posts/2026/02/your-first-practical-indesign.html"
+ },
+ {
+  "path": "/2026/02/detecting-text-overset-in-indesign.html",
+  "title": "Detecting Text Overset in InDesign: A Minimal Script Before Automation",
+  "published": "2026-02-01T16:31:00.000-08:00",
+  "updated": "2026-03-21T15:04:34.902-07:00",
+  "tags": [],
+  "raw_sha256": "a6d1bd074bc45cdacd81e912cc8c9005f830ed5ca6a861e7e0b581515872e473",
+  "rewritten_sha256": "a6d1bd074bc45cdacd81e912cc8c9005f830ed5ca6a861e7e0b581515872e473",
+  "raw_len": 24143,
+  "images": {},
+  "file": "src/posts/2026/02/detecting-text-overset-in-indesign.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-maintenance.html",
+  "title": "Scaling Multilingual DTP – Maintenance / Recovery: When and How to Clean Up InDesign Files with IDML",
+  "published": "2026-01-28T17:36:00.000-08:00",
+  "updated": "2026-09-18T16:12:07.013-07:00",
+  "tags": [],
+  "raw_sha256": "84afc03e88938eee83de3532e3e46d8465b9b96a217819d88c306450e056d2d4",
+  "rewritten_sha256": "84afc03e88938eee83de3532e3e46d8465b9b96a217819d88c306450e056d2d4",
+  "raw_len": 22118,
+  "images": {},
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-maintenance.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-by-creating.html",
+  "title": "Scaling Multilingual DTP by Creating an Escape Hatch for Layout Adjustment (Shrinking All Placed Images at Once)",
+  "published": "2026-01-25T16:45:00.000-08:00",
+  "updated": "2026-03-25T13:24:01.576-07:00",
+  "tags": [],
+  "raw_sha256": "7661c875eccf45ce5d70876cfe7082b7e6c8c2a100d3910a775175f97cc8461b",
+  "rewritten_sha256": "7661c875eccf45ce5d70876cfe7082b7e6c8c2a100d3910a775175f97cc8461b",
+  "raw_len": 10986,
+  "images": {},
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-by-creating.html"
+ },
+ {
+  "path": "/2026/01/how-to-run-javascript-in-adobe-indesign.html",
+  "title": "How to Run JavaScript in Adobe InDesign (Without Learning JavaScript First)",
+  "published": "2026-01-24T13:28:00.000-08:00",
+  "updated": "2026-09-18T16:09:55.248-07:00",
+  "tags": [],
+  "raw_sha256": "51e37ce30c15ed0c21d26acda3ca4dfd558d26c1ad5564a623b8f32af08c2eb3",
+  "rewritten_sha256": "79f93d6d2a3f1905e8ad1a3329a787381139a359d5cd2dcbbe5a331534d6b46d",
+  "raw_len": 15338,
+  "images": {
+   "AVvXsEieTCCY2sm55_RBB_4iq8oYaRtF1ivtbtKFUtSafT1u1zlc23AEGX2J7ALAvswLeV7JJNCS9C0QHd1pBHb_5tGES9WRif2hwUO4K3ll0AbZBGIXjEN-y-df1KiDq23zK-VrOeRCSd-csuaKJi1CyF82TsDwnXGgWSbi8qQGsjDkWOl5z6nMVXRsHl2e": {
+    "local": "/images/2026/01/how-to-run-javascript-in-adobe-indesign/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEieTCCY2sm55_RBB_4iq8oYaRtF1ivtbtKFUtSafT1u1zlc23AEGX2J7ALAvswLeV7JJNCS9C0QHd1pBHb_5tGES9WRif2hwUO4K3ll0AbZBGIXjEN-y-df1KiDq23zK-VrOeRCSd-csuaKJi1CyF82TsDwnXGgWSbi8qQGsjDkWOl5z6nMVXRsHl2e"
+    ]
+   },
+   "AVvXsEgBYVvSYqwnEhCvpOC_IBSkfzuJKOgDALNqG_wpjzmbYFg9MOMTH8W2PoagOdzyVfGuoDDPXt2EItecYZXxRIfN1dyRdSQCHeqG-oop2Hm3bO7sYuBA093S-wL_ryuFM_6fQXGd7QwFQBu4GnOsjwFyC4NtTZ2HNvNe1GAjkjAuEXDSUR3ieYXbRw_5": {
+    "local": "/images/2026/01/how-to-run-javascript-in-adobe-indesign/02.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEgBYVvSYqwnEhCvpOC_IBSkfzuJKOgDALNqG_wpjzmbYFg9MOMTH8W2PoagOdzyVfGuoDDPXt2EItecYZXxRIfN1dyRdSQCHeqG-oop2Hm3bO7sYuBA093S-wL_ryuFM_6fQXGd7QwFQBu4GnOsjwFyC4NtTZ2HNvNe1GAjkjAuEXDSUR3ieYXbRw_5"
+    ]
+   },
+   "AVvXsEidTO-sh9yFk0QN3vDANp96AGGxI6yb3w2jmsLqokE2P9KtzEPhWCGmph_RK1rZ8FodOs1pAt5Wsz7a8TmP5edwYHkCdscorUd1uqv53hEgkfTQ_6DNhRzWO0IEBdL9bnng1DBvCSBFhZ7nOQOworWDr_vDs5ITT2nHy4SMq7i_qWFIDbIpezkSmxiY": {
+    "local": "/images/2026/01/how-to-run-javascript-in-adobe-indesign/03.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEidTO-sh9yFk0QN3vDANp96AGGxI6yb3w2jmsLqokE2P9KtzEPhWCGmph_RK1rZ8FodOs1pAt5Wsz7a8TmP5edwYHkCdscorUd1uqv53hEgkfTQ_6DNhRzWO0IEBdL9bnng1DBvCSBFhZ7nOQOworWDr_vDs5ITT2nHy4SMq7i_qWFIDbIpezkSmxiY"
+    ]
+   }
+  },
+  "file": "src/posts/2026/01/how-to-run-javascript-in-adobe-indesign.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-by-automating_21.html",
+  "title": "Scaling Multilingual DTP by Automating Mandatory Text Checks in PDFs Before Delivery",
+  "published": "2026-01-21T16:54:00.000-08:00",
+  "updated": "2026-03-26T13:32:51.141-07:00",
+  "tags": [],
+  "raw_sha256": "18225bf502636c0b9e8f943b177f58bff5ecbeef8c7701f6950f0c96aba5b8dd",
+  "rewritten_sha256": "18225bf502636c0b9e8f943b177f58bff5ecbeef8c7701f6950f0c96aba5b8dd",
+  "raw_len": 13707,
+  "images": {},
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-by-automating_21.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-by-automating_18.html",
+  "title": "Scaling Multilingual DTP by Automating Language-Based Image Relinking in InDesign",
+  "published": "2026-01-18T17:43:00.000-08:00",
+  "updated": "2026-03-26T13:43:39.975-07:00",
+  "tags": [],
+  "raw_sha256": "9ee783c21534899ed04c44a95d8b8ccafda82a030d763174926804dda0b3b335",
+  "rewritten_sha256": "9ee783c21534899ed04c44a95d8b8ccafda82a030d763174926804dda0b3b335",
+  "raw_len": 11030,
+  "images": {},
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-by-automating_18.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-by-automating_15.html",
+  "title": "Scaling Multilingual DTP by Automating Style Reloads Before Translation",
+  "published": "2026-01-15T16:35:00.000-08:00",
+  "updated": "2026-02-16T15:53:43.848-08:00",
+  "tags": [],
+  "raw_sha256": "a851fe527f1a460fc13109f0324fb5e1b2c4bdc33d41570bb64e7fb3fe180358",
+  "rewritten_sha256": "24aefe17cb64831efa1a079cd3a72311f4fd25c26a10559dcf4f10503ef13f6b",
+  "raw_len": 10762,
+  "images": {
+   "AVvXsEipldrL1i7RVjRwOz4SXL8z_hVQuPon1xo575ypzXaUvN-pHhgogtCOzoRBRWSR915y1L_H903R82R2I5QLGiCPzpzidvEfE89u58SBL8uZkoKzXTSK7rstW1ZfiqAjQYRdriR4GiEGLHaSQFmdPZ-nTjbsNquun2iCnqaXfuhjigNCxGWmrrO9oQt3": {
+    "local": "/images/2026/01/scaling-multilingual-dtp-by-automating_15/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEipldrL1i7RVjRwOz4SXL8z_hVQuPon1xo575ypzXaUvN-pHhgogtCOzoRBRWSR915y1L_H903R82R2I5QLGiCPzpzidvEfE89u58SBL8uZkoKzXTSK7rstW1ZfiqAjQYRdriR4GiEGLHaSQFmdPZ-nTjbsNquun2iCnqaXfuhjigNCxGWmrrO9oQt3"
+    ]
+   },
+   "AVvXsEipldrL1i7RVjRwOz4SXL8z_hVQuPon1xo575ypzXaUvN-pHhgogtCOzoRBRWSR915y1L_H903R82R2I5QLGiCPzpzidvEfE89u58SBL8uZkoKzXTSK7rstW1ZfiqAjQYRdriR4GiEGLHaSQFmdPZ-nTjbsNquun2iCnqaXfuhjigNCxGWmrrO9oQt3=w235-h150": {
+    "local": "/images/2026/01/scaling-multilingual-dtp-by-automating_15/02.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEipldrL1i7RVjRwOz4SXL8z_hVQuPon1xo575ypzXaUvN-pHhgogtCOzoRBRWSR915y1L_H903R82R2I5QLGiCPzpzidvEfE89u58SBL8uZkoKzXTSK7rstW1ZfiqAjQYRdriR4GiEGLHaSQFmdPZ-nTjbsNquun2iCnqaXfuhjigNCxGWmrrO9oQt3=w235-h150"
+    ]
+   }
+  },
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-by-automating_15.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-by-automating.html",
+  "title": "Scaling Multilingual DTP by Automating Trados-Ready IDML Export from InDesign Books",
+  "published": "2026-01-11T14:54:00.000-08:00",
+  "updated": "2026-09-18T16:13:04.721-07:00",
+  "tags": [],
+  "raw_sha256": "afb93ad06814d6c4afaeb6710d0c58e5bf55e9f152594f178cade84841b03ab9",
+  "rewritten_sha256": "13cb32b960013700ec3b1c56433bd9699400c43e02cd251cdfd659b3dbd98832",
+  "raw_len": 13842,
+  "images": {
+   "AVvXsEhaLlfdRDxbx91C5ZvFYhTr9pYo3d4ALPxrPuSnG7XuPNpeXsqDe1sl4VuMKxyNp8a3FeqtLXqjNbgtLbb9fjD6CQ030uCSIinkJpg-HuTcYH7MzSmBv4Z40mMYhGAaZyqxV_OZ3SLdX2Es5OUsKTuVyI3FT6Kdsf5XLsUVf2Z4VrxUiNnupC3KsMQB": {
+    "local": "/images/2026/01/scaling-multilingual-dtp-by-automating/01.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEhaLlfdRDxbx91C5ZvFYhTr9pYo3d4ALPxrPuSnG7XuPNpeXsqDe1sl4VuMKxyNp8a3FeqtLXqjNbgtLbb9fjD6CQ030uCSIinkJpg-HuTcYH7MzSmBv4Z40mMYhGAaZyqxV_OZ3SLdX2Es5OUsKTuVyI3FT6Kdsf5XLsUVf2Z4VrxUiNnupC3KsMQB"
+    ]
+   },
+   "AVvXsEhaLlfdRDxbx91C5ZvFYhTr9pYo3d4ALPxrPuSnG7XuPNpeXsqDe1sl4VuMKxyNp8a3FeqtLXqjNbgtLbb9fjD6CQ030uCSIinkJpg-HuTcYH7MzSmBv4Z40mMYhGAaZyqxV_OZ3SLdX2Es5OUsKTuVyI3FT6Kdsf5XLsUVf2Z4VrxUiNnupC3KsMQB=w188-h78": {
+    "local": "/images/2026/01/scaling-multilingual-dtp-by-automating/02.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEhaLlfdRDxbx91C5ZvFYhTr9pYo3d4ALPxrPuSnG7XuPNpeXsqDe1sl4VuMKxyNp8a3FeqtLXqjNbgtLbb9fjD6CQ030uCSIinkJpg-HuTcYH7MzSmBv4Z40mMYhGAaZyqxV_OZ3SLdX2Es5OUsKTuVyI3FT6Kdsf5XLsUVf2Z4VrxUiNnupC3KsMQB=w188-h78"
+    ]
+   },
+   "AVvXsEgaklGyuAbZuyqEswS3dGjdB31U0blVxrPv_YT7LD7aFYOD9qqPIcu_VfJL5gMuKiSHkUCE284MnOq8Gy4UjJeBZw1zavh2ibV4RY3V0lLi-if4Yb_mzzpvBg9YP-3nrJ5kT8CF7LNcSPI17dQiU4-dBEJDDpoPZwfhmmpfgytenXKnxiP5rZGCapFn": {
+    "local": "/images/2026/01/scaling-multilingual-dtp-by-automating/03.png",
+    "sources": [
+     "https://blogger.googleusercontent.com/img/a/AVvXsEgaklGyuAbZuyqEswS3dGjdB31U0blVxrPv_YT7LD7aFYOD9qqPIcu_VfJL5gMuKiSHkUCE284MnOq8Gy4UjJeBZw1zavh2ibV4RY3V0lLi-if4Yb_mzzpvBg9YP-3nrJ5kT8CF7LNcSPI17dQiU4-dBEJDDpoPZwfhmmpfgytenXKnxiP5rZGCapFn"
+    ]
+   }
+  },
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-by-automating.html"
+ },
+ {
+  "path": "/2026/01/scaling-multilingual-dtp-by-eliminating.html",
+  "title": "Scaling Multilingual DTP by Eliminating Manual InDesign Text Overset Fixes",
+  "published": "2026-01-03T15:35:00.000-08:00",
+  "updated": "2026-04-10T15:19:43.333-07:00",
+  "tags": [],
+  "raw_sha256": "0df3022df799966e4f54760925198d96a6a08408ebfe372c88cfd1d832881cfa",
+  "rewritten_sha256": "0df3022df799966e4f54760925198d96a6a08408ebfe372c88cfd1d832881cfa",
+  "raw_len": 6277,
+  "images": {},
+  "file": "src/posts/2026/01/scaling-multilingual-dtp-by-eliminating.html"
+ },
+ {
+  "path": "/2025/11/when-times-new-roman-suddenly-vanished.html",
+  "title": "🦊When Times New Roman Suddenly Vanished from InDesign",
+  "published": "2025-11-22T15:05:00.000-08:00",
+  "updated": "2025-11-22T15:05:53.096-08:00",
+  "tags": [],
+  "raw_sha256": "99dec31ecd43d89beb0b33de022d38c8c86e7fd48bbd48ab6a8e92f060348997",
+  "rewritten_sha256": "99dec31ecd43d89beb0b33de022d38c8c86e7fd48bbd48ab6a8e92f060348997",
+  "raw_len": 2734,
+  "images": {},
+  "file": "src/posts/2025/11/when-times-new-roman-suddenly-vanished.html"
+ },
+ {
+  "path": "/2025/06/close-all-indesign-files-with-one-click.html",
+  "title": "🦊Close All InDesign Files with One Click: A Script for Busy Designers",
+  "published": "2025-06-28T18:00:00.000-07:00",
+  "updated": "2025-07-04T14:52:01.704-07:00",
+  "tags": [],
+  "raw_sha256": "0292da99c933a658fb63328d886f580cc9972d2b122ff50d2a36a8cf1ee3856b",
+  "rewritten_sha256": "0292da99c933a658fb63328d886f580cc9972d2b122ff50d2a36a8cf1ee3856b",
+  "raw_len": 6454,
+  "images": {},
+  "file": "src/posts/2025/06/close-all-indesign-files-with-one-click.html"
+ },
+ {
+  "path": "/2025/06/rename-linked-files-easily-in-indesign.html",
+  "title": "🦊 Rename Linked Files Easily in InDesign – A Smart Script from CodeKitsune",
+  "published": "2025-06-26T16:32:00.000-07:00",
+  "updated": "2025-06-26T16:36:44.513-07:00",
+  "tags": [],
+  "raw_sha256": "51e298a43d5e35a1f844a1bceb8c95db474c615892324710eefc5208d8d0560b",
+  "rewritten_sha256": "51e298a43d5e35a1f844a1bceb8c95db474c615892324710eefc5208d8d0560b",
+  "raw_len": 1895,
+  "images": {},
+  "file": "src/posts/2025/06/rename-linked-files-easily-in-indesign.html"
+ },
+ {
+  "path": "/2024/03/automatically-replacing-helvetica-fonts.html",
+  "title": "🦊Automatically Replacing Helvetica Fonts in Adobe InDesign with a JavaScript Script",
+  "published": "2024-03-30T14:44:00.000-07:00",
+  "updated": "2026-07-26T14:40:20.419-07:00",
+  "tags": [],
+  "raw_sha256": "60cffcdefcdf8e12bf29cfebd303dd7939583655993546aff0756d187ac77476",
+  "rewritten_sha256": "60cffcdefcdf8e12bf29cfebd303dd7939583655993546aff0756d187ac77476",
+  "raw_len": 33972,
+  "images": {},
+  "file": "src/posts/2024/03/automatically-replacing-helvetica-fonts.html"
+ }
+]

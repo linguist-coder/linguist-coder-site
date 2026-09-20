@@ -1,0 +1,101 @@
+---
+title: "How a Print PDF Should Be Built from HTML"
+date: 2026-07-01T13:37:10.691-07:00
+updated: 2026-07-01T13:37:10.692-07:00
+permalink: "/2026/07/how-print-pdf-should-be-built-from-html.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-332065291270819147"
+layout: post.njk
+---
+<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/01.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/01.png" width="226" /></a></div><p>Recently I had a small but common production problem. A report already existed as a designed HTML page — good typography, a cover, a table of contents — and it needed to become a print-ready PDF. Not a screen capture of the web page, but a proper document: numbered pages, a table of contents whose page references are correct, and no heading left stranded at the bottom of a page.</p>
+
+<p>At first glance this is just "export to PDF." But the more useful question is the same one I keep returning to in production work:</p>
+
+<p><b>Which layer should own the page numbers and the table of contents?</b></p>
+
+<h2>The Wrong Layers</h2>
+
+<p>There are two tempting answers, and both create problems later.</p>
+
+<p>The first is to type the numbers into the table of contents by hand. This works until the content changes. Add a paragraph near the front, and every page reference after it is quietly wrong. The numbers live in the text, but they describe the layout — so they fall out of sync the moment the layout moves.</p>
+
+<p>The second is to use the browser's "Print to PDF." This renders the page faithfully, but it cannot compute that the Methods section begins on page 7, and it cannot restart numbering after the cover. It produces an image of the document, not a paginated document with cross-references.</p>
+
+<p>Neither approach is wrong because of effort. They are wrong because the page numbers and the TOC references are being placed in the wrong layer.</p>
+
+<h2>The Source Is the HTML; the PDF Is a Rendering</h2>
+
+<p>The useful framing is to treat the HTML as the source and the PDF as one rendering of it. Page numbers and table-of-contents references are not content you author. They are properties of the laid-out pages, and they should be <b>computed at layout time</b> — the same way a screen layout computes where a line wraps.</p>
+
+<p>That is exactly what the CSS <a href="https://www.w3.org/TR/css-page-3/" rel="noopener" target="_blank">Paged Media</a> specification describes, and what <a href="https://pagedjs.org/" rel="noopener" target="_blank">Paged.js</a> implements as a browser polyfill — paginating the document in the DOM, which a headless Chrome run then prints to PDF. So instead of editing the document, the print behavior is added as a separate layer on top of it.</p>
+
+<p>The conversion then becomes four predictable steps:</p>
+
+<ol>
+<li>Read the source HTML.</li>
+<li>Inline local images as data URIs, so the file stays self-contained.</li>
+<li>Overlay the print CSS — page size, margins, page numbers, live TOC.</li>
+<li>Render to PDF with Paged.js. Body text stays selectable and fonts are embedded.</li>
+</ol>
+
+<p>The document's own design is never touched. The overlay only adds the print semantics the screen layout had no reason to carry.</p>
+
+<h2>Page Numbers Belong to the Page Box</h2>
+
+<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/02.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/02.png" width="226" /></a></div><p>In Paged Media, a page number is not text in the document. It is content of the page box itself, so it sits in the margin and updates automatically:</p>
+
+<pre><code>@page {
+  size: A4;
+  margin: 18mm;
+  @bottom-center { content: counter(page); }
+}
+
+/* the cover is its own page, full bleed, with no number */
+.cover { page: cover; break-after: page; }
+@page cover { margin: 0; @bottom-center { content: none; } }
+
+/* the imprint is the first page that carries a number: restart the count here */
+.imprint { counter-reset: page 1; }</code></pre>
+
+<p>Because the folio is a property of the page rather than the text, suppressing it on the cover and restarting the count at the imprint are small, declarative changes — not manual edits to chase on every revision.</p>
+
+<h2>A Table of Contents Computed at Layout Time</h2>
+
+<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/03.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/03.png" width="226" /></a></div><p>This is the part that surprises people. Each TOC entry is an ordinary link to an anchor in the document. The page number is filled in <i>after</i> the layout is known, with <code>target-counter</code>:</p>
+
+<pre><code>.toc a[href^="#"]::after {
+  content: target-counter(attr(href), page);
+}</code></pre>
+
+<p>Move a section, regenerate the PDF, and every number is correct again. The reference describes the layout, and now it is derived from the layout, so the two can no longer drift apart.</p>
+
+<h2>Where This Approach Has Limits</h2>
+
+<p>A few things are worth knowing before you rely on it:</p>
+
+<ul>
+<li><b>CSS Grid does not fragment across pages.</b> A grid block jumps whole to the next page and can leave its heading stranded. When a long section needs to flow, multi-column layout (<code>column-count</code>) paginates cleanly where grid does not.</li>
+<li><b>Paged.js cannot resolve <code>var()</code> inside <code>@page</code> rules.</b> Page geometry has to be written with literal values.</li>
+<li><b>Headings set in a web font render correctly but may not be selectable as text.</b> When verifying output, check the body text and a rendered page image rather than the headline.</li>
+</ul>
+
+<p>None of these are blockers. They are just places where the print layer behaves differently from the screen, and knowing them up front saves an afternoon.</p>
+
+<h2>A Note on Tools</h2>
+
+<p>Prince XML handles this category of work very well, but it is commercial and its free tier watermarks the output. Paged.js is open source and adds no watermark, which is why I reach for it when the goal is a repeatable conversion rather than a single file. The browser's own "Print to PDF" remains fine for a quick one-off — it simply cannot compute references or restart folios.</p>
+
+<h2>The Script</h2>
+
+<p>I packaged the workflow as a small command-line tool and published it:</p>
+
+<p><a href="https://github.com/linguist-coder/html-to-print-pdf" rel="noopener" target="_blank"><b>https://github.com/linguist-coder/html-to-print-pdf</b></a> (MIT)</p>
+
+<p>It takes a designed HTML file and produces the PDF, driven by a small config for page size, margins, the cover, where numbering restarts, and which links form the table of contents. The repository includes a self-contained sample report — a cover, an imprint page, a computed TOC, a table, and a figure — so the whole thing runs end to end:</p>
+
+<pre><code>git clone https://github.com/linguist-coder/html-to-print-pdf.git
+cd html-to-print-pdf
+npm install
+npm run example     # -&gt; examples/report/report.pdf</code></pre>
+
+<p>The takeaway is the same structural point I started with. The PDF is a rendering of the document, not the document itself. Once the page numbers and the table of contents are computed at layout time instead of typed by hand, regenerating the file after an edit stops being manual work — which is the whole point of treating the HTML, and not the PDF, as the source.</p>

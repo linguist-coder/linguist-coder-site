@@ -1,0 +1,270 @@
+---
+title: "High Frequency Tasks Worth Automating in Multilingual DTP"
+date: 2026-03-16T17:44:00.000-07:00
+updated: 2026-03-21T14:57:37.502-07:00
+permalink: "/2026/03/high-frequency-tasks-worth-automating.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-4798765410605555775"
+layout: post.njk
+---
+<h2 style="text-align: left;">Introduction</h2><p>In multilingual DTP, the difficulty of a task is often less important than how often it appears.</p><p>Layout adjustments, date updates, missing links, small formatting fixes — none of these tasks are particularly complex. But when they repeat across languages and revisions, they quickly become a significant source of manual work.</p><p>This is why the first automation target is rarely the most technically impressive task.<br />
+It is usually the task that happens the most often.</p><p>In the <a href="https://www.linguist-coder.com/2026/02/what-should-you-automate-first-in.html">previous article</a>, I introduced a simple framework for identifying good automation candidates.</p><p>In this article, we will look at the first of those criteria: <strong>High Frequency</strong>.</p><hr /><h2 data-heading="Recap: The Automation Framework">Recap: The Automation Framework</h2><p><strong>This framework helps identify which tasks are actually worth automating.</strong></p><p>In the <a href="https://www.linguist-coder.com/2026/02/what-should-you-automate-first-in.html">previous article</a>, I introduced three criteria that make a task a strong automation candidate:</p><ul>
+<li><strong>High Frequency</strong> – the task occurs repeatedly<br />
+</li>
+<li><strong>High Instability</strong> – the conditions change each time<br />
+</li>
+<li><strong>Low Judgment</strong> – the handling rules are predictable<br />
+</li>
+</ul><p>The strongest automation opportunities appear where these forces overlap.</p><p>In this article, we focus on the first one: <strong>High Frequency</strong>.</p><hr /><h2 data-heading="What “High Frequency” Really Means">What “High Frequency” Really Means</h2><p><strong>High-frequency friction scales across languages and production cycles.</strong></p><p>High Frequency does not simply mean that a task happens often.</p><p>In multilingual production, repetition multiplies across several dimensions:</p><ul>
+<li>number of languages<br />
+</li>
+<li>number of documents<br />
+</li>
+<li>number of revisions<br />
+</li>
+</ul><p>For example:</p><p>1 issue<br />
+× 10 languages<br />
+× 3 revisions<br />
+= 30 manual fixes</p><p>A small issue in a single layout can quickly become dozens of repeated corrections across a project.</p><p>This multiplication effect is why High Frequency tasks are often the best starting point for automation.</p><hr /><h2 data-heading="A Real Example: Missing Links">A Real Example: Missing Links</h2><p><strong>A small asset problem can propagate across every translated layout.</strong></p><p>Many multilingual workflows begin with an English <strong>source layout</strong> — the base document from which translated layouts are produced.</p><p>Translated versions are then created from that structure:</p><p>English source layout<br />
+↓<br />
+Translated layouts<br />
+(JA / DE / FR / IT / ES ...)</p><p>This structure works well — until the asset structure changes.</p><p>For example, the English asset folder may be:</p><ul>
+<li>renamed<br />
+</li>
+<li>moved to a different directory<br />
+</li>
+<li>reorganized during a project update<br />
+</li>
+</ul><p>When that happens, translated documents can suddenly lose their links.</p><hr /><h2 data-heading="Why This Becomes a High-Frequency Problem">Why This Becomes a High-Frequency Problem</h2><p><strong>One missing link can multiply across every language version.</strong></p><p>In multilingual production, the same layout may exist in many language versions.</p><p>A single missing asset can therefore propagate across multiple documents.</p><p>1 broken asset<br />
+↓<br />
+10 translated layouts<br />
+↓<br />
+10 missing links</p><p>What looks like a minor issue in one file quickly becomes repeated friction across the entire production set.</p><p>This is exactly the kind of situation where automation becomes valuable.</p><hr /><h2 data-heading="The Limitation of Preflight Detection">The Limitation of Preflight Detection</h2><p><strong>Preflight detects missing links, but it does not remove the manual tracing step.</strong></p><p>InDesign’s Preflight feature can detect missing links reliably.</p><p>However, it does not immediately provide the information operators often need most:<br />
+the <strong>expected file path</strong> of the missing asset.</p><p>To resolve the issue, the operator typically has to:</p><ol>
+<li>open the <strong>Links panel</strong></li>
+<li>inspect the link information</li>
+<li>identify the original file location</li>
+<li>attempt to relink manually</li>
+</ol><p>This extra tracing step becomes repetitive when the same issue appears across multiple layouts.</p><hr /><h2 data-heading="The Packaging Alternative">The Packaging Alternative</h2><p><strong>Packaging avoids missing links but introduces asset maintenance overhead.</strong></p><p>Another common workaround is to package the document.</p><p>Packaging gathers all linked assets into a single folder together with the document.</p><p>This can prevent missing link problems, but it also introduces new complications:</p><ul>
+<li>assets are duplicated<br />
+</li>
+<li>shared resources become harder to update<br />
+</li>
+<li>folder structures grow more complex<br />
+</li>
+</ul><p>In multilingual projects, this becomes particularly problematic when shared assets change.</p><p>If a common asset — such as a logo or illustration — is updated, every packaged language folder may need to be updated manually.</p><p>In other words, the problem shifts from <strong>link detection</strong> to <strong>asset maintenance</strong>.</p><hr /><h2 data-heading="A Minimal Script: Missing Link Reporter">A Minimal Script: Missing Link Reporter</h2><p><strong>This removes the repeated step of manually tracing where a file should be.</strong></p><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/KXxkwIhdslA" width="320" youtube-src-id="KXxkwIhdslA"></iframe></div><br /><p>The goal here is not to automatically repair links.</p><p>Instead, the goal is to remove one repeated manual step:<br />
+<strong>identifying where the missing file was expected to be located.</strong></p><p>A small helper script can scan the document and generate a simple report of missing links.</p><hr /><h2 data-heading="Script Example">Script Example</h2>
+<div><div style="background: rgb(31, 41, 55); border-radius: 10px; border: 1px solid rgb(55, 65, 81); color: #f9fafb; margin: 20px 0px; padding: 18px;">
+  <div style="color: #f9fafb; font-size: 18px; font-weight: 700; margin-bottom: 8px;">
+    Want the ready-to-use version?
+  </div>
+  <div style="color: #d1d5db; font-size: 15px; line-height: 1.6; margin-bottom: 14px;">
+    Skip the copy-paste and download the script directly from Gumroad.
+  </div>
+  <a href="https://linguistcoder.gumroad.com/l/missing-links-report" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
+    Download on Gumroad (Free) →
+  </a>
+</div>
+<pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
+
+if (app.documents.length === 0) {
+    alert("Open a document first.");
+    exit();
+}
+
+var doc = app.activeDocument;
+var links = doc.links;
+var report = "";
+var missingCount = 0;
+
+// Header
+report += "Missing Links Report\r";
+report += "Document: " + (doc.name || "Untitled") + "\r";
+report += "Generated: " + new Date().toString() + "\r";
+report += "----------------------------------------\r\r";
+
+// Scan links
+for (var i = 0; i &lt; links.length; i++) {
+    var link = links[i];
+
+    if (link.status === LinkStatus.LINK_MISSING) {
+        missingCount++;
+        report += "Link name: " + (link.name || "(no name)") + "\r";
+        report += "Expected path:\r";
+        report += (link.filePath != null ? link.filePath : "(unknown)") + "\r";
+        report += "----------------------------------------\r\r";
+    }
+}
+
+if (missingCount === 0) {
+    alert("No missing links found.");
+    exit();
+}
+
+// Save report: use document folder only if document has been saved
+var reportFile;
+var docPath = doc.filePath;
+
+if (docPath &amp;&amp; docPath !== "") {
+    var docFolder = new Folder(docPath);
+    reportFile = new File(docFolder.fsName + "/Missing_Links_Report.txt");
+} else {
+    reportFile = File.saveDialog("Save Missing Links Report As", "Missing_Links_Report.txt");
+    if (reportFile === null) {
+        alert("Save cancelled.");
+        exit();
+    }
+}
+
+reportFile.encoding = "UTF-8";
+
+if (reportFile.open("w")) {
+    reportFile.write(report);
+    reportFile.close();
+    alert("Report created:\r" + reportFile.fsName);
+    reportFile.execute();
+} else {
+    alert("Failed to create the report file.");
+}
+</code>
+</pre>
+<p>This script focuses on only two pieces of information:</p><ul>
+<li>link name<br />
+</li>
+<li>expected file path<br />
+</li>
+</ul><p>This is usually enough to quickly identify the missing asset using the Links panel.</p><p>After generating the report, the script automatically opens the text file using the system’s default application (for example, Notepad on Windows).</p><hr /><h2 data-heading="Example Output">Example Output</h2><p>A simple report might look like this:</p><p>Missing Links Report<br />
+Document: example.indd<br />
+Generated: YYYY-MM-DD  </p><hr /><p>Link name: image_023.tif<br />
+Expected path:<br />
+C:\project\images\image_023.tif  </p><hr /><p>Link name: diagram_A3.ai<br />
+Expected path:<br />
+D:\assets\illustrations\diagram_A3.ai</p><p>With this information available immediately, operators no longer need to manually trace the original file location through the Links panel.</p><hr /><h2 data-heading="Why Minimal Automation Works">Why Minimal Automation Works</h2><p><strong>Small scripts often remove the largest repeated friction.</strong></p><p>The interesting thing about this example is that the script itself is extremely simple.</p><p>It does not:</p><ul>
+<li>repair links automatically<br />
+</li>
+<li>search folders<br />
+</li>
+<li>perform batch relinking<br />
+</li>
+<li>modify document structure<br />
+</li>
+</ul><p>Yet it still removes a repeated manual step that occurs frequently in multilingual production.</p><p>Automation does not need to be complex to be useful.<br />
+It only needs to remove friction that appears repeatedly.</p><hr /><h2 data-heading="Conclusion">Conclusion</h2><p><strong>Automation becomes valuable when small friction repeats across projects.</strong></p><p>In multilingual workflows, many tasks are not difficult.<br />
+They are simply repeated.</p><p>A small issue can multiply across:</p><ul>
+<li>languages<br />
+</li>
+<li>documents<br />
+</li>
+<li>revisions<br />
+</li>
+</ul><p>When this happens, even small improvements can produce significant time savings.</p><p>This is why <strong>High Frequency tasks</strong> are often the best place to start automation.</p><p>High Frequency is often the easiest signal to recognize — but it is only one part of the automation decision.</p><p><!--obsidian-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</p><p>In the next article, we will explore the second criterion from the framework:<br />
+<strong>High Instability</strong>, and why layout behavior after translation often becomes unpredictable.</p></div>

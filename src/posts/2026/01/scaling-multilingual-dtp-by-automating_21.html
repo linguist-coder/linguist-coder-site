@@ -1,0 +1,260 @@
+---
+title: "Scaling Multilingual DTP by Automating Mandatory Text Checks in PDFs Before Delivery"
+date: 2026-01-21T16:54:00.000-08:00
+updated: 2026-03-26T13:32:51.141-07:00
+permalink: "/2026/01/scaling-multilingual-dtp-by-automating_21.html"
+tags: []
+bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-6077471560366747553"
+layout: post.njk
+---
+<p>&nbsp;In multilingual documentation workflows, the final deliverable is often a PDF.</p><p data-end="380" data-start="199">
+Even when layout, links, and styles are correct, a document can still fail for a very simple reason:</p>
+<p data-end="421" data-start="382"><strong data-end="421" data-start="382">a required text string is missing.</strong></p>
+<p data-end="448" data-start="423">Typical examples include:</p>
+<ul data-end="581" data-start="449">
+<li data-end="484" data-start="449">
+<p data-end="484" data-start="451">Safety headings such as <em data-end="484" data-start="475">Warning</em></p>
+</li>
+<li data-end="529" data-start="485">
+<p data-end="529" data-start="487">Regulatory sections such as <em data-end="529" data-start="515">Intended Use</em></p>
+</li>
+<li data-end="552" data-start="530">
+<p data-end="552" data-start="532">Copyright statements</p>
+</li>
+<li data-end="581" data-start="553">
+<p data-end="581" data-start="555">Document or revision codes</p>
+</li>
+</ul>
+<p data-end="674" data-start="583">These are easy to overlook—especially when you deliver many PDFs across multiple languages.</p>
+<hr data-end="1598" data-start="1595" />
+<h2 data-end="1645" data-start="1600">Why I built this script in the first place</h2>
+<p data-end="1794" data-start="1647">In my experience, many PDF proofreading or QA tools are good at finding <strong data-end="1738" data-start="1719">forbidden words&nbsp;</strong>(for example, detecting if <em data-end="1775" data-start="1768">Draft</em> is still present).</p>
+<p data-end="1896" data-start="1796">However, tools that can reliably detect when a <strong data-end="1873" data-start="1843">required text is missing</strong> are surprisingly rare.</p>
+<p data-end="1923" data-start="1898">When such tools do exist:</p>
+<ul data-end="2005" data-start="1924">
+<li data-end="1967" data-start="1924">
+<p data-end="1967" data-start="1926">they are often enterprise-level solutions</p>
+</li>
+<li data-end="2005" data-start="1968">
+<p data-end="2005" data-start="1970">and they are usually very expensive</p>
+</li>
+</ul>
+<p data-end="2108" data-start="2007">That gap is what motivated me to create a small, purpose-built script that answers a simple question:</p>
+<blockquote data-end="2167" data-start="2110">
+<p data-end="2167" data-start="2112">“Is this required text actually present in every PDF?”</p>
+</blockquote>
+<hr data-end="2172" data-start="2169" />
+<h2 data-end="2200" data-start="2174">The automation approach</h2>
+<p data-end="2236" data-start="2202">The basic idea is straightforward:</p>
+<ol data-end="2411" data-start="2238">
+<li data-end="2269" data-start="2238">
+<p data-end="2269" data-start="2241">Extract text from each PDF</p>
+</li>
+<li data-end="2324" data-start="2270">
+<p data-end="2324" data-start="2273">Search for a predefined list of required texts</p>
+</li>
+<li data-end="2360" data-start="2325">
+<p data-end="2360" data-start="2328">Report which PDFs pass or fail</p>
+</li>
+<li data-end="2411" data-start="2361">
+<p data-end="2411" data-start="2364">Save the results as a log file for traceability</p>
+</li>
+</ol>
+<p data-end="2504" data-start="2413">This does not replace full QA.<br data-end="2446" data-start="2443" />
+It provides a fast, repeatable safety net before delivery.</p>
+<hr data-end="2509" data-start="2506" />
+<h2 data-end="2563" data-start="2511">Minimal script example (folder-based batch check)</h2>
+<p data-end="2654" data-start="2565">⚠ <strong data-end="2597" data-start="2567">Important note for readers</strong><br data-end="2600" data-start="2597" />
+This example is written in <strong data-end="2637" data-start="2627">Python</strong>, not JavaScript.</p>
+<p data-end="2720" data-start="2656">If you mainly work with InDesign scripting, this is intentional:</p>
+<ul data-end="2840" data-start="2721">
+<li data-end="2781" data-start="2721">
+<p data-end="2781" data-start="2723">InDesign scripts are ideal for layout and asset automation</p>
+</li>
+<li data-end="2840" data-start="2782">
+<p data-end="2840" data-start="2784">PDF-level QA is often easier and more reliable in Python</p>
+</li>
+</ul>
+<p data-end="2871" data-start="2842">To run this script, you need:</p>
+<ul data-end="2987" data-start="2872">
+<li data-end="2894" data-start="2872">
+<p data-end="2894" data-start="2874">Python 3.10 or later</p>
+</li>
+<li data-end="2987" data-start="2895">
+<p data-end="2919" data-start="2897">The following modules:</p>
+<ul data-end="2987" data-start="2922">
+<li data-end="2942" data-start="2922">
+<p data-end="2942" data-start="2924"><code data-end="2933" data-start="2924">PyMuPDF</code> (<code data-end="2941" data-start="2935">fitz</code>)</p>
+</li>
+<li data-end="2987" data-start="2945">
+<p data-end="2987" data-start="2947"><code data-end="2956" data-start="2947">tkinter</code> (usually included with Python)</p>
+</li>
+</ul>
+</li>
+</ul>
+<p data-end="3017" data-start="2989">Module installation example:</p>
+<pre class="overflow-visible! px-0!" data-end="3045" data-start="3018"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre!"><span class="hljs-attribute">pip</span> install pymupdf
+</code></div></div></pre>
+<hr data-end="3050" data-start="3047" />
+<h3 data-end="3095" data-start="3052">Example required texts (sample only)</h3>
+<pre class="overflow-visible! px-0!" data-end="3194" data-start="3097"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-python">NEEDLES = [
+    <span class="hljs-string">"Warning"</span>,
+    <span class="hljs-string">"Intended Use"</span>,
+    <span class="hljs-string">"Copyright"</span>,
+    <span class="hljs-string">"1234-5678A"</span>,
+]
+</code></div></div></pre>
+<p data-end="3317" data-start="3196">These strings are intentionally generic and represent typical mandatory elements in technical or regulated documentation.</p>
+<hr data-end="3322" data-start="3319" />
+<h3 data-end="3362" data-start="3324">Python sample script (MIT License)</h3>
+<pre class="overflow-visible! px-0!" data-end="5869" data-start="3364"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>from __future__ import annotations
+
+from pathlib import Path
+import re
+import time
+import fitz  # PyMuPDF
+import tkinter as tk
+from tkinter import filedialog
+
+# Sample mandatory strings (English-only example)
+NEEDLES = [
+    "Warning",
+    "Intended Use",
+    "Copyright",
+    "1234-5678A",
+]
+
+LOG_FILENAME = "pdf_mandatory_text_check_results.txt"
+
+
+def normalize(s: str) -&gt; str:
+    """
+    Minimal normalization for robust matching:
+    - lowercase comparison
+    - collapsed whitespace
+    """
+    s = s.lower()
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def select_target_dir() -&gt; Path | None:
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+
+    folder = filedialog.askdirectory(
+        title="Select a folder containing PDFs"
+    )
+    root.destroy()
+
+    return Path(folder) if folder else None
+
+
+def pdf_contains_all_text(
+    pdf_path: Path,
+    needles: list[str],
+) -&gt; tuple[bool, list[str], str | None]:
+    """
+    Returns:
+      ok: bool
+      missing: list[str]
+      error: str | None
+    """
+    try:
+        doc = fitz.open(pdf_path)
+        texts: list[str] = []
+        for page in doc:
+            texts.append(page.get_text("text"))
+        all_text = normalize("\n".join(texts))
+    except Exception as e:
+        return False, needles, f"{type(e).__name__}: {e}"
+
+    missing: list[str] = []
+    for needle in needles:
+        if normalize(needle) not in all_text:
+            missing.append(needle)
+
+    return len(missing) == 0, missing, None
+
+
+def main() -&gt; int:
+    target_dir = select_target_dir()
+    if target_dir is None:
+        print("Cancelled (no folder selected).")
+        time.sleep(5)
+        return 0
+
+    pdfs = sorted(target_dir.glob("*.pdf"))
+    if not pdfs:
+        print("No PDFs found in the selected folder.")
+        time.sleep(5)
+        return 0
+
+    log_path = target_dir / LOG_FILENAME
+    lines: list[str] = []
+
+    lines.append("PDF Mandatory Text Check Results")
+    lines.append(f"Folder: {target_dir}")
+    lines.append(f"Mandatory strings: {NEEDLES}")
+    lines.append("")
+
+    has_ng = False
+
+    print("Results:")
+    for pdf in pdfs:
+        ok, missing, error = pdf_contains_all_text(pdf, NEEDLES)
+
+        if error:
+            has_ng = True
+            msg = f"{pdf.name}: ERROR  {error}"
+        elif ok:
+            msg = f"{pdf.name}: OK"
+        else:
+            has_ng = True
+            msg = f"{pdf.name}: NG  Missing: {missing}"
+
+        print(msg)
+        lines.append(msg)
+
+    log_path.write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8"
+    )
+
+    print(f"\nLog written to: {log_path}")
+    print("\nProcess completed.")
+    print("This window will close automatically in 5 seconds...")
+    time.sleep(5)
+
+    return 1 if has_ng else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())</code></pre><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-python"><hr data-end="679" data-start="676" style="font-family: &quot;Noto Sans JP&quot;; white-space: normal;" /><blockquote><strong style="font-family: &quot;Noto Sans JP&quot;; white-space: normal;">Note:</strong><span style="font-family: Noto Sans JP;"><span style="white-space: normal;"><br /></span></span><blockquote><blockquote><span style="font-family: Noto Sans JP;"><span style="white-space: normal;">This script is intentionally simplified and provided as a sample.</span></span></blockquote><blockquote><span style="font-family: Noto Sans JP;"><span style="white-space: normal;">Because the required texts are defined in English, it cannot be used as-is for full multilingual validation.</span></span></blockquote><blockquote><span style="font-family: Noto Sans JP;"><span style="white-space: normal;">In production, the validation logic itself is typically shared, while the rule sets are switched automatically by detecting the target language from the file name or from the PDF content.</span></span></blockquote></blockquote></blockquote></code></div></div></pre>
+<hr data-end="5874" data-start="5871" />
+<h2 data-end="5918" data-start="5876">What I add in real production workflows</h2>
+<p data-end="5984" data-start="5920">In real projects, this kind of checker is usually extended with:</p>
+<ul data-end="6166" data-start="5985">
+<li data-end="6026" data-start="5985">
+<p data-end="6026" data-start="5987">Language-specific required text sets</p>
+</li>
+<li data-end="6061" data-start="6027">
+<p data-end="6061" data-start="6029">CSV reports for PMs and QA teams</p>
+</li>
+<li data-end="6094" data-start="6062">
+<p data-end="6094" data-start="6064">Additional PDF checks (file naming, etc)</p></li>
+</ul>
+<p data-end="6247" data-start="6168">This article intentionally focuses on the <strong data-end="6246" data-start="6210">simplest reliable starting point</strong>.</p>
+<hr data-end="6252" data-start="6249" />
+<h2 data-end="6273" data-start="6254">Related articles</h2>
+<p data-end="6367" data-start="6275">If you are interested in scaling multilingual DTP workflows, you may also find these useful:</p>
+<ul data-end="6622" data-start="6369">
+<li data-end="6458" data-start="6369">
+<p data-end="6458" data-start="6371"><em data-end="6456" data-start="6371"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating.html">Scaling Multilingual DTP by Automating Trados-Ready IDML Export from InDesign Books</a></em></p>
+</li>
+<li data-end="6536" data-start="6459">
+<p data-end="6536" data-start="6461"><em data-end="6534" data-start="6461"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_15.html">Scaling Multilingual DTP by Automating Style Reloads Before Translation</a></em></p>
+</li>
+<li data-end="6622" data-start="6537">
+<p data-end="6622" data-start="6539"><em data-end="6622" data-start="6539"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-automating_18.html">Scaling Multilingual DTP by Automating Language-Based Image Relinking in InDesign</a></em></p></li><li data-end="6622" data-start="6537"><p data-end="6622" data-start="6539"><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html">Scaling Multilingual DTP by Eliminating Manual InDesign Text Overset Fixes</a><br /></p></li></ul>
