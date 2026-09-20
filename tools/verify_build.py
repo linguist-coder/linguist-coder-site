@@ -12,7 +12,7 @@ Checks
  6. a month archive exists for every YYYY/MM that has a post
  7. no reference to blogger.googleusercontent.com or blogspot.com remains anywhere in _site
  8. every same-site link in a post body (https://www.linguist-coder.com/... or /...) resolves to a file in _site
- 9. CNAME, robots.txt, feed.xml, 404.html exist
+ 9. robots.txt, feed.xml, 404.html exist (CNAME only checked if present)
 """
 import json, pathlib, re, sys, urllib.parse
 
@@ -82,10 +82,12 @@ for f in SITE.rglob("*"):
         if "blogger.googleusercontent.com" in t or "blogspot.com" in t:
             fail(f"blogger reference remains in {f.relative_to(SITE)}")
 
-for name in ("CNAME", "robots.txt", "feed.xml", "404.html", "index.html"):
+for name in ("robots.txt", "feed.xml", "404.html", "index.html"):
     if not (SITE / name).is_file(): fail(f"{name} missing")
 cn = SITE / "CNAME"
+# CNAME is added only at DNS switch time (step 4 of PLAN); before that the site is previewed at linguist-coder.github.io
 if cn.is_file() and cn.read_text().strip() != "www.linguist-coder.com": fail("CNAME content wrong")
+if not cn.is_file(): print("note: no CNAME (expected before the DNS switch)")
 
 print(f"posts checked: {len(man)}  labels: {len(labels)}  months: {len(months)}  failures: {len(fails)}")
 sys.exit(1 if fails else 0)
