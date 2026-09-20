@@ -85,9 +85,9 @@ for f in SITE.rglob("*"):
 for name in ("robots.txt", "feed.xml", "404.html", "index.html"):
     if not (SITE / name).is_file(): fail(f"{name} missing")
 cn = SITE / "CNAME"
-# CNAME is added only at DNS switch time (step 4 of PLAN); before that the site is previewed at linguist-coder.github.io
+# CNAME is not needed on Cloudflare Pages; the check only guards against a wrong value if one is ever added
 if cn.is_file() and cn.read_text().strip() != "www.linguist-coder.com": fail("CNAME content wrong")
-if not cn.is_file(): print("note: no CNAME (expected before the DNS switch)")
+
 
 print(f"posts checked: {len(man)}  labels: {len(labels)}  months: {len(months)}  failures: {len(fails)}")
 sys.exit(1 if fails else 0)
