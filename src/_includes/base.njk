@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if exactTitle %}{{ title }}{% elif title %}{{ title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+  {% if bloggerId %}
+    {% set postBody = content | bodyFromPage %}
+    {% set postDescription = postBody | excerpt %}
+    {% set image = postBody | firstImage %}
+  <meta name="description" content="{{ postDescription }}">
+  <link rel="canonical" href="{{ site.url }}{{ permalink }}">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ postDescription }}">
+  <meta property="og:url" content="{{ site.url }}{{ permalink }}">
+  {% if image %}<meta property="og:image" content="{{ image | absoluteUrl }}">{% endif %}
+  <meta name="twitter:card" content="{% if image %}summary_large_image{% else %}summary{% endif %}">
+  <script type="application/ld+json">{{ {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "datePublished": date | isoDate,
+    "dateModified": updated | isoDate,
+    "author": { "@type": "Person", "name": "Linguist Coder" },
+    "mainEntityOfPage": site.url + permalink
+  } | json | safe }}</script>
+  {% elif description %}<meta name="description" content="{{ description }}">{% endif %}
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5R5VM5C4L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W5R5VM5C4L');
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-title" href="/">{{ site.title }}</a>
+    <a class="site-subtitle" href="/">{{ site.subtitle }}</a>
+  </header>
+  <div class="site-grid">
+    <main id="main-content">{{ content | safe }}</main>
+    {% include "sidebar.njk" %}
+  </div>
+  <footer class="site-footer"><span>© Linguist Coder</span><a href="/feed.xml">Atom feed</a></footer>
+</body>
+</html>

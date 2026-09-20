@@ -1,0 +1,35 @@
+<aside class="sidebar" aria-label="Sidebar">
+  <section>
+    <h2>Start here</h2>
+    <ol class="start-list">
+      <li><a href="/2026/01/how-to-run-javascript-in-adobe-indesign.html">How to run a script in InDesign</a></li>
+      <li><a href="/2026/07/your-first-indesign-script-which-pages.html">Which pages have overset text?</a></li>
+      <li><a href="/2026/09/your-second-indesign-script-condensing.html">Condensing text until it fits</a></li>
+      <li><a href="/2026/07/when-indesign-fails-to-export-start-by.html">When InDesign fails to export</a></li>
+      <li><a href="/2026/01/scaling-multilingual-dtp-maintenance.html">Cleaning up a file with IDML</a></li>
+      <li><a href="/2026/01/scaling-multilingual-dtp-by-automating.html">Trados-ready IDML export from Books</a></li>
+      <li><a href="/2026/09/why-idml-formatting-can-produce.html">Why IDML produces translation tags</a></li>
+      <li><a href="/2026/09/comparing-indesign-files-after.html">Comparing files after translation</a></li>
+      <li><a href="/2026/08/indesign-will-not-warn-you-about.html">External links InDesign won't warn about</a></li>
+      <li><a href="/2025/06/close-all-indesign-files-with-one-click.html">Close all InDesign files with one click</a></li>
+    </ol>
+  </section>
+  <section>
+    <h2>Labels</h2>
+    <ul class="plain-list">
+      {% for label in collections.posts | allLabels %}<li><a href="/search/label/{{ label.name }}/">{{ label.name }}</a> <span>({{ label.count }})</span></li>{% endfor %}
+    </ul>
+  </section>
+  <section>
+    <h2>Archive</h2>
+    <ul class="plain-list">
+      {% for month in collections.posts | allMonths %}<li><a href="/{{ month.value }}/">{{ month.name }}</a> <span>({{ month.count }})</span></li>{% endfor %}
+    </ul>
+  </section>
+  <section>
+    <h2>About</h2>
+    <h3>Linguist Coder</h3>
+    <p>I design scalable workflows for multilingual production. 15+ years in translation, DTP, and technical documentation. Focused on structural automation and workflow architecture.</p>
+    <p class="social-links"><a href="https://x.com/linguist_coder">X</a><a href="https://github.com/linguist-coder">GitHub</a></p>
+  </section>
+</aside>

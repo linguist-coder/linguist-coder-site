@@ -1,0 +1,13 @@
+---
+layout: base.njk
+pagination:
+  data: site.labels
+  size: 1
+  alias: label
+permalink: "/search/label/{{ label }}/index.html"
+eleventyComputed:
+  title: "Posts labeled {{ label }}"
+---
+<header class="page-header"><h1>Posts labeled “{{ label }}”</h1></header>
+{% set listedPosts = collections.posts | withLabel(label) %}
+{% include "post-list.njk" %}
