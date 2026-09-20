@@ -46,7 +46,7 @@ for p in man:
     if not m: fail(f"no BODY markers in {p['path']}"); continue
     if m.group(1) != body:
         fail(f"body differs in {p['path']} (rendered {len(m.group(1))} chars vs source {len(body)})")
-    for href in re.findall(r'href="([^"]+)"', body):
+    for href in re.findall(r'<a[^>]*href="([^"]+)"', body):
         if href.startswith("https://www.linguist-coder.com/"):
             href = href[len("https://www.linguist-coder.com"):]
         if href.startswith("/") and not resolve(href):

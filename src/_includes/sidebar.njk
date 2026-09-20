@@ -17,7 +17,7 @@
   <section>
     <h2>Labels</h2>
     <ul class="plain-list">
-      {% for label in collections.posts | allLabels %}<li><a href="/search/label/{{ label.name }}/">{{ label.name }}</a> <span>({{ label.count }})</span></li>{% endfor %}
+      {% for label in collections.posts | allLabels %}<li><a href="/search/label/{{ label.name | urlencode }}/">{{ label.name }}</a> <span>({{ label.count }})</span></li>{% endfor %}
     </ul>
   </section>
   <section>

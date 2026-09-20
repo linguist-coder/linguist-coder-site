@@ -6,7 +6,7 @@ exactTitle: true
   <header class="post-header">
     <h1>{{ title }}</h1>
     <p class="post-date"><time datetime="{{ date | isoDate }}">{{ date | readableDate }}</time>{% if updated | isLaterDay(date) %}<span>Updated {{ updated | readableDate }}</span>{% endif %}</p>
-    {% if tags.length %}<ul class="post-labels" aria-label="Labels">{% for label in tags %}<li><a href="/search/label/{{ label }}/">{{ label }}</a></li>{% endfor %}</ul>{% endif %}
+    {% if tags.length %}<ul class="post-labels" aria-label="Labels">{% for label in tags %}<li><a href="/search/label/{{ label | urlencode }}/">{{ label }}</a></li>{% endfor %}</ul>{% endif %}
   </header>
   <div class="post-body"><!--BODY-START-->{{ content | safe }}<!--BODY-END--></div>
   {% set adjacent = collections.posts | neighbors(page.url) %}
