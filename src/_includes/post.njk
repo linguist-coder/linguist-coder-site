@@ -9,6 +9,7 @@ exactTitle: true
     {% if tags.length %}<ul class="post-labels" aria-label="Labels">{% for label in tags %}<li><a href="/search/label/{{ label | urlencode }}/">{{ label }}</a></li>{% endfor %}</ul>{% endif %}
   </header>
   <div class="post-body"><!--BODY-START-->{{ content | safe }}<!--BODY-END--></div>
+  <p class="post-share">Share: <a href="https://x.com/intent/post?url={{ (site.url + page.url) | urlencode }}&text={{ title | urlencode }}" rel="noopener">X</a> <a href="mailto:?subject={{ title | urlencode }}&body={{ (site.url + page.url) | urlencode }}">Email</a></p>
   {% set adjacent = collections.posts | neighbors(page.url) %}
   <nav class="post-navigation" aria-label="Post navigation">
     {% if adjacent.previous %}<a rel="prev" href="{{ adjacent.previous.url }}"><span>Previous</span>{{ adjacent.previous.data.title }}</a>{% endif %}

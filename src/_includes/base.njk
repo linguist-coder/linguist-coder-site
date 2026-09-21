@@ -39,8 +39,10 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="site-title" href="/">{{ site.title }}</a>
-    <a class="site-subtitle" href="/">{{ site.subtitle }}</a>
+    <div class="site-header-inner">
+      <a class="site-title" href="/">{{ site.title }}</a>
+      <a class="site-subtitle" href="/">{{ site.subtitle }}</a>
+    </div>
   </header>
   <div class="site-grid">
     <main id="main-content">{{ content | safe }}</main>

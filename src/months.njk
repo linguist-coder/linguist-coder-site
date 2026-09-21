@@ -6,9 +6,8 @@ pagination:
   alias: month
 permalink: "/{{ month }}/index.html"
 eleventyComputed:
-  title: "Archive: {{ month }}"
+  title: "{{ month | monthName }}"
 ---
 {% set listedPosts = collections.posts | inMonth(month) %}
-{% set monthInfo = (collections.posts | allMonths) | selectattr("value", "equalto", month) | first %}
-<header class="page-header"><h1>{{ monthInfo.name }}</h1></header>
+<header class="page-header"><h1>{{ month | monthName }}</h1></header>
 {% include "post-list.njk" %}

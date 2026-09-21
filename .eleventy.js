@@ -91,6 +91,15 @@ module.exports = function (eleventyConfig) {
     const match = String(html).match(/<img\b[^>]*\bsrc=["']([^"']+)["']/i);
     return match ? match[1] : "";
   });
+  // Thumbnail for lists: first <img> in the body, else the YouTube poster of the first embedded video
+  // (this is what Blogger's media:thumbnail did for these posts), else nothing.
+  eleventyConfig.addFilter("thumbnail", (html = "") => {
+    const img = String(html).match(/<img\b[^>]*\bsrc=["']([^"']+)["']/i);
+    if (img) return img[1];
+    const yt = String(html).match(/youtube(?:-nocookie)?\.com\/embed\/([A-Za-z0-9_-]{6,})/i);
+    if (yt) return `https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg`;
+    return "";
+  });
   eleventyConfig.addFilter("newest", newest);
   eleventyConfig.addFilter("withLabel", (posts, label) =>
     newest(posts.filter((post) => Array.isArray(post.data.tags) && post.data.tags.includes(label)))
@@ -117,6 +126,11 @@ module.exports = function (eleventyConfig) {
         .format(new Date(`${year}-${month}-01T00:00:00Z`));
       return { value, name, count };
     });
+  });
+  eleventyConfig.addFilter("monthName", (value) => {
+    const [year, month] = String(value).split("/");
+    return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" })
+      .format(new Date(`${year}-${month}-01T00:00:00Z`));
   });
   eleventyConfig.addFilter("neighbors", (posts, url) => {
     const ordered = [...posts].sort((a, b) => a.date - b.date);
