@@ -60,7 +60,8 @@ def main():
                 # Key by the trailing filename so the anchor (full size) and the img (thumb) share one local file
                 # when they point at the same source; download the largest requested variant.
                 fname = u.rsplit("/", 1)[-1]
-                key = fname
+                # new-style URLs (…/img/a/<id>=w188-h78) carry the size as a suffix on the id: strip it for the key
+                key = fname.split("=")[0]
                 if key not in imgmap:
                     n += 1
                     data, ctype = fetch(u)
@@ -69,8 +70,9 @@ def main():
                     local.write_bytes(data)
                     imgmap[key] = {"local": f"/images/{yyyy}/{mm}/{slug}/{n:02d}{ext}", "sources": []}
                 imgmap[key]["sources"].append(u)
+            # replace longer URLs first: "<id>" is a prefix of "<id>=w188-h78" and would leave the suffix behind
             for key, v in imgmap.items():
-                for u in v["sources"]:
+                for u in sorted(v["sources"], key=len, reverse=True):
                     body = body.replace(u, v["local"])
         # sanity: nothing from the image host may remain
         assert IMG_HOST not in body, path
