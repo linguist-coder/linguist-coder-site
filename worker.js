@@ -10,6 +10,7 @@ export default {
     // every other hostname (www, workers.dev previews) is served as is.
     if (url.hostname === "linguist-coder.com") {
       url.hostname = "www.linguist-coder.com";
+      url.protocol = "https:";
       return Response.redirect(url.toString(), 301);
     }
     const p = url.pathname;
