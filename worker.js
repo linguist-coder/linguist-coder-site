@@ -6,6 +6,12 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // Apex -> www, one 301 hop (Blogger did the same). Only the bare domain is redirected;
+    // every other hostname (www, workers.dev previews) is served as is.
+    if (url.hostname === "linguist-coder.com") {
+      url.hostname = "www.linguist-coder.com";
+      return Response.redirect(url.toString(), 301);
+    }
     const p = url.pathname;
     const lastSegment = p.slice(p.lastIndexOf("/") + 1);
     let candidate = null;
