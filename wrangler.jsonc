@@ -1,0 +1,17 @@
+{
+  // Cloudflare Worker with static assets. Chosen over Cloudflare Pages because Pages always
+  // redirects /foo.html to /foo (308), which would put a redirect on every Blogger-era URL.
+  // html_handling "none" serves files at their exact paths; worker.js fills in the one thing
+  // "none" drops: serving /dir/index.html for /dir/ and /dir (200, no redirect).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "linguist-coder-site",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./_site",
+    "binding": "ASSETS",
+    "html_handling": "none",
+    "not_found_handling": "404-page"
+  },
+  "observability": { "enabled": true }
+}
