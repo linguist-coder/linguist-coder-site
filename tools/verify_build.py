@@ -13,6 +13,10 @@ Checks
  7. no reference to blogger.googleusercontent.com or blogspot.com remains anywhere in _site
  8. every same-site link in a post body (https://www.linguist-coder.com/... or /...) resolves to a file in _site
  9. robots.txt, feed.xml, 404.html exist (CNAME only checked if present)
+10. every post page has one build-time "Related posts" block outside the BODY markers, with 1-3
+    same-site links that resolve, none of which repeats a link already in the body; the block
+    never leaks into feed.json / feed.xml; every post is linked from at least one other post
+    (body link or Related block)
 """
 import json, pathlib, re, sys, urllib.parse
 
@@ -81,6 +85,34 @@ for f in SITE.rglob("*"):
         t = f.read_text(encoding="utf-8", errors="replace")
         if "blogger.googleusercontent.com" in t or "blogspot.com" in t:
             fail(f"blogger reference remains in {f.relative_to(SITE)}")
+
+inbound = {p["path"]: 0 for p in man}
+for p in man:
+    f = SITE / p["path"].lstrip("/")
+    if not f.is_file(): continue
+    html = f.read_text(encoding="utf-8")
+    blocks = re.findall(r'<section class="post-related".*?</section>', html, re.S)
+    if len(blocks) != 1: fail(f"expected 1 related block in {p['path']}, found {len(blocks)}"); continue
+    if blocks[0] in (bodies.get(p["path"]) or ""): fail(f"related block leaked into body of {p['path']}")
+    links = re.findall(r'href="([^"]+)"', blocks[0])
+    if not 1 <= len(links) <= 3: fail(f"related block in {p['path']} has {len(links)} links")
+    body_links = set()
+    for href in re.findall(r'<a[^>]*href="([^"]+)"', bodies[p["path"]]):
+        if href.startswith("https://www.linguist-coder.com/"): href = href[len("https://www.linguist-coder.com"):]
+        body_links.add(href.split("#")[0].split("?")[0])
+        if href.startswith("/") and href in inbound: inbound[href] += 1
+    for href in links:
+        if href == p["path"]: fail(f"related block in {p['path']} links to itself")
+        if not resolve(href): fail(f"broken related link in {p['path']}: {href}")
+        if href in body_links: fail(f"related block in {p['path']} repeats a body link: {href}")
+        if href in inbound: inbound[href] += 1
+for path, n in inbound.items():
+    if n == 0: fail(f"no other post links to {path}")
+# negative control for check 10: a page without the block must fail
+assert not re.findall(r"<section class=\"post-related\".*?</section>", (SITE / "index.html").read_text(encoding="utf-8"), re.S), "control: index.html should not carry a related block"
+for name in ("feed.json", "feed.xml"):
+    f = SITE / name
+    if f.is_file() and "related-posts-heading" in f.read_text(encoding="utf-8"): fail(f"related block leaked into {name}")
 
 for name in ("robots.txt", "feed.xml", "404.html", "index.html"):
     if not (SITE / name).is_file(): fail(f"{name} missing")

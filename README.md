@@ -5,6 +5,7 @@ Eleventy, hosted as a Cloudflare Worker with static assets (`wrangler.jsonc` + `
 
 - `src/posts/YYYY/MM/*.html` — post bodies as exported from Blogger (front matter + verbatim HTML). Do not reformat.
 - `src/images/` — images self-hosted (downloaded from blogger.googleusercontent.com by `tools/export_blogger.py`).
+- `lib/related.js` — build-time "Related posts" block (TF-IDF over title + labels + body, 3 links, skips links already in the body, orphan rescue so every post has an inbound link). Rendered by `src/_includes/post.njk` outside the BODY markers, so bodies and feeds stay byte-identical. `node lib/related.js` prints the picks. Curated first picks live in `PINS`.
 - `_baseline/` — the fetched feed and a manifest with sha256 of every body. `tools/verify_build.py` checks the build against it.
 - Design and decisions: executive-assistant repo `references/blog-migration/`.
 

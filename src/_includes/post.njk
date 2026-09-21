@@ -10,6 +10,11 @@ exactTitle: true
   </header>
   <div class="post-body"><!--BODY-START-->{{ content | safe }}<!--BODY-END--></div>
   <p class="post-share">Share: <a href="https://x.com/intent/post?url={{ (site.url + page.url) | urlencode }}&text={{ title | urlencode }}" rel="noopener">X</a> <a href="mailto:?subject={{ title | urlencode }}&body={{ (site.url + page.url) | urlencode }}">Email</a></p>
+  {% set relatedPosts = collections.posts | related(page.url) %}
+  {% if relatedPosts.length %}<section class="post-related" aria-labelledby="related-posts-heading">
+    <h2 id="related-posts-heading">Related posts</h2>
+    <ul>{% for item in relatedPosts %}<li><a href="{{ item.url }}">{{ item.title }}</a></li>{% endfor %}</ul>
+  </section>{% endif %}
   {% set adjacent = collections.posts | neighbors(page.url) %}
   <nav class="post-navigation" aria-label="Post navigation">
     {% if adjacent.previous %}<a rel="prev" href="{{ adjacent.previous.url }}"><span>Previous</span>{{ adjacent.previous.data.title }}</a>{% endif %}

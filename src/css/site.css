@@ -47,6 +47,10 @@ h2 { font-size: 1.45rem; }
 .post-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
 .post-body th, .post-body td { padding: .45rem .6rem; border: 1px solid var(--border); }
 .post-body .separator { max-width: 100%; }
+.post-related { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.post-related h2 { margin: 0 0 .6rem; font-size: 1.1rem; }
+.post-related ul { margin: 0; padding-left: 1.2rem; }
+.post-related li { margin: .3rem 0; overflow-wrap: anywhere; }
 .post-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
 .post-navigation a { overflow-wrap: anywhere; }
 .post-navigation a:last-child { text-align: right; grid-column: 2; }

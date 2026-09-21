@@ -2,6 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const SITE_URL = "https://www.linguist-coder.com";
+const { computeRelated } = require("./lib/related");
 
 function stripHtml(value = "") {
   return String(value)
@@ -56,6 +57,30 @@ function xmlEscape(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+// Body of a post as written in src/posts (front matter stripped). Read from disk rather than
+// templateContent, which is not available for posts that have not been rendered yet.
+function rawBody(inputPath) {
+  const source = fs.readFileSync(inputPath, "utf8");
+  const end = source.indexOf("\n---\n", 4);
+  return end === -1 ? source : source.slice(end + 5);
+}
+
+let relatedCache = { key: "", map: new Map() };
+function relatedFor(posts, url) {
+  const key = posts.map((post) => post.inputPath).sort().join("|");
+  if (relatedCache.key !== key) {
+    const docs = posts.map((post) => ({
+      url: post.url,
+      title: post.data.title,
+      tags: post.data.tags || [],
+      date: new Date(post.data.date),
+      body: rawBody(post.inputPath),
+    }));
+    relatedCache = { key, map: computeRelated(docs) };
+  }
+  return relatedCache.map.get(url) || [];
 }
 
 function newest(posts) {
@@ -132,6 +157,7 @@ module.exports = function (eleventyConfig) {
     return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" })
       .format(new Date(`${year}-${month}-01T00:00:00Z`));
   });
+  eleventyConfig.addFilter("related", relatedFor);
   eleventyConfig.addFilter("neighbors", (posts, url) => {
     const ordered = [...posts].sort((a, b) => a.date - b.date);
     const index = ordered.findIndex((post) => post.url === url);
