@@ -25,7 +25,8 @@
     "author": { "@type": "Person", "name": "Linguist Coder" },
     "mainEntityOfPage": site.url + permalink
   } | json | safe }}</script>
-  {% elif description %}<meta name="description" content="{{ description }}">{% endif %}
+  {% else %}{% if description %}<meta name="description" content="{{ description }}">{% endif %}
+  <link rel="canonical" href="{{ site.url }}{{ page.url | replace(" ", "%20") }}">{% endif %}
   <link rel="stylesheet" href="/css/site.css">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5R5VM5C4L"></script>
