@@ -103,3 +103,6 @@ h2 { font-size: 1.45rem; }
     --code-bg: #232622;
   }
 }
+.footer-links { display: flex; gap: 1rem; }
+.contact-line { overflow-wrap: anywhere; }
+.page-body h2 { margin-top: 1.6rem; }

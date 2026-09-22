@@ -27,6 +27,9 @@
   } | json | safe }}</script>
   {% else %}{% if description %}<meta name="description" content="{{ description }}">{% endif %}
   <link rel="canonical" href="{{ site.url }}{{ page.url | replace(" ", "%20") }}">{% endif %}
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/images/site/favicon-32.png">
+  <link rel="apple-touch-icon" href="/images/site/apple-touch-icon.png">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5R5VM5C4L"></script>
@@ -48,6 +51,6 @@
     <main id="main-content">{{ content | safe }}</main>
     {% include "sidebar.njk" %}
   </div>
-  <footer class="site-footer"><span>© Linguist Coder</span><a href="/feed.xml">Atom feed</a></footer>
+  <footer class="site-footer"><span>© Linguist Coder</span><span class="footer-links"><a href="/privacy.html">Privacy</a><a href="/feed.xml">Atom feed</a></span></footer>
 </body>
 </html>

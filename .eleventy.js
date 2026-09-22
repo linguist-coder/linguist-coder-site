@@ -91,6 +91,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.setServerOptions({ showVersion: false });
   eleventyConfig.addPassthroughCopy({ "src/images": "images" });
   eleventyConfig.addPassthroughCopy({ "src/css": "css" });
+  eleventyConfig.addPassthroughCopy({ "src/favicon.ico": "favicon.ico" });
 
   eleventyConfig.addCollection("posts", (collectionApi) =>
     collectionApi.getFilteredByGlob("src/posts/**/*.html")
