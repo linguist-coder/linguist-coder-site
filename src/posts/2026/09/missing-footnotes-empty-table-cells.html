@@ -1,0 +1,77 @@
+---
+title: "Missing Footnotes, Empty Table Cells, and Stale Index Pages After IDML Translation"
+date: 2026-09-23T17:55:51.000+09:00
+updated: 2026-09-23T17:55:51.000+09:00
+permalink: "/2026/09/missing-footnotes-empty-table-cells.html"
+tags: ["IDML", "InDesign", "low judgment", "translation"]
+layout: post.njk
+---
+<p>A translated InDesign document comes back with a footnote number but no text, an empty table cell, or an index page that is blank or still in the source language.</p>
+
+<p>There are four questions to ask, in this order:</p>
+
+<ol>
+<li>Was the content extracted into the bilingual file in the first place?</li>
+<li>If it was extracted, was the corresponding target left empty?</li>
+<li>Is the content still present but hidden by overset?</li>
+<li>For an index specifically: was the index page regenerated after the translated IDML was opened in InDesign?</li>
+</ol>
+
+<p>These checks apply at different stages of the round trip.</p>
+
+<h2>First check whether the content was extracted</h2>
+
+<p>A common guess is that the CAT tool skipped the footnote or the table cell during extraction, treating it as something other than translatable text. I tested this with a synthetic IDML fixture containing a footnote, a table, and a nested table. Extracted with Okapi Tikal 2.1.48.0 using its IDML filter (<code>okf_idml</code>), each table cell appeared as its own translation unit. The footnote reference in the body text appeared as a placeholder code, and the footnote's own text appeared as a separate translation unit, not attached to the sentence that carries the reference.</p>
+
+<p>That is the behavior I observed with Okapi Tikal 2.1.48.0 and its IDML filter on this synthetic fixture. It is not necessarily what every CAT tool does. Other CAT tools may expose IDML filter settings for footnotes or index content specifically; I did not test those tools, so check the filter configuration used for a project rather than assuming it matches the Okapi result described here.</p>
+
+<h2>In this Okapi test, an empty target merged without a warning</h2>
+
+<p>I then tested the failure case: I ran three separate merges with an empty target, one for a footnote, one for a table cell, and one for an ordinary paragraph in an independent story, as if a translator had skipped the segment or a reviewer had cleared it by mistake.</p>
+
+<p>The merge completed in all three cases, with no error and no warning. But the result was not a footnote with blank text or a cell with an empty paragraph. In the fixture used for this test, the text was nested inside <code>ParagraphStyleRange</code>, <code>CharacterStyleRange</code>, and <code>Content</code> elements. The tested footnote contained the following structure:</p>
+
+<pre><code>&lt;Footnote&gt;
+  &lt;ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/$ID/NormalParagraphStyle"&gt;
+    &lt;CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]"&gt;
+      &lt;Content&gt;Footnote text goes here.&lt;/Content&gt;
+    &lt;/CharacterStyleRange&gt;
+  &lt;/ParagraphStyleRange&gt;
+&lt;/Footnote&gt;</code></pre>
+
+<p>After merging with an empty target, the footnote container still existed, but the elements that held its paragraph, character run, and text were gone:</p>
+
+<pre><code>&lt;Footnote/&gt;</code></pre>
+
+<p><code>&lt;Footnote/&gt;</code> is an empty XML element. It does not contain an empty string inside the original paragraph structure. It contains no paragraph structure at all. In this Okapi test, the same structural removal happened in the selected table cell and in the independent story: the <code>&lt;Cell&gt;</code> element came back self-closed, with its row and column position intact but no paragraph inside it, and the <code>&lt;Story&gt;</code> element for the ordinary paragraph came back with no <code>ParagraphStyleRange</code> at all.</p>
+
+<p>I also tried removing a unit from the file entirely, rather than leaving its target empty. In this Okapi test, deleting the unit caused the merge to stop with a <code>Text Unit id mismatch during merger</code> error, and no output file was produced. Leaving the unit in place with an empty target did not stop the merge.</p>
+
+<h2>Check whether the index page was regenerated</h2>
+
+<p>Index extraction and index-page generation are separate checks. The first is an extraction check: inspect the bilingual file to determine whether the index content reached the translator. The second concerns the generated index page.</p>
+
+<p>If the index topics have been translated but the index page is still stale, check whether the index has been regenerated in InDesign. I did not test index regeneration for this article, so treat this as a diagnostic check rather than a confirmed cause. If the index looks unchanged after import, regeneration is the first thing to try.</p>
+
+<h2>Do not confuse this with overset text</h2>
+
+<p>A related but different symptom: the content was translated, it is in the file, and it still looks missing on the page. One possibility is overset text, which InDesign marks with a red overset indicator. <a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">I've covered diagnosing and fixing overset text separately</a>. If the frame shows the indicator, check the layout before treating the content as lost.</p>
+
+<h2>What to check before you sign off</h2>
+
+<ul>
+<li><strong>After extraction:</strong> open the bilingual file and confirm that the expected footnote text and table-cell text appear as source units. If they do not, check the IDML filter settings used for the extraction.</li>
+<li><strong>Before merge:</strong> look for units with a non-empty source and an empty target. Do not rely on the merge to reject them; in the Okapi test described here, the merge completed without a warning.</li>
+<li><strong>After the merged IDML is back in InDesign:</strong> if content is missing from the page, check the frame for the overset indicator before concluding it was lost.</li>
+<li><strong>For an index:</strong> first confirm that the index content appears in the bilingual file. Then confirm whether the index page was regenerated after import.</li>
+</ul>
+
+<p>These checks help distinguish content omitted during extraction, returned with an empty target, hidden by overset, or left on a stale index page. They do not verify the accuracy of the translation itself.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-maintenance.html" target="_blank" rel="noopener">Scaling Multilingual DTP – Maintenance / Recovery: When and How to Clean Up InDesign Files with IDML</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/why-idml-formatting-can-produce.html" target="_blank" rel="noopener">Why IDML Formatting Can Produce Translation Tags, and What to Check in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a></li>
+</ul>

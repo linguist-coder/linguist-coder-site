@@ -1,5 +1,22 @@
 [
  {
+  "path": "/2026/09/missing-footnotes-empty-table-cells.html",
+  "title": "Missing Footnotes, Empty Table Cells, and Stale Index Pages After IDML Translation",
+  "published": "2026-09-23T17:55:51.000+09:00",
+  "updated": "2026-09-23T17:55:51.000+09:00",
+  "tags": [
+   "IDML",
+   "InDesign",
+   "low judgment",
+   "translation"
+  ],
+  "raw_sha256": "9e862dbc1957d46c023351ccb2f6a2d870c1bd7a4cfe03f50fc381004885dc63",
+  "rewritten_sha256": "9e862dbc1957d46c023351ccb2f6a2d870c1bd7a4cfe03f50fc381004885dc63",
+  "raw_len": 6772,
+  "images": {},
+  "file": "src/posts/2026/09/missing-footnotes-empty-table-cells.html"
+ },
+ {
   "path": "/2026/09/how-to-check-translated-indesign-file.html",
   "title": "How to Check a Translated InDesign File in a Language You Cannot Read",
   "published": "2026-09-19T16:14:42.973-07:00",
