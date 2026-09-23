@@ -5,7 +5,7 @@
     {% if thumb %}<a class="post-thumb" href="{{ post.url }}" aria-hidden="true" tabindex="-1"><img src="{{ thumb }}" alt="" loading="lazy"></a>{% endif %}
     <div class="post-list-text">
       <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
-      <time datetime="{{ post.date }}">{{ post.date | readableDate }}</time>
+      <time datetime="{{ post.date | isoDate }}">{{ post.date | readableDate }}</time>
       <p>{{ post.content | excerpt }}</p>
     </div>
   </li>

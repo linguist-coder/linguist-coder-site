@@ -77,13 +77,16 @@ h2 { font-size: 1.45rem; }
 .social-links { display: flex; gap: 1rem; }
 .site-footer { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1.25rem 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .9rem; }
 
+.mobile-nav { display: none; }
+
 @media (max-width: 959px) {
+  .mobile-nav { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; width: min(720px, calc(100% - 2rem)); margin: 1rem auto 0; font-size: .95rem; }
   .site-grid { grid-template-columns: minmax(0, 720px); justify-content: center; }
   .sidebar { margin-top: 1rem; }
 }
 
 @media (max-width: 520px) {
-  .site-header-inner, .site-grid, .site-footer { width: min(100% - 1.25rem, 720px); }
+  .site-header-inner, .site-grid, .site-footer, .mobile-nav { width: min(100% - 1.25rem, 720px); }
   .site-header-inner { padding: 2.5rem 0 1.75rem; }
   .post-list li.has-thumb { grid-template-columns: 1fr; }
   .post-thumb img { width: 100%; height: auto; aspect-ratio: 16 / 10; }
