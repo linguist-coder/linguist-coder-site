@@ -7,7 +7,7 @@ tags: []
 bloggerId: "tag:blogger.com,1999:blog-1975649747984172253.post-332065291270819147"
 layout: post.njk
 ---
-<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/01.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/01.png" width="226" /></a></div><p>Recently I had a small but common production problem. A report already existed as a designed HTML page — good typography, a cover, a table of contents — and it needed to become a print-ready PDF. Not a screen capture of the web page, but a proper document: numbered pages, a table of contents whose page references are correct, and no heading left stranded at the bottom of a page.</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/01.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img alt="Cover page of the sample PDF, The Print Pipeline" border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/01.png" width="226" /></a></div><p>Recently I had a small but common production problem. A report already existed as a designed HTML page — good typography, a cover, a table of contents — and it needed to become a print-ready PDF. Not a screen capture of the web page, but a proper document: numbered pages, a table of contents whose page references are correct, and no heading left stranded at the bottom of a page.</p>
 
 <p>At first glance this is just "export to PDF." But the more useful question is the same one I keep returning to in production work:</p>
 
@@ -42,7 +42,7 @@ layout: post.njk
 
 <h2>Page Numbers Belong to the Page Box</h2>
 
-<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/02.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/02.png" width="226" /></a></div><p>In Paged Media, a page number is not text in the document. It is content of the page box itself, so it sits in the margin and updates automatically:</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/02.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img alt="Body page of the sample PDF with a stage table, headings, a diagram, and page number 2" border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/02.png" width="226" /></a></div><p>In Paged Media, a page number is not text in the document. It is content of the page box itself, so it sits in the margin and updates automatically:</p>
 
 <pre><code>@page {
   size: A4;
@@ -61,7 +61,7 @@ layout: post.njk
 
 <h2>A Table of Contents Computed at Layout Time</h2>
 
-<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/03.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/03.png" width="226" /></a></div><p>This is the part that surprises people. Each TOC entry is an ordinary link to an anchor in the document. The page number is filled in <i>after</i> the layout is known, with <code>target-counter</code>:</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/07/how-print-pdf-should-be-built-from-html/03.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img alt="Contents page of the sample PDF with page numbers computed at layout time" border="0" data-original-height="1853" data-original-width="1309" height="320" src="/images/2026/07/how-print-pdf-should-be-built-from-html/03.png" width="226" /></a></div><p>This is the part that surprises people. Each TOC entry is an ordinary link to an anchor in the document. The page number is filled in <i>after</i> the layout is known, with <code>target-counter</code>:</p>
 
 <pre><code>.toc a[href^="#"]::after {
   content: target-counter(attr(href), page);

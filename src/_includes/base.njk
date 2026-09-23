@@ -26,11 +26,18 @@
     "mainEntityOfPage": site.url + permalink
   } | json | safe }}</script>
   {% else %}{% if description %}<meta name="description" content="{{ description }}">{% endif %}
-  <link rel="canonical" href="{{ site.url }}{{ page.url | replace(" ", "%20") }}">{% endif %}
+  <link rel="canonical" href="{{ site.url }}{{ page.url | replace(" ", "%20") }}">{% if page.url != "/404.html" %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if exactTitle %}{{ title }}{% elif title %}{{ title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}">
+  {% if description %}<meta property="og:description" content="{{ description }}">{% endif %}
+  <meta property="og:url" content="{{ site.url }}{{ page.url | replace(" ", "%20") }}">
+  <meta property="og:image" content="{{ site.url }}/images/site/header.jpg">
+  <meta name="twitter:card" content="summary">{% endif %}{% endif %}
+  <meta property="og:site_name" content="{{ site.title }}">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/images/site/favicon-32.png">
   <link rel="apple-touch-icon" href="/images/site/apple-touch-icon.png">
-  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/site.css?v={{ cssVersion }}">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5R5VM5C4L"></script>
   <script>

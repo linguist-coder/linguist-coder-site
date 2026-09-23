@@ -9,13 +9,13 @@ layout: post.njk
 ---
 <h2 style="text-align: left;">&nbsp;Why IDML is required before translation</h2>
 <p data-end="400" data-start="257">If you work with Trados, you already know this:<br data-end="307" data-start="304" />
-InDesign <code data-end="323" data-start="316">.indd</code> files cannot be processed directly. They must be converted to <code data-end="393" data-start="386">.idml</code> first.<br /></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/01/scaling-multilingual-dtp-by-automating/01.png" style="margin-left: 1em; margin-right: 1em;"><img alt="" data-original-height="136" data-original-width="326" height="78" src="/images/2026/01/scaling-multilingual-dtp-by-automating/01.png" width="188" /></a></div>For a single document, that’s trivial.<p></p><p data-end="494" data-start="402">
+InDesign <code data-end="323" data-start="316">.indd</code> files cannot be processed directly. They must be converted to <code data-end="393" data-start="386">.idml</code> first.<br /></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/01/scaling-multilingual-dtp-by-automating/01.png" style="margin-left: 1em; margin-right: 1em;"><img alt="An INDD file icon with an arrow pointing to an IDML file icon" data-original-height="136" data-original-width="326" height="78" src="/images/2026/01/scaling-multilingual-dtp-by-automating/01.png" width="188" /></a></div>For a single document, that’s trivial.<p></p><p data-end="494" data-start="402">
 Press <strong data-end="459" data-start="449">Ctrl+E</strong>, choose <strong data-end="476" data-start="468">IDML</strong>, and you’re done.</p>
 <p data-end="586" data-start="496">The problem starts when you receive an <strong data-end="560" data-start="535">InDesign Book (.indb)</strong> instead of a single file.</p>
 <hr data-end="591" data-start="588" />
 <h3 data-end="643" data-start="593">Why InDesign Books turn this into a bottleneck</h3>
 <p data-end="704" data-start="645">A Book file is just a container for multiple <code data-end="697" data-start="690">.indd</code> files.</p>
-<p data-end="910" data-start="706">If a book contains 20 documents, you now have to repeat the same export process 20 times.<br /></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/01/scaling-multilingual-dtp-by-automating/03.png" style="margin-left: 1em; margin-right: 1em;"><img alt="" data-original-height="467" data-original-width="223" height="240" src="/images/2026/01/scaling-multilingual-dtp-by-automating/03.png" width="115" /></a></div><br /><br data-end="798" data-start="795" />
+<p data-end="910" data-start="706">If a book contains 20 documents, you now have to repeat the same export process 20 times.<br /></p><div class="separator" style="clear: both; text-align: center;"><a href="/images/2026/01/scaling-multilingual-dtp-by-automating/03.png" style="margin-left: 1em; margin-right: 1em;"><img alt="A book folder with a Links folder, demoBook.indb, and eight INDD files" data-original-height="467" data-original-width="223" height="240" src="/images/2026/01/scaling-multilingual-dtp-by-automating/03.png" width="115" /></a></div><br /><br data-end="798" data-start="795" />
 What used to take seconds becomes minutes — and in large multilingual projects, that happens for every language.<p></p>
 <p data-end="1002" data-start="912">This is where a simple file format requirement quietly turns into a production bottleneck.</p>
 <hr data-end="1007" data-start="1004" />
@@ -40,7 +40,7 @@ It’s a structural issue: <strong data-end="1427" data-start="1385">repetitive 
 <h3 data-end="1462" data-start="1435">The automation approach</h3>
 <p data-end="1538" data-start="1464">The fix is straightforward:<br data-end="1494" data-start="1491" />
 Let InDesign do the repetitive work for you.</p>
-<p data-end="1682" data-start="1540">By using a script, you can export all open <code data-end="1590" data-start="1583">.indd</code> files to <code data-end="1607" data-start="1600">.idml</code> in one operation — consistently, repeatably, and without missing anything.<br /></p><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/E_1dHUcLeIQ" width="320" youtube-src-id="E_1dHUcLeIQ"></iframe></div><br />
+<p data-end="1682" data-start="1540">By using a script, you can export all open <code data-end="1590" data-start="1583">.indd</code> files to <code data-end="1607" data-start="1600">.idml</code> in one operation — consistently, repeatably, and without missing anything.<br /></p><div class="separator" style="clear: both; text-align: center;"><iframe loading="lazy" allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/E_1dHUcLeIQ" width="320" youtube-src-id="E_1dHUcLeIQ"></iframe></div><br />
 <hr data-end="1687" data-start="1684" />
 <h3 data-end="1716" data-start="1689">A simple example script</h3>
 <p data-end="1873" data-start="1718">Here is a minimal version of the script I use in production.<br data-end="1781" data-start="1778" />
@@ -142,7 +142,7 @@ It shows the core idea: <strong data-end="4059" data-start="4002">remove humans 
 </li>
 </ul>
 <p data-end="4581" data-start="4417">Those pieces belong in separate posts, but the principle is the same:<br data-end="4489" data-start="4486" />
-<strong data-end="4581" data-start="4489">If a task must be done for every file and every language, it should not be done by hand.</strong></p><p data-end="4581" data-start="4417"><b>If you haven’t seen it yet, check out our previous post on automating InDesign text overset:<br /></b><b>→<a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html#more">Scaling Multilingual DTP by Eliminating Manual InDesign Text Overset Fixes</a><br /></b></p><div><br /></div></div>
+<strong data-end="4581" data-start="4489">If a task must be done for every file and every language, it should not be done by hand.</strong></p><p data-end="4581" data-start="4417"><b>If you haven’t seen it yet, check out our previous post on automating InDesign text overset:<br /></b><b>→<a href="https://www.linguist-coder.com/2026/01/scaling-multilingual-dtp-by-eliminating.html">Scaling Multilingual DTP by Eliminating Manual InDesign Text Overset Fixes</a><br /></b></p><div><br /></div></div>
 
 <h2>Related</h2>
 

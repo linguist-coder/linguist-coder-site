@@ -7,6 +7,7 @@ pagination:
 permalink: "/search/label/{{ label }}/index.html"
 eleventyComputed:
   title: "Posts labeled {{ label }}"
+  description: "Posts labeled {{ label }} on Linguist Coder: InDesign automation, IDML, and multilingual DTP workflows."
 ---
 <header class="page-header"><h1>Posts labeled “{{ label }}”</h1></header>
 {% set listedPosts = collections.posts | withLabel(label) %}

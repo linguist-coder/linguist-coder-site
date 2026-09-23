@@ -7,6 +7,7 @@ pagination:
 permalink: "/{{ month }}/index.html"
 eleventyComputed:
   title: "{{ month | monthName }}"
+  description: "Posts from {{ month | monthName }} on Linguist Coder: InDesign automation, IDML, and multilingual DTP workflows."
 ---
 {% set listedPosts = collections.posts | inMonth(month) %}
 <header class="page-header"><h1>{{ month | monthName }}</h1></header>

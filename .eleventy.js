@@ -88,6 +88,10 @@ function newest(posts) {
 }
 
 module.exports = function (eleventyConfig) {
+  // Cache-busting token for the stylesheet: /css/* is served with a one-year immutable cache (src/_headers).
+  const cssVersion = require("node:crypto").createHash("sha256")
+    .update(fs.readFileSync(path.join(__dirname, "src", "css", "site.css"))).digest("hex").slice(0, 10);
+  eleventyConfig.addGlobalData("cssVersion", cssVersion);
   eleventyConfig.setServerOptions({ showVersion: false });
   eleventyConfig.addPassthroughCopy({ "src/images": "images" });
   eleventyConfig.addPassthroughCopy({ "src/css": "css" });
