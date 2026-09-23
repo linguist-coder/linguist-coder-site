@@ -14,3 +14,9 @@ npm install
 npm run build          # -> _site/
 python tools/verify_build.py
 ```
+
+## Adding a new post
+
+1. `src/posts/YYYY/MM/<slug>.html`: front matter (`title`, `date`, `updated`, `permalink`, `tags`, `layout: post.njk`; no `bloggerId`) + HTML body, LF line endings. Escape `<` `>` inside `<pre><code>`.
+2. Add an entry at the top of `_baseline/manifest.json` (sha256 and `raw_len` of the body after the front matter). Keep the file's format: `json.dumps(..., ensure_ascii=False, indent=1)`, LF, no trailing newline. Without the entry, check 3 fails (feed item count).
+3. `npm run build && python tools/verify_build.py`, then push to `main`. Workers Builds deploys; confirm at `/feed.json`.
