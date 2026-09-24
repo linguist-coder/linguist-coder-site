@@ -21,7 +21,7 @@
     <text x="170" y="415">Links/</text>
     <text x="220" y="480" fill="var(--accent)">logo.eps</text>
   </g>
-  <path d="M380 342H420V472H360" stroke="var(--accent)" stroke-width="4" fill="none"/>
+  <path d="M400 342H430V472H360" stroke="var(--accent)" stroke-width="4" fill="none"/>
   <path d="M360 472l18-11v22z" fill="var(--accent)"/>
   <text x="410" y="685" text-anchor="middle" class="note">The source is inside the canonical</text>
   <text x="410" y="725" text-anchor="middle" class="note">Links folder beside the INDD.</text>
