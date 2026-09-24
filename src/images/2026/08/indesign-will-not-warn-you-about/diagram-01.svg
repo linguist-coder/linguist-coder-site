@@ -21,7 +21,8 @@
     <text x="170" y="415">Links/</text>
     <text x="220" y="480" fill="var(--accent)">logo.eps</text>
   </g>
-  <path d="M245 500C245 610 380 650 470 560" stroke="var(--accent)" stroke-width="7" fill="none"/>
+  <path d="M380 342H420V472H360" stroke="var(--accent)" stroke-width="4" fill="none"/>
+  <path d="M360 472l18-11v22z" fill="var(--accent)"/>
   <text x="410" y="685" text-anchor="middle" class="note">The source is inside the canonical</text>
   <text x="410" y="725" text-anchor="middle" class="note">Links folder beside the INDD.</text>
   <text x="880" y="195" class="head" fill="var(--warn)">Outside Links: external</text>
@@ -32,7 +33,8 @@
     <text x="930" y="480">Photos/</text>
     <text x="980" y="545" fill="var(--warn)">logo.eps</text>
   </g>
-  <path d="M1005 565C1005 650 1140 675 1230 585" stroke="var(--warn)" stroke-width="7" fill="none"/>
+  <path d="M1160 342H1210V537H1120" stroke="var(--warn)" stroke-width="4" fill="none"/>
+  <path d="M1120 537l18-11v22z" fill="var(--warn)"/>
   <text x="1180" y="685" text-anchor="middle" class="note">Still external under this rule, even</text>
   <text x="1180" y="725" text-anchor="middle" class="note">inside the same project folder.</text>
   <text x="800" y="870" text-anchor="middle" class="note">This is a workflow policy, not an InDesign link status.</text>

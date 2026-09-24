@@ -17,22 +17,20 @@
   <text x="115" y="195" class="head" fill="var(--accent)">Replacement target: composite font definition</text>
   <rect x="120" y="245" width="330" height="115" rx="14" class="box"/>
   <text x="285" y="315" text-anchor="middle" class="text">Paragraph style</text>
-  <path d="M450 303H550" class="arrow"/><path d="M550 303l-24-16v32z" fill="var(--accent)"/>
-  <rect x="550" y="225" width="410" height="350" rx="14" class="box"/>
-  <text x="755" y="285" text-anchor="middle" class="head" fill="var(--fg)">Composite font</text>
-  <text x="590" y="360" class="text">Chinese characters</text>
-  <text x="590" y="405" class="small">CJK font</text>
-  <text x="590" y="485" class="text">Latin letters, numbers, symbols</text>
-  <text x="590" y="535" class="text"><tspan fill="var(--warn)">Helvetica</tspan><tspan fill="var(--accent)">  →  Arial</tspan></text>
+  <path d="M450 303H500" class="arrow"/><path d="M500 303l-24-16v32z" fill="var(--accent)"/>
+  <rect x="500" y="225" width="480" height="350" rx="14" class="box"/>
+  <text x="740" y="285" text-anchor="middle" class="head" fill="var(--fg)">Composite font</text>
+  <text x="535" y="360" class="text">Chinese characters</text>
+  <text x="535" y="405" class="small">CJK font</text>
+  <text x="535" y="485" class="text">Latin letters, numbers, symbols</text>
+  <text x="535" y="535" class="text"><tspan fill="var(--warn)">Helvetica</tspan><tspan fill="var(--accent)">  →  Arial</tspan></text>
   <text x="120" y="665" class="text">Style references stay as they are.</text>
   <text x="120" y="715" class="small">Only the internal font assignment changes.</text>
   <rect x="1080" y="130" width="450" height="680" rx="18" class="box"/>
   <text x="1125" y="195" class="head" fill="var(--warn)">Not the target</text>
-  <text x="1125" y="270" class="text">Ordinary text runs</text>
-  <text x="1125" y="335" class="text">Paragraph styles</text>
-  <text x="1125" y="400" class="text">Character styles</text>
-  <line x1="1110" y1="240" x2="1485" y2="430" stroke="var(--warn)" stroke-width="8"/>
-  <line x1="1485" y1="240" x2="1110" y2="430" stroke="var(--warn)" stroke-width="8"/>
+  <text x="1125" y="270" class="small">Ordinary text runs</text>
+  <text x="1125" y="335" class="small">Paragraph styles</text>
+  <text x="1125" y="400" class="small">Character styles</text>
   <text x="1305" y="535" text-anchor="middle" class="small">Direct text replacement may</text>
   <text x="1305" y="575" text-anchor="middle" class="small">create local overrides.</text>
   <text x="1305" y="665" text-anchor="middle" class="text">Helvetica did not need</text>
