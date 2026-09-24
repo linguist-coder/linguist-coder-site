@@ -11,7 +11,7 @@
     .box { fill:none; stroke:var(--line); stroke-width:4 }
     .flow { stroke:var(--accent); stroke-width:7; fill:none }
   </style>
-  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
   <rect width="1600" height="900" fill="var(--bg)"/>
   <rect x="70" y="80" width="1100" height="740" rx="20" class="box"/>
   <text x="110" y="135" class="label">Pasteboard</text>
@@ -25,7 +25,5 @@
   <text x="1240" y="350" class="small">pasteboard objects</text>
   <text x="1240" y="430" class="small">Counts them</text>
   <text x="1240" y="510" class="small">Asks before deletion</text>
-  <path d="M1215 330H1097" class="flow" marker-end="url(#arrow)"/>
-  <path d="M1215 455V770H310V695H292" class="flow" marker-end="url(#arrow)"/>
   <text x="800" y="875" text-anchor="middle" class="note">Outside the layout area, but still in the document structure</text>
 </svg>

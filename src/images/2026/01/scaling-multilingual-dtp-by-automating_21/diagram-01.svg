@@ -11,7 +11,7 @@
     .box { fill:none; stroke:var(--line); stroke-width:4 }
     .flow { stroke:var(--accent); stroke-width:7; fill:none }
   </style>
-  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
   <rect width="1600" height="900" fill="var(--bg)"/>
   <rect x="55" y="145" width="390" height="500" rx="18" class="box"/>
   <text x="250" y="215" text-anchor="middle" class="label">PDF folder</text>
