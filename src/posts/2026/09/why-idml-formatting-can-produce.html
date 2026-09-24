@@ -19,6 +19,8 @@ layout: post.njk
 
 <p>Character formatting changes therefore create range boundaries in the IDML before any translation tool has touched the file. The example below shows how the Okapi IDML filter renders two of them as paired inline codes; it does not establish how Trados or memoQ will display the same IDML.</p>
 
+<figure class="diagram"><img src="/images/2026/09/why-idml-formatting-can-produce/diagram-01.svg" alt="Bold formatting on winter becomes its own CharacterStyleRange in IDML and a paired inline code in the CAT segment." width="1600" height="900" loading="lazy" /></figure>
+
 <h2>Which formatting changes create a range boundary</h2>
 
 <p>Any character attribute that differs from the text around it starts a new range. In the story XML these show up as attributes on the <code>CharacterStyleRange</code> element or in its <code>Properties</code> child. Attributes to inspect include <code>AppliedCharacterStyle</code>, <code>FontStyle</code>, <code>PointSize</code>, <code>AppliedFont</code>, <code>Position</code>, <code>KerningValue</code>, <code>Tracking</code>, <code>BaselineShift</code>, <code>HorizontalScale</code>, <code>Leading</code> and <code>AppliedLanguage</code>.</p>

@@ -40,6 +40,8 @@ h2 { font-size: 1.45rem; }
 .post-body a { text-decoration: underline; text-underline-offset: .15em; }
 .post-body a[imageanchor], .post-body a:has(> img) { margin-inline: 0 !important; }
 .post-body img { max-width: 100%; height: auto; }
+.post-body figure.diagram { max-width: 100%; margin: 2rem 0; }
+.post-body figure.diagram img { display: block; width: 100%; }
 .post-body iframe { max-width: 100%; }
 .post-body iframe[src*="youtube.com"], .post-body iframe[src*="youtu.be"] { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
 .post-body pre { max-width: 100%; overflow-x: auto; padding: 1rem; background: var(--code-bg); border: 1px solid var(--border); }

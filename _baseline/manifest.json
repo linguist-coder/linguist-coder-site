@@ -10,9 +10,9 @@
    "low judgment",
    "translation"
   ],
-  "raw_sha256": "9e862dbc1957d46c023351ccb2f6a2d870c1bd7a4cfe03f50fc381004885dc63",
-  "rewritten_sha256": "9e862dbc1957d46c023351ccb2f6a2d870c1bd7a4cfe03f50fc381004885dc63",
-  "raw_len": 6772,
+  "raw_sha256": "6144c614ca4d1a29ec2acd89b6a04a9a16fad10d989e718a26e6d78c008ad34c",
+  "rewritten_sha256": "6144c614ca4d1a29ec2acd89b6a04a9a16fad10d989e718a26e6d78c008ad34c",
+  "raw_len": 7106,
   "images": {},
   "file": "src/posts/2026/09/missing-footnotes-empty-table-cells.html"
  },
@@ -27,9 +27,9 @@
    "low judgment",
    "translation"
   ],
-  "raw_sha256": "f80419aeab82137867bd367ea0b88a9d18d2ad9437f67ad564c30715b0584913",
-  "rewritten_sha256": "f80419aeab82137867bd367ea0b88a9d18d2ad9437f67ad564c30715b0584913",
-  "raw_len": 9170,
+  "raw_sha256": "b736e745b00f98098ff0988f5b6aaf0f8149e6650f2f1efc4daa4fcd5d7ab0da",
+  "rewritten_sha256": "b736e745b00f98098ff0988f5b6aaf0f8149e6650f2f1efc4daa4fcd5d7ab0da",
+  "raw_len": 9504,
   "images": {},
   "file": "src/posts/2026/09/how-to-check-translated-indesign-file.html"
  },
@@ -44,9 +44,9 @@
    "Trados",
    "translation"
   ],
-  "raw_sha256": "ca1e59139d8b3bc4d45ca7312d1f7440236673fad718c595239d3488c51cbe3a",
-  "rewritten_sha256": "ca1e59139d8b3bc4d45ca7312d1f7440236673fad718c595239d3488c51cbe3a",
-  "raw_len": 9635,
+  "raw_sha256": "32038057024833343fa82d9a4e3f8438f0629bcf1ebceef98f11bccb4ab06cee",
+  "rewritten_sha256": "32038057024833343fa82d9a4e3f8438f0629bcf1ebceef98f11bccb4ab06cee",
+  "raw_len": 9908,
   "images": {},
   "file": "src/posts/2026/09/why-idml-formatting-can-produce.html"
  },
@@ -61,9 +61,9 @@
    "low judgment",
    "translation"
   ],
-  "raw_sha256": "c03a8934b39e6c9ed4afe0969466f3094f78547daca40ce0ed0b74f72e839932",
-  "rewritten_sha256": "c03a8934b39e6c9ed4afe0969466f3094f78547daca40ce0ed0b74f72e839932",
-  "raw_len": 10597,
+  "raw_sha256": "6046de22f2c5d2b9e58d11e27f8773aace54cbb61ce9e117deede46393b33ce1",
+  "rewritten_sha256": "6046de22f2c5d2b9e58d11e27f8773aace54cbb61ce9e117deede46393b33ce1",
+  "raw_len": 10913,
   "images": {},
   "file": "src/posts/2026/09/comparing-indesign-files-after.html"
  },
@@ -130,9 +130,9 @@
    "links",
    "low judgment"
   ],
-  "raw_sha256": "98ca1b14d20ec0df7a97bf24893b86a6401dd7d8f46022d96ae966e90fed4859",
-  "rewritten_sha256": "98ca1b14d20ec0df7a97bf24893b86a6401dd7d8f46022d96ae966e90fed4859",
-  "raw_len": 11735,
+  "raw_sha256": "886c53715f41f49063b16aa90851aa0a9a7794af0989f1c29e0fb63bd52c8556",
+  "rewritten_sha256": "886c53715f41f49063b16aa90851aa0a9a7794af0989f1c29e0fb63bd52c8556",
+  "raw_len": 12040,
   "images": {},
   "file": "src/posts/2026/08/indesign-will-not-warn-you-about.html"
  },
@@ -233,9 +233,9 @@
   "published": "2026-06-15T19:05:17.436-07:00",
   "updated": "2026-06-15T19:05:17.436-07:00",
   "tags": [],
-  "raw_sha256": "97d42ccaff80783d7643dd6f1e4065856abd344560301d59f2a564a2597ee509",
-  "rewritten_sha256": "97d42ccaff80783d7643dd6f1e4065856abd344560301d59f2a564a2597ee509",
-  "raw_len": 145836,
+  "raw_sha256": "1a9bc0cf1e4092b71ab856bbc9d4da0b6f3b1c88021a73559b025f2bcdbe2489",
+  "rewritten_sha256": "1a9bc0cf1e4092b71ab856bbc9d4da0b6f3b1c88021a73559b025f2bcdbe2489",
+  "raw_len": 146165,
   "images": {},
   "file": "src/posts/2026/06/when-font-replacement-should-happen-at.html"
  },

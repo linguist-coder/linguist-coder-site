@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Checks without reading the target language</title>
+  <desc id="desc">Five checks can be performed without reading the target language, while linguistic review belongs to someone who reads it.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .title { font:700 42px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .head { font:700 32px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--accent) }
+    .item { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .small { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--muted) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="70" y="80" class="title">Where the checking boundary sits</text>
+  <rect x="70" y="130" width="930" height="690" rx="18" class="box"/>
+  <text x="115" y="195" class="head">Without reading the target language</text>
+  <g class="item">
+    <text x="140" y="275">1. Container</text>
+    <text x="140" y="370">2. Agreed strings and values</text>
+    <text x="140" y="465">3. Source-language text left in the target</text>
+    <text x="140" y="560">4. Text that does not show</text>
+    <text x="140" y="655">5. Reference strings</text>
+  </g>
+  <text x="140" y="730" class="small">Record completed checks and questions that remain.</text>
+  <line x1="1050" y1="130" x2="1050" y2="820" stroke="var(--accent)" stroke-width="7" stroke-dasharray="18 14"/>
+  <rect x="1100" y="260" width="430" height="360" rx="18" class="box"/>
+  <text x="1315" y="330" text-anchor="middle" class="head">Someone who reads</text>
+  <text x="1315" y="372" text-anchor="middle" class="head">the target language</text>
+  <text x="1315" y="465" text-anchor="middle" class="item">Linguistic review</text>
+  <text x="1315" y="525" text-anchor="middle" class="small">Whether the translation</text>
+  <text x="1315" y="563" text-anchor="middle" class="small">is correct</text>
+  <text x="1050" y="865" text-anchor="middle" class="small">The first five checks do not replace linguistic review.</text>
+</svg>

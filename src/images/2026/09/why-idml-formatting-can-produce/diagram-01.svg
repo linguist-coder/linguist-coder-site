@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Local formatting becomes IDML ranges and CAT tags</title>
+  <desc id="desc">The word winter is bold in an InDesign sentence, becomes its own CharacterStyleRange in IDML, and appears between paired inline codes in a CAT segment.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .head { font:700 34px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--accent) }
+    .text { font:32px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .bold { font:700 32px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .mono { font:30px ui-monospace,Consolas,monospace; fill:var(--fg) }
+    .tag { fill:var(--accent) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <rect x="70" y="55" width="1460" height="205" rx="18" class="box"/>
+  <text x="110" y="115" class="head">InDesign: local bold inside one sentence</text>
+  <text x="110" y="190" class="text">Independent frame BRAVO describes a copper telescope aimed at</text>
+  <text x="1110" y="190" class="bold">winter</text>
+  <text x="1215" y="190" class="text">stars.</text>
+  <path d="M800 260v55" stroke="var(--accent)" stroke-width="7"/><path d="M800 315l-16-24h32z" fill="var(--accent)"/>
+  <rect x="70" y="330" width="1460" height="260" rx="18" class="box"/>
+  <text x="110" y="390" class="head">IDML: the text is split into CharacterStyleRange elements</text>
+  <text x="110" y="455" class="mono">&lt;CharacterStyleRange&gt;&lt;Content&gt;... aimed at &lt;/Content&gt;&lt;/CharacterStyleRange&gt;</text>
+  <text x="110" y="505" class="mono tag">&lt;CharacterStyleRange FontStyle="Bold"&gt;&lt;Content&gt;winter&lt;/Content&gt;&lt;/CharacterStyleRange&gt;</text>
+  <text x="110" y="555" class="mono">&lt;CharacterStyleRange&gt;&lt;Content&gt; stars.&lt;/Content&gt;&lt;/CharacterStyleRange&gt;</text>
+  <path d="M800 590v55" stroke="var(--accent)" stroke-width="7"/><path d="M800 645l-16-24h32z" fill="var(--accent)"/>
+  <rect x="70" y="660" width="1460" height="180" rx="18" class="box"/>
+  <text x="110" y="720" class="head">CAT segment: the range becomes a paired inline code</text>
+  <text x="110" y="790" class="mono">... aimed at <tspan class="tag">&lt;bpt id="2"&gt;</tspan>winter<tspan class="tag">&lt;ept id="2"&gt;</tspan> stars.</text>
+</svg>

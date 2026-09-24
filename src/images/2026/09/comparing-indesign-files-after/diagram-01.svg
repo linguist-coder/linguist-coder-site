@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Comparison methods and their limits</title>
+  <desc id="desc">A table shows what PDF comparison, Track Changes, CAT comparison, and direct IDML inspection can and cannot detect after translation.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .title { font:700 40px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .head { font:700 30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--accent) }
+    .method { font:700 30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .cell { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .limit { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--warn) }
+    .grid { stroke:var(--line); stroke-width:4 }
+  </style>
+  <rect width="1600" height="1100" fill="var(--bg)"/>
+  <text x="60" y="72" class="title">What each comparison method shows</text>
+  <g class="grid">
+    <rect x="60" y="110" width="1480" height="910" rx="12" fill="none"/>
+    <line x1="360" y1="110" x2="360" y2="1020"/>
+    <line x1="960" y1="110" x2="960" y2="1020"/>
+    <line x1="60" y1="200" x2="1540" y2="200"/>
+    <line x1="60" y1="405" x2="1540" y2="405"/>
+    <line x1="60" y1="610" x2="1540" y2="610"/>
+    <line x1="60" y1="815" x2="1540" y2="815"/>
+  </g>
+  <text x="95" y="168" class="head">Method</text>
+  <text x="400" y="168" class="head">Can show</text>
+  <text x="1000" y="168" class="head">Cannot establish</text>
+  <text x="95" y="275" class="method">PDF comparison</text>
+  <text x="400" y="260" class="cell">Rendered appearance</text>
+  <text x="400" y="303" class="cell">Extracted text</text>
+  <text x="1000" y="250" class="limit">Overset text is absent</text>
+  <text x="1000" y="293" class="limit">Structural questions are not</text>
+  <text x="1000" y="336" class="limit">what the report is organized around</text>
+  <text x="95" y="480" class="method">Track Changes</text>
+  <text x="400" y="465" class="cell">Edits made in InDesign</text>
+  <text x="400" y="508" class="cell">after it is switched on</text>
+  <text x="1000" y="465" class="limit">What happened while text</text>
+  <text x="1000" y="508" class="limit">was outside InDesign</text>
+  <text x="95" y="685" class="method">CAT comparison</text>
+  <text x="400" y="670" class="cell">Identical source and target</text>
+  <text x="400" y="713" class="cell">segments as untranslated candidates</text>
+  <text x="1000" y="660" class="limit">Complete document structure</text>
+  <text x="1000" y="703" class="limit">Extraction depends on</text>
+  <text x="1000" y="746" class="limit">filter settings</text>
+  <text x="95" y="890" class="method">Direct IDML</text>
+  <text x="95" y="933" class="method">inspection</text>
+  <text x="400" y="855" class="cell">Stories and text</text>
+  <text x="400" y="898" class="cell">Table, footnote, anchor counts</text>
+  <text x="400" y="941" class="cell">Paragraph styles and spot checks</text>
+  <text x="1000" y="855" class="limit">Unclear correspondence must be</text>
+  <text x="1000" y="898" class="limit">marked "could not be compared"</text>
+  <text x="1000" y="941" class="limit">Counts do not prove attachment place</text>
+  <text x="60" y="1070" class="cell">These checks do not establish how well the translation reads.</text>
+</svg>

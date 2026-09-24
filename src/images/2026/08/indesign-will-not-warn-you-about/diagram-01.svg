@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Local and external link paths</title>
+  <desc id="desc">A file inside the Links folder beside the InDesign document is local, while a file in another folder is external even when it remains inside the project folder.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .title { font:700 40px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .head { font:700 34px system-ui,-apple-system,"Segoe UI",sans-serif }
+    .mono { font:30px ui-monospace,Consolas,monospace; fill:var(--fg) }
+    .note { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--muted) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="70" y="80" class="title">External is relative to the Links folder</text>
+  <rect x="70" y="130" width="700" height="680" rx="18" class="box"/>
+  <rect x="830" y="130" width="700" height="680" rx="18" class="box"/>
+  <text x="120" y="195" class="head" fill="var(--accent)">Inside Links: local</text>
+  <g class="mono">
+    <text x="120" y="285">Project/</text>
+    <text x="170" y="350">document.indd</text>
+    <text x="170" y="415">Links/</text>
+    <text x="220" y="480" fill="var(--accent)">logo.eps</text>
+  </g>
+  <path d="M245 500C245 610 380 650 470 560" stroke="var(--accent)" stroke-width="7" fill="none"/>
+  <text x="410" y="685" text-anchor="middle" class="note">The source is inside the canonical</text>
+  <text x="410" y="725" text-anchor="middle" class="note">Links folder beside the INDD.</text>
+  <text x="880" y="195" class="head" fill="var(--warn)">Outside Links: external</text>
+  <g class="mono">
+    <text x="880" y="285">Project/</text>
+    <text x="930" y="350">document.indd</text>
+    <text x="930" y="415">Links/</text>
+    <text x="930" y="480">Photos/</text>
+    <text x="980" y="545" fill="var(--warn)">logo.eps</text>
+  </g>
+  <path d="M1005 565C1005 650 1140 675 1230 585" stroke="var(--warn)" stroke-width="7" fill="none"/>
+  <text x="1180" y="685" text-anchor="middle" class="note">Still external under this rule, even</text>
+  <text x="1180" y="725" text-anchor="middle" class="note">inside the same project folder.</text>
+  <text x="800" y="870" text-anchor="middle" class="note">This is a workflow policy, not an InDesign link status.</text>
+</svg>

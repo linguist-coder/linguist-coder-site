@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">IDML translation checks and footnote XML</title>
+  <desc id="desc">The round trip from IDML extraction through a bilingual file and merge to InDesign, with extraction, empty target, overset, and index regeneration checks, plus normal and empty Footnote elements.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="70" y="82" class="label">Round-trip checks</text>
+  <g class="box">
+    <rect x="70" y="125" width="300" height="130" rx="16"/>
+    <rect x="450" y="125" width="300" height="130" rx="16"/>
+    <rect x="830" y="125" width="300" height="130" rx="16"/>
+    <rect x="1210" y="125" width="300" height="130" rx="16"/>
+  </g>
+  <text x="220" y="180" text-anchor="middle" class="label">IDML</text>
+  <text x="220" y="220" text-anchor="middle" class="small">extraction</text>
+  <text x="600" y="180" text-anchor="middle" class="label">Bilingual</text>
+  <text x="600" y="220" text-anchor="middle" class="small">file</text>
+  <text x="980" y="202" text-anchor="middle" class="label">Merge</text>
+  <text x="1360" y="202" text-anchor="middle" class="label">InDesign</text>
+  <path d="M370 190H430" class="flow"/><path d="M430 190l-22-15v30z" fill="var(--accent)"/>
+  <path d="M750 190H810" class="flow"/><path d="M810 190l-22-15v30z" fill="var(--accent)"/>
+  <path d="M1130 190H1190" class="flow"/><path d="M1190 190l-22-15v30z" fill="var(--accent)"/>
+  <text x="220" y="310" text-anchor="middle" class="note">Content not extracted</text>
+  <text x="220" y="348" text-anchor="middle" class="note">Check filter settings</text>
+  <text x="600" y="310" text-anchor="middle" class="note">Non-empty source</text>
+  <text x="600" y="348" text-anchor="middle" class="note">Empty target</text>
+  <text x="980" y="310" text-anchor="middle" class="note">Empty target merged</text>
+  <text x="980" y="348" text-anchor="middle" class="note">without a warning</text>
+  <text x="1360" y="310" text-anchor="middle" class="note">Overset text</text>
+  <text x="1360" y="348" text-anchor="middle" class="note">Index not regenerated</text>
+  <line x1="70" y1="405" x2="1530" y2="405" stroke="var(--line)" stroke-width="4"/>
+  <text x="70" y="470" class="label">Footnote XML after merge</text>
+  <rect x="70" y="515" width="900" height="320" rx="16" class="box"/>
+  <rect x="1030" y="515" width="500" height="320" rx="16" class="box"/>
+  <text x="110" y="575" class="small">Text and paragraph structure remain</text>
+  <text x="110" y="635" class="mono">&lt;Footnote&gt;</text>
+  <text x="145" y="680" class="mono">&lt;ParagraphStyleRange&gt;</text>
+  <text x="180" y="725" class="mono">&lt;CharacterStyleRange&gt;</text>
+  <text x="215" y="765" class="mono">&lt;Content&gt;Footnote text goes here.&lt;/Content&gt;</text>
+  <text x="145" y="805" class="mono">&lt;/CharacterStyleRange&gt;</text>
+  <text x="110" y="830" class="mono">&lt;/ParagraphStyleRange&gt;&lt;/Footnote&gt;</text>
+  <text x="1070" y="575" class="small">Empty target result</text>
+  <text x="1280" y="690" text-anchor="middle" class="mono">&lt;Footnote/&gt;</text>
+  <text x="1280" y="745" text-anchor="middle" class="note">No paragraph structure</text>
+</svg>

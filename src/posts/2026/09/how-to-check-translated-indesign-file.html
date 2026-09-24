@@ -13,6 +13,8 @@ layout: post.njk
 
 <p>You do not need InDesign for most of this. An IDML file (InDesign's interchange format, a ZIP of XML files) can be inspected in a text editor, and the returned PDF can be searched. The overset check below uses InDesign's Preflight panel or an InDesign script. If you do not have InDesign, ask the vendor to run the check and report the results.</p>
 
+<figure class="diagram"><img src="/images/2026/09/how-to-check-translated-indesign-file/diagram-01.svg" alt="Container, agreed-string, source-language, hidden-text, and reference-string checks can be done without reading the target, while correctness requires linguistic review." width="1600" height="900" loading="lazy" /></figure>
+
 <h2>First, confirm the container survived</h2>
 
 <p>Before looking at any text, compare the document's structure: the stories (a story is one continuous flow of text, possibly running through several linked frames), the row and column counts of each table, the number of footnotes and anchored figures per story, and the set of paragraph styles in use. None of this requires reading. The checklist, including how to read the counts out of the IDML file without InDesign, is in <a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a>. Resolve missing stories or tables before linguistic review.</p>

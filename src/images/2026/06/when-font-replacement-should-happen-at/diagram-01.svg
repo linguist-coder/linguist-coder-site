@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Font replacement at the definition level</title>
+  <desc id="desc">Helvetica is replaced with Arial inside the composite font definition while paragraph styles keep pointing to that definition and text runs are not directly changed.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .title { font:700 40px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .head { font:700 33px system-ui,-apple-system,"Segoe UI",sans-serif }
+    .text { font:32px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .small { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--muted) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .arrow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="70" y="80" class="title">Change the layer that owns the font decision</text>
+  <rect x="70" y="130" width="950" height="680" rx="18" class="box"/>
+  <text x="115" y="195" class="head" fill="var(--accent)">Replacement target: composite font definition</text>
+  <rect x="120" y="245" width="330" height="115" rx="14" class="box"/>
+  <text x="285" y="315" text-anchor="middle" class="text">Paragraph style</text>
+  <path d="M450 303H550" class="arrow"/><path d="M550 303l-24-16v32z" fill="var(--accent)"/>
+  <rect x="550" y="225" width="410" height="350" rx="14" class="box"/>
+  <text x="755" y="285" text-anchor="middle" class="head" fill="var(--fg)">Composite font</text>
+  <text x="590" y="360" class="text">Chinese characters</text>
+  <text x="590" y="405" class="small">CJK font</text>
+  <text x="590" y="485" class="text">Latin letters, numbers, symbols</text>
+  <text x="590" y="535" class="text"><tspan fill="var(--warn)">Helvetica</tspan><tspan fill="var(--accent)">  →  Arial</tspan></text>
+  <text x="120" y="665" class="text">Style references stay as they are.</text>
+  <text x="120" y="715" class="small">Only the internal font assignment changes.</text>
+  <rect x="1080" y="130" width="450" height="680" rx="18" class="box"/>
+  <text x="1125" y="195" class="head" fill="var(--warn)">Not the target</text>
+  <text x="1125" y="270" class="text">Ordinary text runs</text>
+  <text x="1125" y="335" class="text">Paragraph styles</text>
+  <text x="1125" y="400" class="text">Character styles</text>
+  <line x1="1110" y1="240" x2="1485" y2="430" stroke="var(--warn)" stroke-width="8"/>
+  <line x1="1485" y1="240" x2="1110" y2="430" stroke="var(--warn)" stroke-width="8"/>
+  <text x="1305" y="535" text-anchor="middle" class="small">Direct text replacement may</text>
+  <text x="1305" y="575" text-anchor="middle" class="small">create local overrides.</text>
+  <text x="1305" y="665" text-anchor="middle" class="text">Helvetica did not need</text>
+  <text x="1305" y="710" text-anchor="middle" class="text">replacement everywhere.</text>
+</svg>
