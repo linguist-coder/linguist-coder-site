@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Three criteria for choosing what to automate first</title>
+  <desc id="desc">High Frequency, High Instability, and Low Judgment are compared against minimal date updates and overset text after translation.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="800" y="70" text-anchor="middle" class="label">Three filters for the first automation</text>
+  <rect x="65" y="125" width="470" height="185" rx="16" class="box"/>
+  <text x="300" y="190" text-anchor="middle" class="label">High Frequency</text>
+  <text x="300" y="250" text-anchor="middle" class="small">It happens often</text>
+  <rect x="565" y="125" width="470" height="185" rx="16" class="box"/>
+  <text x="800" y="190" text-anchor="middle" class="label">High Instability</text>
+  <text x="800" y="250" text-anchor="middle" class="small">The condition changes</text>
+  <rect x="1065" y="125" width="470" height="185" rx="16" class="box"/>
+  <text x="1300" y="190" text-anchor="middle" class="label">Low Judgment</text>
+  <text x="1300" y="250" text-anchor="middle" class="small">Simple rules can decide</text>
+  <rect x="65" y="365" width="1470" height="300" rx="16" class="box"/>
+  <text x="100" y="430" class="label">Task named in the post</text>
+  <text x="700" y="500" text-anchor="middle" class="small">High Frequency</text>
+  <text x="1050" y="500" text-anchor="middle" class="small">High Instability</text>
+  <text x="1400" y="500" text-anchor="middle" class="small">Low Judgment</text>
+  <text x="100" y="565" class="small">Minimal Date Update</text>
+  <text x="700" y="565" text-anchor="middle" class="label" style="fill:var(--accent)">Yes</text>
+  <text x="1400" y="565" text-anchor="middle" class="label" style="fill:var(--accent)">Yes</text>
+  <text x="100" y="625" class="small">Overset text after translation</text>
+  <text x="700" y="625" text-anchor="middle" class="label" style="fill:var(--accent)">Yes</text>
+  <text x="1050" y="625" text-anchor="middle" class="label" style="fill:var(--accent)">Yes</text>
+  <text x="1400" y="625" text-anchor="middle" class="label" style="fill:var(--accent)">Yes</text>
+  <rect x="280" y="720" width="1040" height="125" rx="16" fill="none" stroke="var(--accent)" stroke-width="7"/>
+  <text x="800" y="775" text-anchor="middle" class="label">Automate first</text>
+  <text x="800" y="820" text-anchor="middle" class="small">At least two overlap; the strongest candidates satisfy all three</text>
+</svg>

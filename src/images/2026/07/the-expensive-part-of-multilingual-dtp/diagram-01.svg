@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Fixed design and variable language in multilingual DTP</title>
+  <desc id="desc">The design containers stay fixed while the language and text content change for English, Japanese, and German versions.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="800" y="80" text-anchor="middle" class="label">One document, two parts</text>
+  <rect x="90" y="145" width="650" height="610" rx="18" class="box"/>
+  <text x="415" y="215" text-anchor="middle" class="label">Fixed: design</text>
+  <text x="415" y="280" text-anchor="middle" class="small">Frames</text>
+  <text x="415" y="340" text-anchor="middle" class="small">Styles</text>
+  <text x="415" y="400" text-anchor="middle" class="small">Master pages</text>
+  <rect x="185" y="475" width="460" height="190" rx="12" class="box"/>
+  <rect x="225" y="515" width="170" height="110" rx="8" class="box"/>
+  <rect x="435" y="515" width="170" height="110" rx="8" class="box"/>
+  <text x="415" y="720" text-anchor="middle" class="note">Keep the container</text>
+  <path d="M740 450H875" class="flow" marker-end="url(#arrow)"/>
+  <rect x="875" y="145" width="635" height="610" rx="18" class="box"/>
+  <text x="1192" y="215" text-anchor="middle" class="label">Variable: language</text>
+  <text x="1192" y="270" text-anchor="middle" class="small">Text content changes</text>
+  <rect x="970" y="335" width="445" height="85" rx="12" class="box"/>
+  <text x="1192" y="390" text-anchor="middle" class="small">English</text>
+  <rect x="970" y="455" width="445" height="85" rx="12" class="box"/>
+  <text x="1192" y="510" text-anchor="middle" class="small">Japanese</text>
+  <rect x="970" y="575" width="445" height="85" rx="12" class="box"/>
+  <text x="1192" y="630" text-anchor="middle" class="small">German</text>
+  <text x="1192" y="720" text-anchor="middle" class="note">Swap the content</text>
+  <text x="800" y="835" text-anchor="middle" class="label">Hold the design constant while changing the language</text>
+</svg>

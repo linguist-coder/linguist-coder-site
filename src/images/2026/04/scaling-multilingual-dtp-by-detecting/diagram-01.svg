@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Objects detected outside the layout area</title>
+  <desc id="desc">A page sits inside the pasteboard, with top-level objects outside the layout area marked for detection and counting.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <rect x="70" y="80" width="1100" height="740" rx="20" class="box"/>
+  <text x="110" y="135" class="label">Pasteboard</text>
+  <rect x="345" y="175" width="560" height="555" fill="var(--bg)" stroke="var(--accent)" stroke-width="7"/>
+  <text x="625" y="245" text-anchor="middle" class="label">Page / layout area</text>
+  <rect x="130" y="285" width="145" height="100" rx="8" fill="none" stroke="var(--warn)" stroke-width="7"/>
+  <circle cx="1035" cy="360" r="62" fill="none" stroke="var(--warn)" stroke-width="7"/>
+  <path d="M165 650h125v85H165z" fill="none" stroke="var(--warn)" stroke-width="7"/>
+  <text x="1240" y="235" class="label">Script</text>
+  <text x="1240" y="300" class="small">Detects top-level</text>
+  <text x="1240" y="350" class="small">pasteboard objects</text>
+  <text x="1240" y="430" class="small">Counts them</text>
+  <text x="1240" y="510" class="small">Asks before deletion</text>
+  <path d="M1215 330H1097" class="flow" marker-end="url(#arrow)"/>
+  <path d="M1215 455V770H310V695H292" class="flow" marker-end="url(#arrow)"/>
+  <text x="800" y="875" text-anchor="middle" class="note">Outside the layout area, but still in the document structure</text>
+</svg>

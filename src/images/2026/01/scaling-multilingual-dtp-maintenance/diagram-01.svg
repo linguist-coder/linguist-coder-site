@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Go and no-go conditions for IDML cleanup</title>
+  <desc id="desc">IDML cleanup is considered for signs of internal instability and avoided for simpler visible problems or cleanup without a trigger.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <rect width="1600" height="1000" fill="var(--bg)"/>
+  <text x="800" y="75" text-anchor="middle" class="label">IDML cleanup is a recovery decision</text>
+  <rect x="70" y="135" width="710" height="750" rx="18" class="box"/>
+  <text x="425" y="205" text-anchor="middle" class="label">Go: consider cleanup</text>
+  <text x="120" y="275" class="small">Major InDesign update</text>
+  <text x="155" y="335" class="note">Especially for a high-stakes deliverable</text>
+  <text x="120" y="425" class="small">Unexplained unstable behavior</text>
+  <text x="155" y="475" class="note">Random glitches, errors, crashes</text>
+  <text x="120" y="565" class="small">Abnormal file bloat</text>
+  <text x="155" y="615" class="note">Growth beyond what content explains</text>
+  <text x="120" y="705" class="small">Long-lived master templates</text>
+  <text x="155" y="755" class="note">Reused for years across projects</text>
+  <text x="425" y="840" text-anchor="middle" class="label">Internal state may be the problem</text>
+  <rect x="820" y="135" width="710" height="750" rx="18" class="box"/>
+  <text x="1175" y="205" text-anchor="middle" class="label">No-Go: probably unnecessary</text>
+  <text x="870" y="300" class="small">Minor, visible layout issues</text>
+  <text x="905" y="350" class="note">Fix them directly</text>
+  <text x="870" y="455" class="small">Clear editing mistakes</text>
+  <text x="870" y="610" class="small">“Just in case” cleanup</text>
+  <text x="905" y="660" class="note">No concrete trigger</text>
+  <text x="1175" y="840" text-anchor="middle" class="label">The likely cause is simpler</text>
+  <text x="800" y="955" text-anchor="middle" class="small">Recover stability only when instability costs more than the round trip</text>
+</svg>

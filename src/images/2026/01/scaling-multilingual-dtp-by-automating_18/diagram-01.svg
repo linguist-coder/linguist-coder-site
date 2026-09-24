@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Language suffix rule for image relinking</title>
+  <desc id="desc">diagram_EN.ai maps to diagram_DE.ai by replacing the language suffix while keeping the extension and Links folder the same.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="800" y="75" text-anchor="middle" class="label">Language-coded filenames make the rule explicit</text>
+  <rect x="70" y="190" width="460" height="220" rx="18" class="box"/>
+  <text x="300" y="255" text-anchor="middle" class="label">Linked image</text>
+  <text x="300" y="335" text-anchor="middle" class="mono">diagram_EN.ai</text>
+  <path d="M530 300H705" class="flow" marker-end="url(#arrow)"/>
+  <rect x="705" y="145" width="430" height="310" rx="18" class="box"/>
+  <text x="920" y="210" text-anchor="middle" class="label">Naming rule</text>
+  <text x="920" y="285" text-anchor="middle" class="mono">_EN → _DE</text>
+  <text x="920" y="350" text-anchor="middle" class="small">Same file extension</text>
+  <text x="920" y="405" text-anchor="middle" class="small">Same Links folder</text>
+  <path d="M1135 300H1215" class="flow" marker-end="url(#arrow)"/>
+  <rect x="1215" y="190" width="320" height="220" rx="18" class="box"/>
+  <text x="1375" y="255" text-anchor="middle" class="label">Target</text>
+  <text x="1375" y="335" text-anchor="middle" class="mono">diagram_DE.ai</text>
+  <rect x="325" y="545" width="950" height="190" rx="18" class="box"/>
+  <text x="800" y="615" text-anchor="middle" class="label">Relink only if the target file exists</text>
+  <text x="800" y="685" text-anchor="middle" class="small">Repeat for all open documents when required</text>
+  <path d="M800 455V545" class="flow" marker-end="url(#arrow)"/>
+  <text x="800" y="835" text-anchor="middle" class="note">The language remains visible in the filename</text>
+</svg>

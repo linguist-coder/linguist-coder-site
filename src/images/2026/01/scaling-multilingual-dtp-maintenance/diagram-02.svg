@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Save, Save As, and an IDML round trip compared</title>
+  <desc id="desc">Save and Save As work inside the existing structure, while IDML rebuilds through an interchange format and can change text flow.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="800" y="75" text-anchor="middle" class="label">These save methods are not equivalent</text>
+  <rect x="65" y="145" width="450" height="570" rx="18" class="box"/>
+  <text x="290" y="220" text-anchor="middle" class="label">Save</text>
+  <text x="290" y="295" text-anchor="middle" class="small">Bandage on a wound</text>
+  <path d="M290 355V470" class="flow" marker-end="url(#arrow)"/>
+  <text x="290" y="545" text-anchor="middle" class="small">Works inside the</text>
+  <text x="290" y="595" text-anchor="middle" class="small">existing structure</text>
+  <rect x="575" y="145" width="450" height="570" rx="18" class="box"/>
+  <text x="800" y="220" text-anchor="middle" class="label">Save As</text>
+  <text x="800" y="295" text-anchor="middle" class="small">Cleaning the room</text>
+  <path d="M800 355V470" class="flow" marker-end="url(#arrow)"/>
+  <text x="800" y="545" text-anchor="middle" class="small">Works inside the</text>
+  <text x="800" y="595" text-anchor="middle" class="small">existing structure</text>
+  <rect x="1085" y="145" width="450" height="570" rx="18" class="box"/>
+  <text x="1310" y="220" text-anchor="middle" class="label">IDML round trip</text>
+  <text x="1310" y="295" text-anchor="middle" class="small">Rebuilding the house</text>
+  <text x="1310" y="345" text-anchor="middle" class="small">from the ground up</text>
+  <path d="M1310 385V470" class="flow" marker-end="url(#arrow)"/>
+  <text x="1310" y="545" text-anchor="middle" class="small">Rebuilds through an</text>
+  <text x="1310" y="595" text-anchor="middle" class="small">interchange format</text>
+  <text x="1310" y="665" text-anchor="middle" class="note">Can change text flow</text>
+  <text x="800" y="805" text-anchor="middle" class="label">IDML can work when the other options do not</text>
+  <text x="800" y="855" text-anchor="middle" class="note">Always verify the result</text>
+</svg>

@@ -92,6 +92,7 @@ It is a “last resort” tool—useful, powerful, and not meant for everyday us
 </ul>
 <p data-end="2813" data-start="2655">The goal is not to “keep files clean.”<br data-end="2696" data-start="2693" />
 The goal is to <strong data-end="2732" data-start="2711">recover stability</strong> when the cost of instability becomes higher than the cost of an IDML round trip.</p>
+<figure class="diagram"><img src="/images/2026/01/scaling-multilingual-dtp-maintenance/diagram-01.svg" alt="IDML cleanup is a go for signs of internal instability and a no-go for simpler visible problems or cleanup without a trigger." width="1600" height="1000" loading="lazy" /></figure>
 <hr data-end="2818" data-start="2815" />
 <h2 data-end="2849" data-start="2820">3. Save / Save As / IDML</h2>
 <h3 data-end="2880" data-start="2850">What Is Actually Different</h3>
@@ -124,6 +125,7 @@ The goal is to <strong data-end="2732" data-start="2711">recover stability</stro
 IDML forces a rebuild via an interchange format.</p>
 <p data-end="3461" data-start="3282">That difference is exactly why IDML can work when the other options don’t.<br data-end="3359" data-start="3356" />
 It also explains why IDML comes with risk: rebuilding can change small behaviors, including text flow.</p>
+<figure class="diagram"><img src="/images/2026/01/scaling-multilingual-dtp-maintenance/diagram-02.svg" alt="Save and Save As work inside the existing structure, while an IDML round trip rebuilds through an interchange format and can change text flow." width="1600" height="900" loading="lazy" /></figure>
 <hr data-end="3466" data-start="3463" />
 <h2 data-end="3508" data-start="3468">4. What IDML Cleanup Does <em data-end="3502" data-start="3497">Not</em> Solve</h2>
 <p data-end="3562" data-start="3510">IDML cleanup is powerful, but it is not a guarantee.</p>

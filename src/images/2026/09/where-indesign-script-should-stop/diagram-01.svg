@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Where an InDesign script continues, stops, and hands work to a person</title>
+  <desc id="desc">An overset item is either refused and reported, adjusted through enabled levers until it clears, or reported for inspection after configured limits are reached.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+  <rect width="1600" height="1000" fill="var(--bg)"/>
+  <text x="800" y="65" text-anchor="middle" class="label">Overset item</text>
+  <path d="M800 90V160" class="flow" marker-end="url(#arrow)"/>
+  <rect x="520" y="160" width="560" height="105" rx="16" class="box"/>
+  <text x="800" y="225" text-anchor="middle" class="small">Is this a row that grows on its own?</text>
+  <path d="M520 212H280V345" class="flow" marker-end="url(#arrow)"/>
+  <text x="385" y="195" text-anchor="middle" class="note">Yes: At Least row</text>
+  <rect x="65" y="345" width="430" height="145" rx="16" class="box"/>
+  <text x="280" y="405" text-anchor="middle" class="label">Refuse to write</text>
+  <text x="280" y="452" text-anchor="middle" class="small">Report the skip and reason</text>
+  <path d="M280 490V820H415V835" class="flow" marker-end="url(#arrow)"/>
+  <text x="1095" y="195" class="note">No</text>
+  <path d="M1080 212H1305V345" class="flow" marker-end="url(#arrow)"/>
+  <rect x="1085" y="345" width="430" height="250" rx="16" class="box"/>
+  <text x="1300" y="400" text-anchor="middle" class="label">Keep going</text>
+  <text x="1300" y="455" text-anchor="middle" class="small">Tracking to its floor</text>
+  <text x="1300" y="505" text-anchor="middle" class="small">Font size and leading</text>
+  <text x="1300" y="555" text-anchor="middle" class="small">Horizontal scale last</text>
+  <path d="M1085 470H855" class="flow" marker-end="url(#arrow)"/>
+  <rect x="570" y="375" width="270" height="190" rx="16" class="box"/>
+  <text x="705" y="445" text-anchor="middle" class="label">Overset clears?</text>
+  <text x="705" y="505" text-anchor="middle" class="note">Stop immediately</text>
+  <text x="735" y="625" class="note">Yes</text>
+  <path d="M705 565V695" class="flow" marker-end="url(#arrow)"/>
+  <rect x="510" y="695" width="390" height="105" rx="16" class="box"/>
+  <text x="705" y="760" text-anchor="middle" class="label">Resolved</text>
+  <text x="880" y="550" class="note">No</text>
+  <path d="M840 520H960V732H1035" class="flow" marker-end="url(#arrow)"/>
+  <rect x="1035" y="665" width="530" height="135" rx="16" class="box"/>
+  <text x="1300" y="720" text-anchor="middle" class="label">Limit reached</text>
+  <text x="1300" y="765" text-anchor="middle" class="small">Report the unresolved item</text>
+  <path d="M1510 800V820H1185V835" class="flow" marker-end="url(#arrow)"/>
+  <rect x="400" y="835" width="800" height="115" rx="16" class="box"/>
+  <text x="800" y="885" text-anchor="middle" class="label">Person takes over</text>
+  <text x="800" y="930" text-anchor="middle" class="small">Inspect what was skipped or left unresolved</text>
+</svg>
