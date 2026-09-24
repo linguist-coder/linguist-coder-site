@@ -78,9 +78,9 @@
    "InDesign",
    "translation"
   ],
-  "raw_sha256": "fd950bdde8031c3e8fdb480a7329d06c2a07279417cbb864d2fe736f552744e7",
-  "rewritten_sha256": "fd950bdde8031c3e8fdb480a7329d06c2a07279417cbb864d2fe736f552744e7",
-  "raw_len": 4974,
+  "raw_sha256": "b0384daba8a129cce3caff43d063434cff0a54c6c1abceb582cc87ec30ddcfdd",
+  "rewritten_sha256": "b0384daba8a129cce3caff43d063434cff0a54c6c1abceb582cc87ec30ddcfdd",
+  "raw_len": 5463,
   "images": {},
   "file": "src/posts/2026/09/seeking-testers-comparing-idml-files.html"
  },
@@ -113,9 +113,9 @@
    "overset",
    "scripting basics"
   ],
-  "raw_sha256": "ddc6a4266eacc64a218bd49de603d4ed825669d6f8bc579049154b8c1f7dae19",
-  "rewritten_sha256": "ddc6a4266eacc64a218bd49de603d4ed825669d6f8bc579049154b8c1f7dae19",
-  "raw_len": 18314,
+  "raw_sha256": "58abad9cf263eddbe0e091903fa8205aae9eb73b0d193f959f5ff4eea75a0d10",
+  "rewritten_sha256": "58abad9cf263eddbe0e091903fa8205aae9eb73b0d193f959f5ff4eea75a0d10",
+  "raw_len": 18669,
   "images": {},
   "file": "src/posts/2026/09/your-second-indesign-script-condensing.html"
  },
