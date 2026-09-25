@@ -1,0 +1,317 @@
+---
+title: "Why InDesign Asks for a Replacement When You Delete an Unused Paragraph Style"
+date: 2026-09-26T07:34:27.000+09:00
+updated: 2026-09-26T07:34:27.000+09:00
+permalink: "/2026/09/unused-paragraph-style-asks-for-replacement.html"
+tags: ["ExtendScript", "InDesign", "automation"]
+layout: post.njk
+---
+<p>You try to delete a paragraph style you stopped using, and InDesign asks which style to replace it with. Find/Change finds no text with that style.</p>
+
+<p>I confirmed that a Based On reference can cause this: if another paragraph style is based on the one you're deleting, InDesign asks for a replacement even though no text uses it. When nothing references the style, InDesign deletes it without asking.</p>
+
+<p>A Based On reference can appear without you choosing it. If you create a new paragraph style while your cursor is in a paragraph, InDesign sets the new style's Based On to that paragraph's style. Style Options shows what the current style is based on, but I did not find a panel that lists the styles based on it.</p>
+
+<h2>Where a paragraph style can be referenced</h2>
+
+<p>Besides text, a paragraph style can be named in:</p>
+
+<ul>
+<li>another paragraph style's <strong>Based On</strong></li>
+<li>the <strong>Next Style</strong> of any paragraph style, not only styles based on it</li>
+<li>an <strong>object style</strong> or a <strong>cell style</strong> that applies a paragraph style</li>
+<li>a <strong>TOC style</strong>: its title style, a style included in the TOC, or the style used for an entry</li>
+<li><strong>Footnote Options</strong> and <strong>Endnote Options</strong></li>
+<li>the <strong>Generate Index</strong> settings (title, levels, section headings)</li>
+<li>a <strong>Running Header (Paragraph Style)</strong> text variable</li>
+<li>the document's default paragraph style</li>
+</ul>
+
+<p>I confirmed the delete prompt for Based On. I have not tested whether the other reference types trigger that prompt.</p>
+
+<p>These references are stored in style definitions and document settings. Find/Change searches text, so it doesn't report them.</p>
+
+<h2>Text that Find/Change skips by default</h2>
+
+<p>Find/Change doesn't search text on parent pages or on hidden layers unless you turn on those buttons in the search options. Both are off by default, so a default search returns nothing for a style that is only applied there.</p>
+
+<h2>A script that checks common paragraph-style references</h2>
+
+<p>You select a paragraph style by its group path, so styles with the same name in different groups stay separate. The script checks text and the reference types listed above, and lists any part of the check it could not complete. Before searching, it saves the Find Text criteria and the five search options it changes. Afterward, it attempts to restore them and reports any that could not be restored. Text results show an approximate location and the first few words.</p>
+
+<pre><code>// WhereIsThisStyleUsed.jsx
+// Pick one paragraph style and list the text and the settings that reference it.
+// The Find Text criteria and the search options it changes are saved first and restored at the end.
+(function () {
+
+  var MAX_SHOWN = 100;
+
+  function pathOf(st, sep) {
+    var p = st.name, g = st.parent;
+    while (g &amp;&amp; g.constructor &amp;&amp; g.constructor.name == &quot;ParagraphStyleGroup&quot;) { p = g.name + (sep || &quot;/&quot;) + p; g = g.parent; }
+    return p;
+  }
+
+  // Approximate location of one text search result.
+  function locate(t) {
+    var kind = &quot;&quot;, o = t, n = 0;
+    try {
+      while (o &amp;&amp; n &lt; 10) {
+        var c = o.constructor.name;
+        if (c == &quot;Footnote&quot;) { kind = &quot;footnote, &quot;; break; }
+        if (c == &quot;Cell&quot;) { kind = &quot;table cell, &quot;; break; }
+        if (c == &quot;Story&quot; || c == &quot;Document&quot;) break;
+        o = o.parent; n++;
+      }
+    } catch (e) {}
+    var frames;
+    try { frames = t.parentTextFrames; } catch (e) { return kind + &quot;location unknown&quot;; }
+    if (!frames || frames.length == 0) return kind + &quot;no text frame (overset text)&quot;;
+    var pages = [], seen = {}, hidden = [];
+    for (var i = 0; i &lt; frames.length; i++) {
+      var label;
+      try {
+        var pg = frames[i].parentPage;
+        if (!pg) label = &quot;no parent page&quot;;
+        else if (pg.parent.constructor.name == &quot;MasterSpread&quot;) label = &quot;parent &quot; + pg.parent.name;
+        else label = &quot;page &quot; + pg.name;
+      } catch (e) { label = &quot;location unknown&quot;; }
+      if (!seen[label]) { seen[label] = true; pages.push(label); }
+      try { if (!frames[i].itemLayer.visible &amp;&amp; !seen[&quot;L&quot; + frames[i].itemLayer.name]) {
+        seen[&quot;L&quot; + frames[i].itemLayer.name] = true; hidden.push(frames[i].itemLayer.name); } } catch (e) {}
+    }
+    return kind + pages.join(&quot;, &quot;) + (hidden.length ? &quot; (hidden layer &quot; + hidden.join(&quot;, &quot;) + &quot;)&quot; : &quot;&quot;);
+  }
+
+  function check(doc, target) {
+    var found = [], warn = [], restore = [];
+    var targetPath = pathOf(target, &quot;:&quot;);
+    var ps = [], sameName = 0, sameNameKnown = false, rootId = null;
+    try {
+      ps = doc.allParagraphStyles; rootId = doc.paragraphStyles[0].id;
+      for (var i = 0; i &lt; ps.length; i++) if (ps[i].name == target.name) sameName++;
+      sameNameKnown = true;
+    } catch (e) { ps = []; warn.push(&quot;Paragraph styles: could not be listed, so Based On and Next Style were not checked (&quot; + e.message + &quot;)&quot;); }
+
+    // isPath: the setting stores the style as a path, e.g. &quot;Group:Style&quot; (TOC entries do).
+    function test(label, getter, isPath) {
+      try {
+        var ref = getter();
+        if (ref == null) return;
+        if (typeof ref == &quot;string&quot;) {
+          if (isPath) { if (ref == targetPath) found.push(label); }
+          else if (ref == target.name) {
+            if (!sameNameKnown) warn.push(label + &quot;: names \&quot;&quot; + ref + &quot;\&quot;, but the script could not determine which paragraph style it refers to&quot;);
+            else if (sameName == 1) found.push(label);
+            else warn.push(label + &quot;: names \&quot;&quot; + ref + &quot;\&quot;, and more than one style has that name&quot;);
+          }
+          return;
+        }
+        if (ref.constructor.name == &quot;ParagraphStyle&quot; &amp;&amp; ref.id == target.id) found.push(label);
+      } catch (e) { warn.push(label + &quot;: could not be checked (&quot; + e.message + &quot;)&quot;); }
+    }
+    function section(name, fn) {
+      try { fn(); } catch (e) { warn.push(name + &quot;: could not be checked (&quot; + e.message + &quot;)&quot;); }
+    }
+
+    // 1. Text that has the style
+    var fo = app.findChangeTextOptions;
+    var keys = [&quot;includeMasterPages&quot;, &quot;includeHiddenLayers&quot;, &quot;includeLockedLayersForFind&quot;,
+                &quot;includeLockedStoriesForFind&quot;, &quot;includeFootnotes&quot;];
+    var savedOpts = {}, savedFind = null, k;
+    try {
+      savedFind = app.findTextPreferences.properties;
+      for (k = 0; k &lt; keys.length; k++) savedOpts[keys[k]] = fo[keys[k]];
+    } catch (e) { warn.push(&quot;Find/Change state could not be saved, so the text search was skipped&quot;); savedFind = null; }
+    if (savedFind) {
+      try {
+        for (k = 0; k &lt; keys.length; k++) fo[keys[k]] = true;
+        app.findTextPreferences = NothingEnum.NOTHING;
+        app.findTextPreferences.appliedParagraphStyle = target;
+        var hits = doc.findText();
+        for (var h = 0; h &lt; hits.length; h++) {
+          var snip;
+          try { snip = String(hits[h].contents).replace(/[\r\n]+/g, &quot; &quot;); }
+          catch (e) { snip = &quot;[excerpt unavailable]&quot;; }
+          if (snip.length &gt; 40) snip = snip.substr(0, 40) + &quot;...&quot;;
+          found.push(&quot;Text (&quot; + locate(hits[h]) + &quot;): \&quot;&quot; + snip + &quot;\&quot;&quot;);
+        }
+      } catch (e) {
+        warn.push(&quot;Text search failed (&quot; + e.message + &quot;)&quot;);
+      } finally {
+        try { app.findTextPreferences = NothingEnum.NOTHING; } catch (e) {}
+        try { app.findTextPreferences.properties = savedFind; }
+        catch (e) { restore.push(&quot;Find Text criteria&quot;); }
+        for (k = 0; k &lt; keys.length; k++) {
+          try { fo[keys[k]] = savedOpts[keys[k]]; }
+          catch (e) { restore.push(&quot;Search option &quot; + keys[k]); }
+        }
+      }
+    }
+
+    // 2. Other styles
+    section(&quot;Paragraph styles&quot;, function () {
+      for (var i = 0; i &lt; ps.length; i++) (function (st) {
+        if (st.id == target.id || st.id == rootId) return;   // the target itself, and [No Paragraph Style]
+        test(&quot;Based On in paragraph style &quot; + pathOf(st), function () { return st.basedOn; });
+        test(&quot;Next Style in paragraph style &quot; + pathOf(st), function () { return st.nextStyle; });
+      })(ps[i]);
+    });
+    section(&quot;Object styles&quot;, function () {
+      var os = doc.allObjectStyles;
+      for (var i = 0; i &lt; os.length; i++) (function (o) {
+        test(&quot;Object style &quot; + o.name, function () { return o.appliedParagraphStyle; });
+      })(os[i]);
+    });
+    section(&quot;Cell styles&quot;, function () {
+      var cs = doc.allCellStyles;
+      for (var i = 0; i &lt; cs.length; i++) (function (c) {
+        test(&quot;Cell style &quot; + c.name, function () { return c.appliedParagraphStyle; });
+      })(cs[i]);
+    });
+
+    // 3. Document settings
+    section(&quot;TOC styles&quot;, function () {
+      var ts = doc.tocStyles;
+      for (var i = 0; i &lt; ts.length; i++) (function (t) {
+        test(&quot;TOC style &quot; + t.name + &quot; (title style)&quot;, function () { return t.titleStyle; });
+        var es = t.tocStyleEntries;
+        for (var j = 0; j &lt; es.length; j++) (function (e) {
+          // TOC entries name the included style by path, e.g. &quot;Group:Style&quot;
+          test(&quot;TOC style &quot; + t.name + &quot; (included style)&quot;, function () { return e.name; }, true);
+          test(&quot;TOC style &quot; + t.name + &quot; (entry style)&quot;, function () { return e.formatStyle; });
+        })(es[j]);
+      })(ts[i]);
+    });
+    test(&quot;Footnote Options (paragraph style)&quot;, function () { return doc.footnoteOptions.footnoteTextStyle; });
+    test(&quot;Endnote Options (title style)&quot;, function () { return doc.endnoteOptions.endnoteTitleStyle; });
+    test(&quot;Endnote Options (paragraph style)&quot;, function () { return doc.endnoteOptions.endnoteTextStyle; });
+    var ix = [&quot;titleStyle&quot;, &quot;level1Style&quot;, &quot;level2Style&quot;, &quot;level3Style&quot;, &quot;level4Style&quot;, &quot;sectionHeadingStyle&quot;];
+    for (var i = 0; i &lt; ix.length; i++) (function (p) {
+      test(&quot;Generate Index settings (&quot; + p + &quot;)&quot;, function () { return doc.indexGenerationOptions[p]; });
+    })(ix[i]);
+    section(&quot;Text variables&quot;, function () {
+      var tv = doc.textVariables;
+      for (var i = 0; i &lt; tv.length; i++) (function (v) {
+        test(&quot;Text variable &quot; + v.name, function () {
+          return v.variableType == VariableTypes.MATCH_PARAGRAPH_STYLE_TYPE ? v.variableOptions.appliedParagraphStyle : null;
+        });
+      })(tv[i]);
+    });
+    test(&quot;Document default paragraph style&quot;, function () { return doc.textDefaults.appliedParagraphStyle; });
+
+    // Merge identical lines, e.g. several TOC entries using the same entry style.
+    var merged = [], count = {};
+    for (var i = 0; i &lt; found.length; i++) {
+      if (count[found[i]]) count[found[i]]++; else { count[found[i]] = 1; merged.push(found[i]); }
+    }
+    for (var i = 0; i &lt; merged.length; i++) if (count[merged[i]] &gt; 1) merged[i] += &quot; (x&quot; + count[merged[i]] + &quot;)&quot;;
+    return { found: merged, warn: warn, restore: restore };
+  }
+
+  function reportText(title, res, limit) {
+    var s = title + &quot;\n\n&quot;, f = res.found;
+    if (f.length == 0) s += &quot;No references found in the places this script checks.&quot;;
+    else if (limit &amp;&amp; f.length &gt; limit) s += f.length + &quot; results, showing the first &quot; + limit + &quot;. Save the list to see all.\n&quot; + f.slice(0, limit).join(&quot;\n&quot;);
+    else s += f.length + &quot; results:\n&quot; + f.join(&quot;\n&quot;);
+    if (res.warn.length) s += &quot;\n\nThe check was incomplete:\n&quot; + res.warn.join(&quot;\n&quot;);
+    if (res.restore &amp;&amp; res.restore.length) s += &quot;\n\nThese Find/Change settings may not have been restored:\n&quot; + res.restore.join(&quot;\n&quot;);
+    return s;
+  }
+
+  function report(title, res) {
+    var w = new Window(&quot;dialog&quot;, &quot;Where is this style used?&quot;);
+    w.alignChildren = &quot;fill&quot;;
+    var t = w.add(&quot;edittext&quot;, undefined, reportText(title, res, MAX_SHOWN), { multiline: true, readonly: true, scrolling: true });
+    t.preferredSize = [560, 360];
+    var g = w.add(&quot;group&quot;);
+    var save = g.add(&quot;button&quot;, undefined, &quot;Save List...&quot;);
+    g.add(&quot;button&quot;, undefined, &quot;Close&quot;, { name: &quot;ok&quot; });
+    save.onClick = function () {
+      var f = File.saveDialog(&quot;Save the list&quot;, &quot;Text:*.txt&quot;);
+      if (!f) return;
+      f.encoding = &quot;UTF-8&quot;;
+      if (!f.open(&quot;w&quot;)) { alert(&quot;Could not open &quot; + f.fsName + &quot; for writing.&quot;); return; }
+      var ok = false;
+      try { ok = f.write(reportText(title, res, 0)); } catch (e) { ok = false; }
+      try { if (!f.close()) ok = false; } catch (e) { ok = false; }
+      if (!ok) alert(&quot;The list was not saved completely to &quot; + f.fsName + &quot;.&quot;);
+    };
+    w.show();
+  }
+
+
+  if (app.documents.length == 0) { alert(&quot;Open a document first.&quot;); return; }
+  var doc = app.activeDocument, list = [], names = [];
+  try {
+    var ps = doc.allParagraphStyles, rootId = doc.paragraphStyles[0].id;
+    for (var i = 0; i &lt; ps.length; i++) {
+      if (ps[i].id == rootId) continue;
+      list.push(ps[i]); names.push(pathOf(ps[i]));
+    }
+  } catch (e) { alert(&quot;Could not read the paragraph styles in this document (&quot; + e.message + &quot;).&quot;); return; }
+  var d = new Window(&quot;dialog&quot;, &quot;Where is this style used?&quot;);
+  d.add(&quot;statictext&quot;, undefined, &quot;Paragraph style:&quot;);
+  var dd = d.add(&quot;dropdownlist&quot;, undefined, names);
+  dd.selection = 0;
+  var b = d.add(&quot;group&quot;);
+  b.add(&quot;button&quot;, undefined, &quot;Check&quot;, { name: &quot;ok&quot; });
+  b.add(&quot;button&quot;, undefined, &quot;Cancel&quot;, { name: &quot;cancel&quot; });
+  if (d.show() != 1) return;
+  var target = list[dd.selection.index];
+  report(pathOf(target), check(doc, target));
+})();
+</code></pre>
+
+<h3>How to run it</h3>
+
+<ol>
+<li>With the document open, choose Window &gt; Utilities &gt; Scripts.</li>
+<li>In the Scripts panel, right-click the <strong>User</strong> folder and choose Reveal in Explorer (Windows) or Reveal in Finder (macOS).</li>
+<li>Save the code above in that folder as a plain-text file named <code>WhereIsThisStyleUsed.jsx</code>. On Windows, make sure the name doesn't end in <code>.txt</code>.</li>
+<li>Back in InDesign, double-click the script, pick a style, and click Check. If there are more than 100 results, Save List writes all of them to a text file.</li>
+</ol>
+
+<h3>What I tested</h3>
+
+<p>Tested in InDesign 21.5.1 on Windows:</p>
+
+<ul>
+<li>One style referenced in each place listed above except Generate Index, and applied to text on two pages of a threaded story, a parent page, a hidden layer, a footnote, a table cell and in overset text. The script listed all of them, and gave no results for a style with the same name in another group.</li>
+<li>findWhat, pointSize and the five search options it changes were restored afterward.</li>
+<li>I couldn't set the Generate Index styles from a script. In my negative test, reading them produced no finding, but I did not confirm a positive match.</li>
+</ul>
+
+<h2>What to do with the list</h2>
+
+<p>Save a copy of the document and make the changes there, one reference at a time.</p>
+
+<p><strong>Before you change a Based On, look at the dependent style.</strong> Some of its formatting may come from the parent, and changing the parent can change every paragraph that uses the dependent style. Check that text before and after the change.</p>
+
+<ul>
+<li><strong>Based On:</strong> open the dependent style and choose a different parent, or [No Paragraph Style].</li>
+<li><strong>Next Style:</strong> choose Same Style or the style you want next.</li>
+<li><strong>Object style / cell style:</strong> choose a different paragraph style in its settings, then check the objects or cells that use that style.</li>
+<li><strong>TOC style:</strong> edit it under Layout &gt; Table of Contents Styles. For the entry style, select the included style first. To update an existing TOC, select its text frame and choose Layout &gt; Update Table of Contents.</li>
+<li><strong>Footnote / Endnote Options:</strong> choose a different paragraph style, then check the note text, the endnote title if there is one, and any reflow.</li>
+<li><strong>Generate Index settings:</strong> open Generate Index from the Index panel menu and click More Options to see the level and section heading styles.</li>
+<li><strong>Text variable:</strong> choose Type &gt; Text Variables &gt; Define, edit the Running Header variable, and select a different style.</li>
+<li><strong>Document default:</strong> press Escape until no text cursor, frame or other item is selected, then click the paragraph style you want as the default.</li>
+<li><strong>Text:</strong> apply a different style.</li>
+</ul>
+
+<p>Run the script again. When it finds nothing in the places it checks, delete the style in the copy and check the affected pages, the TOC and index if you have them, and the running headers. If everything looks right, keep the copy as your working document instead of repeating the edits in the original.</p>
+
+<h2>What the script doesn't check</h2>
+
+<ul>
+<li><strong>Character styles.</strong> They can be referenced by nested styles, GREP styles, bullets and numbering, and other character styles. This script only handles paragraph styles.</li>
+<li><strong>Text in hidden conditions.</strong> I didn't test whether the search reaches it.</li>
+<li><strong>Other reference types.</strong> The list is not exhaustive. If the script finds nothing and InDesign still asks for a replacement, the document has a reference this script doesn't inspect.</li>
+</ul>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/01/how-to-run-javascript-in-adobe-indesign.html" target="_blank" rel="noopener">How to Run JavaScript in Adobe InDesign</a></li>
+</ul>
