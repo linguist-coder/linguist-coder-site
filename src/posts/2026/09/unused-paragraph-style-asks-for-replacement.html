@@ -39,6 +39,8 @@ layout: post.njk
 
 <p>You select a paragraph style by its group path, so styles with the same name in different groups stay separate. The script checks text and the reference types listed above, and lists any part of the check it could not complete. Before searching, it saves the Find Text criteria and the five search options it changes. Afterward, it attempts to restore them and reports any that could not be restored. Text results show an approximate location and the first few words.</p>
 
+<figure class="diagram"><img src="/images/2026/09/unused-paragraph-style-asks-for-replacement/results-dialog.png" alt="Script results listing a Based On reference, document settings and text that use the selected paragraph style" width="886" height="692" loading="lazy" /><figcaption>Results for a test document: a Based On reference, two document settings, and text on a parent page.</figcaption></figure>
+
 <pre><code>// WhereIsThisStyleUsed.jsx
 // Pick one paragraph style and list the text and the settings that reference it.
 // The Find Text criteria and the search options it changes are saved first and restored at the end.
