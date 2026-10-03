@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1260" role="img" aria-labelledby="title desc">
+<title id="title">Restore Word index entries in the selected InDesign story</title>
+<desc id="desc">Word XE fields become a list that an InDesign script matches against the selected story, adding markers for PLACED entries and reporting entries that need manual review.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 32px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .mono { font: 30px ui-monospace, Consolas, monospace; fill:var(--fg) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .flow { stroke:var(--accent); stroke-width:7; fill:none }
+  </style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--accent)"/></marker></defs>
+<rect width="1600" height="1260" fill="var(--bg)"/>
+<text x="60" y="65" class="label" >From Word XE fields to InDesign index markers</text>
+<rect id="word" x="60" y="110" width="640" height="190" rx="16" class="box" style="stroke:var(--line)"/>
+<text x="90" y="168" class="label" >Word (.docx)</text>
+<text x="90" y="218" class="small" >A paragraph</text>
+<text x="90" y="268" class="small" >text before</text>
+<text x="300" y="268" class="mono" style="fill:var(--accent)">XE field</text>
+<text x="480" y="268" class="small" >text after</text>
+<path d="M700 205H790" class="flow" marker-end="url(#arrow)"/>
+<rect id="extract" x="790" y="110" width="750" height="190" rx="16" class="box" style="stroke:var(--line)"/>
+<text x="820" y="165" class="mono" >extract_xe.py</text>
+<text x="820" y="215" class="small" >Records each entry and its surrounding text</text>
+<text x="820" y="265" class="small" >One line per entry</text>
+<path d="M1165 300V360" class="flow" marker-end="url(#arrow)"/>
+<rect id="list" x="60" y="360" width="1480" height="190" rx="16" class="box" style="stroke:var(--line)"/>
+<text x="90" y="415" class="mono" >index_entries.txt</text>
+<text x="90" y="465" class="small" >topic</text>
+<text x="330" y="465" class="small" >"See" target</text>
+<text x="610" y="465" class="small" >text before</text>
+<text x="990" y="465" class="small" >text after</text>
+<text x="1390" y="465" class="small" >notes</text>
+<text x="610" y="510" class="mono" >About 40 characters</text>
+<text x="990" y="510" class="mono" >About 20 characters</text>
+<path d="M800 550V590" class="flow" marker-end="url(#arrow)"/>
+<rect id="story" x="60" y="590" width="1480" height="160" rx="16" class="box" style="stroke:var(--line)"/>
+<text x="90" y="645" class="mono" >RestoreWordIndex.jsx</text>
+<text x="90" y="695" class="small" >Looks for that text in the story you select</text>
+<text x="910" y="695" class="note" >Not footnotes or parent pages</text>
+<path d="M280 750V820" class="flow" marker-end="url(#arrow)"/>
+<path d="M1035 750V820" class="flow" marker-end="url(#arrow)"/>
+<rect id="placed" x="60" y="820" width="440" height="390" rx="16" class="box" style="stroke:var(--accent)"/>
+<text x="90" y="878" class="label" style="fill:var(--accent)">Marker added</text>
+<text x="90" y="935" class="mono" >PLACED</text>
+<text x="90" y="995" class="small" >Text before and after</text>
+<text x="90" y="1043" class="small" >found together exactly</text>
+<text x="90" y="1091" class="small" >once in the story</text>
+<rect id="manual" x="530" y="820" width="1010" height="390" rx="16" class="box" style="stroke:var(--warn)"/>
+<text x="560" y="878" class="label" style="fill:var(--warn)">No marker added</text>
+<text x="560" y="935" class="mono" >CHECK</text>
+<text x="560" y="983" class="small" >Before + after do not match;</text>
+<text x="560" y="1031" class="small" >text before matches once.</text>
+<text x="560" y="1079" class="small" >Or: paragraph start or end;</text>
+<text x="560" y="1127" class="small" >text on one side matches once.</text>
+<text x="560" y="1175" class="note" >Compare with Word; add if correct.</text>
+<text x="1140" y="935" class="mono" >NOTFOUND</text>
+<text x="1140" y="983" class="small" >No usable match</text>
+<text x="1140" y="1043" class="mono" >AMBIG(n)</text>
+<text x="1140" y="1091" class="small" >Text appears n times</text>
+<text x="1140" y="1175" class="note" >Add by hand</text>
+</svg>

@@ -33,6 +33,8 @@ layout: post.njk
 
 <p>For each XE field, a Python script records the topic and the text just before and after the field in Word. An InDesign script then looks for that text in the story you select and adds an index marker at the same point.</p>
 
+<figure class="diagram"><img src="/images/2026/10/restore-word-index-entries-in-indesign/diagram-01.svg" alt="Word XE fields become a list that an InDesign script matches against the selected story to add markers or report entries for manual review." width="1600" height="1260" loading="lazy" /></figure>
+
 <p>The InDesign script adds a marker only when the text before and after the entry is found exactly once in that story. An entry at the start or end of a paragraph has text on one side only, so it is never added automatically. Every line in <code>index_entries.txt</code> gets a result in a report. Entries marked <code>CHECK</code>, <code>NOTFOUND</code>, <code>AMBIG</code>, or <code>BADTOPIC</code> need manual review; <code>EXISTS</code> needs nothing. XE fields that the Python script could not read are not in that list; they appear only in its summary.</p>
 
 <p>Before you start:</p>

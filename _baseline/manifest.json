@@ -9,9 +9,9 @@
    "InDesign",
    "automation"
   ],
-  "raw_sha256": "1a94278e8101ba023dab29ff1efffbf7fd042d345a66f943b50199eb38a94db2",
-  "rewritten_sha256": "1a94278e8101ba023dab29ff1efffbf7fd042d345a66f943b50199eb38a94db2",
-  "raw_len": 26399,
+  "raw_sha256": "451efcab577cf8a372573ce762125708c2c9eb0bb31dfb7241fe3b5139c88303",
+  "rewritten_sha256": "451efcab577cf8a372573ce762125708c2c9eb0bb31dfb7241fe3b5139c88303",
+  "raw_len": 26705,
   "images": {},
   "file": "src/posts/2026/10/restore-word-index-entries-in-indesign.html"
  },
