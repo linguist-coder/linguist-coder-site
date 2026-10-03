@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/10/restore-word-index-entries-in-indesign.html",
+  "title": "How to Restore Missing Word Index Entries in an Edited InDesign Document",
+  "published": "2026-10-03T11:42:00.000+09:00",
+  "updated": "2026-10-03T11:42:00.000+09:00",
+  "tags": [
+   "ExtendScript",
+   "InDesign",
+   "automation"
+  ],
+  "raw_sha256": "1a94278e8101ba023dab29ff1efffbf7fd042d345a66f943b50199eb38a94db2",
+  "rewritten_sha256": "1a94278e8101ba023dab29ff1efffbf7fd042d345a66f943b50199eb38a94db2",
+  "raw_len": 26399,
+  "images": {},
+  "file": "src/posts/2026/10/restore-word-index-entries-in-indesign.html"
+ },
+ {
   "path": "/2026/09/unused-paragraph-style-asks-for-replacement.html",
   "title": "Why InDesign Asks for a Replacement When You Delete an Unused Paragraph Style",
   "published": "2026-09-26T07:34:27.000+09:00",

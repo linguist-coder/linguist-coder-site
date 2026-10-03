@@ -1,0 +1,474 @@
+---
+title: "How to Restore Missing Word Index Entries in an Edited InDesign Document"
+date: 2026-10-03T11:42:00.000+09:00
+updated: 2026-10-03T11:42:00.000+09:00
+permalink: "/2026/10/restore-word-index-entries-in-indesign.html"
+tags: ["ExtendScript", "InDesign", "automation"]
+layout: post.njk
+---
+<p>You placed a Word file in InDesign, edited the layout for a while, and then noticed the Index panel is empty. The Word file has index entries. If you place the file again with Preserve Styles and Formatting, they come back, but the edits you made to the text are replaced.</p>
+
+<h2>One way the entries get lost</h2>
+
+<p>Word stores each index entry as an XE field at a point in the text. When InDesign places a .docx, it can turn those fields into index markers and topics in the Index panel.</p>
+
+<p>I placed a test file with seven index entries (main entries, subentries, and one "See" reference) in InDesign 2026:</p>
+
+<ul>
+<li><strong>Preserve Styles and Formatting from Text and Tables:</strong> all seven came in. Six became page references and the "See" entry became a cross-reference.</li>
+<li><strong>Remove Styles and Formatting from Text and Tables:</strong> none came in. The Index panel was empty and the text had no index markers.</li>
+</ul>
+
+<p>The Index Text checkbox under Include did not change either result. With Preserve Styles, the entries came in even with Index Text turned off. With Remove Styles, they were lost whether it was on or off.</p>
+
+<p>They were also lost in my paste tests: I copied the text from Word 2007 and from LibreOffice Writer and pasted it into InDesign. I did not test a current version of Word.</p>
+
+<p>I can't tell whether Remove Styles is what happened in every case people describe, but it is the cause I could reproduce.</p>
+
+<h2>If you haven't edited the text yet</h2>
+
+<p>Place the file again with Show Import Options turned on, and choose Preserve Styles and Formatting. After placing, adjust the imported formatting with your InDesign styles.</p>
+
+<h2>Adding the entries to the edited document</h2>
+
+<p>For each XE field, a Python script records the topic and the text just before and after the field in Word. An InDesign script then looks for that text in the story you select and adds an index marker at the same point.</p>
+
+<p>The InDesign script adds a marker only when the text before and after the entry is found exactly once in that story. An entry at the start or end of a paragraph has text on one side only, so it is never added automatically. Every line in <code>index_entries.txt</code> gets a result in a report. Entries marked <code>CHECK</code>, <code>NOTFOUND</code>, <code>AMBIG</code>, or <code>BADTOPIC</code> need manual review; <code>EXISTS</code> needs nothing. XE fields that the Python script could not read are not in that list; they appear only in its summary.</p>
+
+<p>Before you start:</p>
+
+<ul>
+<li>Work on a copy of the InDesign document.</li>
+<li>Keep the original .docx. The scripts read it but do not change it.</li>
+</ul>
+
+<h3>Step 1: list the entries in the Word file</h3>
+
+<p>You need Python 3. To check, open Command Prompt or PowerShell and type <code>python --version</code>. If it isn't installed, get it from python.org.</p>
+
+<ol>
+<li>Save the code below as <code>extract_xe.py</code> in the same folder as your .docx.</li>
+<li>Open Command Prompt or PowerShell in that folder. In File Explorer, you can type <code>cmd</code> in the address bar and press Enter.</li>
+<li>Run this, using your file name in place of <code>manuscript.docx</code>:</li>
+</ol>
+
+<pre><code>python extract_xe.py manuscript.docx index_entries.txt
+</code></pre>
+
+<p>The script writes <code>index_entries.txt</code> in the same folder and prints a summary:</p>
+
+<pre><code>Index entries written: 7
+Entries with a short context: 1
+Entries with switches that are not restored: 0
+</code></pre>
+
+<p>Compare the first number with the number of index entries you expect from the Word file. If the script finds XE fields it can't read, it lists them at the end of the summary. Add those by hand.</p>
+
+<pre><code>&quot;&quot;&quot;List the index entries (XE fields) in a .docx with the text around each one.
+
+Usage:  python extract_xe.py manuscript.docx index_entries.txt
+
+Writes a UTF-8, tab-separated file, one entry per line:
+  topic (levels separated by &quot;:&quot;)  TAB  &quot;See&quot; target  TAB  text before  TAB  text after  TAB  notes
+and prints a summary. Only word/document.xml is read, so entries in footnotes,
+endnotes, and headers are not listed. Text boxes have not been tested.
+&quot;&quot;&quot;
+import re
+import sys
+import zipfile
+import xml.etree.ElementTree as ET
+
+W = &quot;{http://schemas.openxmlformats.org/wordprocessingml/2006/main}&quot;
+BEFORE_CHARS = 40
+AFTER_CHARS = 20
+SHORT_CONTEXT = 15
+
+XE_RE = re.compile(r'\s*XE\s+&quot;((?:[^&quot;\\]|\\.)*)&quot;(.*)$', re.S)
+SEE_RE = re.compile(r'\\t\s+&quot;((?:[^&quot;\\]|\\.)*)&quot;')
+
+
+def parse_xe(instr):
+    &quot;&quot;&quot;Return (topic, see, switches) or None if the field is not a quoted XE.&quot;&quot;&quot;
+    m = XE_RE.match(instr)
+    if not m:
+        return None
+    topic = m.group(1).replace('\\&quot;', '&quot;')
+    rest = m.group(2)
+    see = &quot;&quot;
+    t = SEE_RE.search(rest)
+    if t:
+        see = t.group(1).replace('\\&quot;', '&quot;')
+        rest = rest.replace(t.group(0), &quot;&quot;)
+    # \b, \i (bold/italic page number), \r (page range), \f (index type) are not restored
+    switches = &quot; &quot;.join(re.findall(r&quot;\\[a-z](?:\s+\S+)?&quot;, rest))
+    return topic, see, switches
+
+
+def scan(path):
+    root = ET.fromstring(zipfile.ZipFile(path).read(&quot;word/document.xml&quot;))
+    rows, unparsed = [], []
+    for p in root.iter(W + &quot;p&quot;):
+        text, pending = &quot;&quot;, []
+        # One [instruction, showing_result] per open field. Text is visible only when every
+        # open field is past its &quot;separate&quot; mark (for example the words of a hyperlink).
+        stack = []
+
+        def field_done(instr):
+            if not re.match(r&quot;\s*XE\b&quot;, instr):
+                return
+            xe = parse_xe(instr)
+            if xe is None:
+                unparsed.append(instr.strip())
+            else:
+                pending.append((xe, len(text)))
+
+        def visible():
+            return all(f[1] for f in stack)
+
+        for el in p.iter():
+            if el.tag == W + &quot;fldChar&quot;:
+                kind = el.get(W + &quot;fldCharType&quot;)
+                if kind == &quot;begin&quot;:
+                    stack.append([&quot;&quot;, False])
+                elif kind == &quot;separate&quot; and stack:
+                    stack[-1][1] = True
+                elif kind == &quot;end&quot; and stack:
+                    field_done(stack.pop()[0])
+            elif el.tag == W + &quot;instrText&quot; and stack and not stack[-1][1]:
+                stack[-1][0] += el.text or &quot;&quot;
+            elif el.tag == W + &quot;fldSimple&quot;:
+                field_done(el.get(W + &quot;instr&quot;) or &quot;&quot;)
+            elif el.tag == W + &quot;t&quot; and visible():
+                text += el.text or &quot;&quot;
+            elif el.tag == W + &quot;tab&quot; and visible():
+                text += &quot;\t&quot;
+        for (topic, see, switches), pos in pending:
+            before = text[max(0, pos - BEFORE_CHARS):pos]
+            if pos &gt; BEFORE_CHARS and &quot; &quot; in before:
+                before = before[before.index(&quot; &quot;) + 1:]
+            before = before.split(&quot;\t&quot;)[-1]  # the list itself is tab-separated
+            after = text[pos:pos + AFTER_CHARS]
+            if len(text) &gt; pos + AFTER_CHARS and &quot; &quot; in after:
+                after = after[:after.rindex(&quot; &quot;)]
+            after = after.split(&quot;\t&quot;)[0]
+            notes = [switches] if switches else []
+            if len(before) &lt; SHORT_CONTEXT:
+                notes.append(&quot;short context&quot;)
+            rows.append((topic, see, before, after, &quot; &quot;.join(notes)))
+    return rows, unparsed
+
+
+if __name__ == &quot;__main__&quot;:
+    if len(sys.argv) != 3:
+        sys.exit(&quot;Usage: python extract_xe.py manuscript.docx index_entries.txt&quot;)
+    rows, unparsed = scan(sys.argv[1])
+    with open(sys.argv[2], &quot;w&quot;, encoding=&quot;utf-8&quot;, newline=&quot;\n&quot;) as f:
+        for row in rows:
+            f.write(&quot;\t&quot;.join(row) + &quot;\n&quot;)
+    print(&quot;Index entries written: %d&quot; % len(rows))
+    print(&quot;Entries with a short context: %d&quot; % sum(&quot;short context&quot; in r[4] for r in rows))
+    print(&quot;Entries with switches that are not restored: %d&quot; % sum(r[4].startswith(&quot;\\&quot;) for r in rows))
+    if unparsed:
+        print(&quot;XE fields that could not be read: %d&quot; % len(unparsed))
+        for u in unparsed:
+            print(&quot;  &quot; + u)
+</code></pre>
+
+<p>Each line of <code>index_entries.txt</code> has five columns: the topic, any "See" target, about 40 characters before the field, about 20 characters after it, and notes. Subentries keep Word's form, with levels separated by a colon (<code>sensor:temperature</code>).</p>
+
+<p>The notes column flags two things:</p>
+
+<ul>
+<li><strong>short context:</strong> fewer than 15 characters before the entry, for example after a tab or near the start of a paragraph. A short match may point to the wrong place, so check these entries after the run.</li>
+<li><strong>switches</strong> such as <code>\b</code> (bold page number) or <code>\r</code> (page range). The script adds the entry but not the formatting or the range.</li>
+</ul>
+
+<h3>Step 2: add the entries in InDesign</h3>
+
+<ol>
+<li>Choose Window &gt; Utilities &gt; Scripts.</li>
+<li>In the Scripts panel, right-click the <strong>User</strong> folder and choose Reveal in Explorer (Windows) or Reveal in Finder (macOS).</li>
+<li>Save the code below in that folder as a plain-text file named <code>RestoreWordIndex.jsx</code>. On Windows, make sure the name doesn't end in <code>.txt</code>.</li>
+<li>In your document, select a text frame that holds the placed Word text. If the text runs through linked frames, any one of them will do. If the Word file was placed as several separate stories, run the script once for each.</li>
+<li>Double-click the script in the Scripts panel. It shows the first words of the story you selected and asks you to confirm. Compare them with the beginning of the story, which may be in an earlier linked frame. If you can't tell which story it is, click Cancel. Otherwise click OK and choose <code>index_entries.txt</code>.</li>
+</ol>
+
+<p>The script searches only that story, not footnotes or parent pages. It changes the Find/Change settings while it runs and puts them back at the end. In my test, one Undo removed all the markers it added.</p>
+
+<pre><code>// RestoreWordIndex.jsx
+// Re-create Word index entries in one InDesign story from a list made by extract_xe.py.
+// Select a text frame of the placed manuscript, run the script, and choose the list.
+// An entry is added only where the text before and after it in Word is found exactly once
+// in that story. Every line of the list gets a result line in the report.
+// The changes to the document are one undo step.
+(function () {
+
+    var MARKER = 0xFEFF;
+
+    function readLines(f) {
+        f.encoding = &quot;UTF-8&quot;;
+        if (!f.open(&quot;r&quot;)) throw new Error(&quot;Cannot open &quot; + f.fsName);
+        var lines = [];
+        try {
+            while (!f.eof) {
+                var s = f.readln().replace(/\r$/, &quot;&quot;);
+                if (s.length) lines.push(s);
+            }
+        } finally { f.close(); }
+        return lines;
+    }
+
+    // Split a Word topic on unescaped colons. Returns null if a level is empty.
+    function levelsOf(path) {
+        var parts = [], cur = &quot;&quot;;
+        for (var i = 0; i &lt; path.length; i++) {
+            var ch = path.charAt(i);
+            if (ch === &quot;\\&quot; &amp;&amp; path.charAt(i + 1) === &quot;:&quot;) { cur += &quot;:&quot;; i++; }
+            else if (ch === &quot;:&quot;) { parts.push(cur); cur = &quot;&quot;; }
+            else cur += ch;
+        }
+        parts.push(cur);
+        for (var j = 0; j &lt; parts.length; j++) {
+            parts[j] = parts[j].replace(/^\s+|\s+$/g, &quot;&quot;);
+            if (!parts[j].length) return null;
+        }
+        return parts;
+    }
+
+    function findTopic(index, levels, create) {
+        var t = index;
+        for (var i = 0; i &lt; levels.length; i++) {
+            var next = t.topics.itemByName(levels[i]);
+            if (!next.isValid) {
+                if (!create) return null;
+                next = t.topics.add(levels[i]);
+            }
+            t = next;
+        }
+        return t;
+    }
+
+    function pathOf(topic) {
+        var names = [];
+        while (topic &amp;&amp; topic.constructor.name === &quot;Topic&quot;) { names.unshift(topic.name); topic = topic.parent; }
+        return names.join(String.fromCharCode(1));
+    }
+
+    function findIn(story, text) {
+        app.findTextPreferences = NothingEnum.NOTHING;
+        app.findTextPreferences.findWhat = text.replace(/\^/g, &quot;^^&quot;);
+        return story.findText();
+    }
+
+    // Character index in the story after `count` characters of the match, skipping index markers.
+    function positionAfter(hit, count) {
+        var s = hit.contents, k = 0, n = 0;
+        while (n &lt; count &amp;&amp; k &lt; s.length) { if (s.charCodeAt(k) !== MARKER) n++; k++; }
+        return hit.insertionPoints[0].index + k;
+    }
+
+    // True if the topic already has a marker at pos (or in a run of markers starting there).
+    function hasMarker(topic, story, pos) {
+        if (!topic) return false;
+        var text = story.contents;
+        for (var j = 0; j &lt; topic.pageReferences.length; j++) {
+            var m = topic.pageReferences[j].sourceText;
+            if (m.parentStory.id !== story.id || m.index &lt; pos) continue;
+            var between = text.substring(pos, m.index), only = true;
+            for (var k = 0; k &lt; between.length; k++) if (between.charCodeAt(k) !== MARKER) only = false;
+            if (only) return true;
+        }
+        return false;
+    }
+
+    function pageOf(story, pos) {
+        try { return &quot;p.&quot; + story.insertionPoints[pos].parentTextFrames[0].parentPage.name; }
+        catch (e) { return &quot;overset or pasteboard&quot;; }
+    }
+
+    function restore(doc, story, entries) {
+        var index = doc.indexes.length ? doc.indexes[0] : doc.indexes.add();
+        var lines = [], todo = [], planned = {};
+        var n = { placed: 0, candidate: 0, skipped: 0, see: 0, exists: 0 };
+
+        for (var i = 0; i &lt; entries.length; i++) {
+            var c = entries[i].split(&quot;\t&quot;);
+            var raw = c[0], see = c[1] || &quot;&quot;, before = c[2] || &quot;&quot;, after = c[3] || &quot;&quot;, notes = c[4] || &quot;&quot;;
+            var levels = levelsOf(raw);
+            var label = raw + (notes ? &quot; [&quot; + notes + &quot;]&quot; : &quot;&quot;);
+            if (!levels) { n.skipped++; lines.push(&quot;BADTOPIC  &quot; + label); continue; }
+
+            if (see) {
+                var target = see.replace(/^(see also|see)\s+/i, &quot;&quot;);
+                var tLevels = levelsOf(target);
+                if (!tLevels) { n.skipped++; lines.push(&quot;BADTOPIC  &quot; + label + &quot; -&gt; &quot; + see); continue; }
+                var type = /^see also/i.test(see) ? CrossReferenceType.SEE_ALSO : CrossReferenceType.SEE;
+                var from = findTopic(index, levels, true), to = findTopic(index, tLevels, true), dup = false;
+                for (var x = 0; x &lt; from.crossReferences.length; x++) {
+                    var cr = from.crossReferences[x];
+                    if (cr.crossReferenceType === type &amp;&amp; pathOf(cr.referencedTopic) === pathOf(to)) dup = true;
+                }
+                if (dup) { n.exists++; lines.push(&quot;EXISTS    &quot; + label + &quot; -&gt; &quot; + target); }
+                else { from.crossReferences.add(to, type); n.see++; lines.push(&quot;SEE       &quot; + label + &quot; -&gt; &quot; + target); }
+                continue;
+            }
+
+            var where = &quot;  after \&quot;&quot; + before + &quot;\&quot; / before \&quot;&quot; + after + &quot;\&quot;&quot;;
+            if (!before.length || !after.length) {
+                // The entry is at the start or end of a paragraph: one side is unknown, so do not insert.
+                var known = before + after, partial = known.length ? findIn(story, known) : [];
+                if (partial.length === 1) {
+                    n.candidate++;
+                    lines.push(&quot;CHECK     &quot; + label + &quot;  (candidate on &quot; +
+                        pageOf(story, positionAfter(partial[0], before.length)) + &quot;, only the text &quot; +
+                        (before.length ? &quot;before&quot; : &quot;after&quot;) + &quot; the entry is known)&quot; + where);
+                } else {
+                    n.skipped++;
+                    lines.push((partial.length ? &quot;AMBIG(&quot; + partial.length + &quot;)  &quot; : &quot;NOTFOUND  &quot;) + label + where);
+                }
+                continue;
+            }
+            var hits = findIn(story, before + after);
+            if (hits.length === 1) {
+                var pos = positionAfter(hits[0], before.length);
+                var key = story.id + &quot;:&quot; + pos + &quot;:&quot; + levels.join(&quot;\u0001&quot;);
+                if (planned[key] || hasMarker(findTopic(index, levels, false), story, pos)) {
+                    n.exists++; lines.push(&quot;EXISTS    &quot; + label + where);
+                    continue;
+                }
+                planned[key] = true;
+                todo.push({ at: pos, levels: levels });
+                n.placed++;
+                lines.push(&quot;PLACED    &quot; + label + &quot;  (&quot; + pageOf(story, pos) + &quot;)&quot; + where);
+            } else if (hits.length &gt; 1) {
+                n.skipped++; lines.push(&quot;AMBIG(&quot; + hits.length + &quot;)  &quot; + label + where);
+            } else {
+                // Only the text before the entry still matches: report it, do not insert.
+                var part = findIn(story, before);
+                if (part.length === 1) {
+                    n.candidate++;
+                    lines.push(&quot;CHECK     &quot; + label + &quot;  (candidate on &quot; + pageOf(story, positionAfter(part[0], before.length)) +
+                        &quot;, the text before and after did not match together; the text before matched once)&quot; + where);
+                } else {
+                    n.skipped++; lines.push(&quot;NOTFOUND  &quot; + label + where);
+                }
+            }
+        }
+        // Insert from the end of the story so earlier positions do not move.
+        todo.sort(function (a, b) { return b.at - a.at; });
+        for (var j = 0; j &lt; todo.length; j++) {
+            findTopic(index, todo[j].levels, true).pageReferences.add(story.insertionPoints[todo[j].at], PageReferenceType.CURRENT_PAGE);
+        }
+        return { n: n, lines: lines };
+    }
+
+    // Save the Find/Change settings, run fn, and put the settings back.
+    // If the settings cannot be saved, nothing is changed and an error is thrown.
+    function withFindSettings(fn) {
+        var prefs = app.findTextPreferences.properties;
+        var opts = app.findChangeTextOptions.properties;
+        var warn = [];
+        try {
+            var o = app.findChangeTextOptions;
+            o.caseSensitive = true; o.wholeWord = false; o.includeFootnotes = false;
+            o.includeMasterPages = false; o.includeHiddenLayers = true;
+            o.includeLockedLayersForFind = true; o.includeLockedStoriesForFind = true;
+            return fn();
+        } finally {
+            app.findTextPreferences = NothingEnum.NOTHING;
+            try { app.findTextPreferences.properties = prefs; } catch (e) { warn.push(&quot;Find Text settings&quot;); }
+            try { app.findChangeTextOptions.properties = opts; } catch (e) { warn.push(&quot;search options&quot;); }
+            if (warn.length) alert(&quot;Could not restore your &quot; + warn.join(&quot; and &quot;) + &quot;. Check the Find/Change dialog.&quot;);
+        }
+    }
+
+    function run(doc, story, listFile) {
+        var entries = readLines(listFile);
+        var result;
+        app.doScript(function () {
+            result = withFindSettings(function () { return restore(doc, story, entries); });
+        }, ScriptLanguage.JAVASCRIPT, undefined, UndoModes.ENTIRE_SCRIPT, &quot;Restore Word Index&quot;);
+        var n = result.n;
+        var head = [&quot;Entries in list: &quot; + entries.length,
+            &quot;Placed: &quot; + n.placed, &quot;Check (not placed): &quot; + n.candidate, &quot;Not placed: &quot; + n.skipped,
+            &quot;See references added: &quot; + n.see, &quot;Already present: &quot; + n.exists, &quot;&quot;];
+        var out = File(listFile.fsName.replace(/(\.[^.\\\/]*)?$/, &quot;_report.txt&quot;));
+        out.encoding = &quot;UTF-8&quot;;
+        var written = false;
+        try {
+            if (out.open(&quot;w&quot;)) {
+                try { written = out.write(head.concat(result.lines).join(&quot;\n&quot;)); }
+                finally { if (!out.close()) written = false; }
+            }
+        } catch (e) { written = false; }
+        return { n: n, report: out, written: written };
+    }
+
+    function selectedStory() {
+        if (!app.documents.length || !app.selection.length) return null;
+        var s = app.selection[0];
+        try {
+            if (s.constructor.name === &quot;TextFrame&quot;) return s.parentStory;
+            if (s.hasOwnProperty(&quot;parentStory&quot;)) return s.parentStory;
+        } catch (e) {}
+        return null;
+    }
+
+    var story = selectedStory();
+    if (!story) { alert(&quot;Select a text frame of the placed Word text, then run the script again.&quot;); return; }
+    var start = story.contents.split(String.fromCharCode(MARKER)).join(&quot;&quot;).replace(/\s+/g, &quot; &quot;).substr(0, 80);
+    if (!confirm(&quot;Index entries will be added to the story that starts with:\n\n\&quot;&quot; + start +
+        &quot;\&quot;\n\nLinked frames are one story. Continue?&quot;)) return;
+    var f = File.openDialog(&quot;Choose the index entry list made by extract_xe.py&quot;);
+    if (!f) return;
+    var r = run(app.activeDocument, story, f);
+    alert(&quot;Placed: &quot; + r.n.placed + &quot;\nCheck (not placed): &quot; + r.n.candidate + &quot;\nNot placed: &quot; + r.n.skipped +
+        &quot;\nSee references added: &quot; + r.n.see + &quot;\nAlready present: &quot; + r.n.exists +
+        (r.written ? &quot;\n\nDetails: &quot; + r.report.fsName : &quot;\n\nThe report could not be written to &quot; + r.report.fsName));
+})();
+</code></pre>
+
+<h2>After the run</h2>
+
+<p>The script writes <code>index_entries_report.txt</code> in the same folder as the list and shows its location. Each line starts with one of these:</p>
+
+<ul>
+<li><code>PLACED</code>: the text before and after the entry was found once in the story, and a marker was added. The page is shown.</li>
+<li><code>CHECK</code>: <strong>no marker was added.</strong> Either the text before and after did not match together but the text before matched once, or the entry is at the start or end of a paragraph and the text on its one side matched once. The line shows the candidate page. Compare it with the Word file and add the entry by hand if it belongs there.</li>
+<li><code>NOTFOUND</code>: no usable match. Find the entry in the Word file and add it by hand.</li>
+<li><code>AMBIG(n)</code>: the text appears n times. Add the entry by hand.</li>
+<li><code>SEE</code>: a See or See also cross-reference was added.</li>
+<li><code>EXISTS</code>: the script found a marker for the same topic at that point, or the same cross-reference, and did not add another.</li>
+<li><code>BADTOPIC</code>: the topic has an empty level, so nothing was added.</li>
+</ul>
+
+<p>Then check the result:</p>
+
+<ol>
+<li>Go through every <code>PLACED</code> line and look at the marker in the text, starting with the ones marked short context. Turn on Type &gt; Show Hidden Characters to see the markers.</li>
+<li>Add the <code>CHECK</code>, <code>NOTFOUND</code>, <code>AMBIG</code>, and <code>BADTOPIC</code> entries by hand, and fix the formatting or page range of entries noted with switches.</li>
+<li>Open the Index panel and compare the topics with the Word file, including See references.</li>
+<li>Generate the index and compare its page numbers with the layout.</li>
+</ol>
+
+<p>In my test, I rewrote two sentences after placing. One entry became <code>CHECK</code> because the text after it had changed, and one became <code>NOTFOUND</code> because the text before it had changed.</p>
+
+<h2>What this does not cover</h2>
+
+<ul>
+<li><strong>Entries in footnotes, endnotes, and headers.</strong> The Python script reads only the main text of the .docx, so XE fields there are not listed. I have not tested text boxes.</li>
+<li><strong>Bold or italic page numbers and page ranges.</strong> These are noted in the list but not restored.</li>
+<li><strong>A translated InDesign document.</strong> Matching the source-language text against a translation is unreliable. I haven't tried it.</li>
+</ul>
+
+<h2>What I tested</h2>
+
+<p>InDesign 21.5.1 on Windows, with a .docx made in Word 2007 containing seven index entries. I placed it both ways, with Index Text on and off, and also pasted it in. In the placed copy I added a paragraph at the start and rewrote two sentences. I also put the old sentences in a separate text frame, and the script did not add markers there. I checked the position of every marker, generated the index, undid the run, ran the script twice (the second run added nothing), and ran a list with a repeated line.</p>
+
+<p>A second test file added these cases: an entry stored in a different field format, a topic containing a colon, an entry right after a tab, a See also reference, entries at the start and end of a paragraph, a paragraph with only an entry, an entry after a hyperlink, an entry inside a hyperlink, and an XE field without quotation marks. I did not test entries inside tables.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/09/missing-footnotes-empty-table-cells.html" target="_blank" rel="noopener">Missing Footnotes, Empty Table Cells, and Stale Index Pages After IDML Translation</a></li>
+</ul>
