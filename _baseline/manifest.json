@@ -1,5 +1,20 @@
 [
  {
+  "path": "/2026/10/eu-machinery-regulation-digital-instructions.html",
+  "title": "EU Machinery Regulation Digital Instructions: What to Check in Your Manual Package",
+  "published": "2026-10-05T11:30:00.000+09:00",
+  "updated": "2026-10-05T11:30:00.000+09:00",
+  "tags": [
+   "documentation",
+   "EU Machinery Regulation"
+  ],
+  "raw_sha256": "9ef75344469ccd73c50f8a087545dad91e9a365f083d0c0456374c2399d3b98c",
+  "rewritten_sha256": "9ef75344469ccd73c50f8a087545dad91e9a365f083d0c0456374c2399d3b98c",
+  "raw_len": 8104,
+  "images": {},
+  "file": "src/posts/2026/10/eu-machinery-regulation-digital-instructions.html"
+ },
+ {
   "path": "/2026/10/restore-word-index-entries-in-indesign.html",
   "title": "How to Restore Missing Word Index Entries in an Edited InDesign Document",
   "published": "2026-10-03T11:42:00.000+09:00",

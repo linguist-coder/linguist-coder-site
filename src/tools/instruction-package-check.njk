@@ -1,0 +1,63 @@
+---
+layout: base.njk
+title: Instruction Package Checker
+permalink: /tools/instruction-package-check.html
+eleventyExcludeFromCollections: true
+description: "Check the PDFs in a machinery instruction package for missing languages, model names, and print restrictions. Runs in your browser; files are not uploaded."
+---
+<style>
+.pc-drop { border: 2px dashed currentColor; border-radius: 8px; padding: 1.5rem; text-align: center; opacity: .85; }
+.pc-drop.pc-over { opacity: 1; }
+#langs { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .25rem .75rem; margin: .5rem 0 1rem; }
+#models { width: 100%; box-sizing: border-box; min-height: 5rem; font: inherit; }
+.pc-file { border-top: 1px solid rgba(127,127,127,.4); margin-top: 1rem; padding-top: .5rem; }
+.pc-file h3 { overflow-wrap: anywhere; }
+.pc-ok::before { content: "OK  "; font-weight: bold; }
+.pc-warn::before { content: "CHECK  "; font-weight: bold; }
+.pc-ref { opacity: .8; font-size: .95em; overflow-wrap: anywhere; }
+.pc-note { font-style: italic; }
+.page-body button, .page-body input[type=file]::file-selector-button, #models {
+  background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font: inherit;
+}
+.page-body button, .page-body input[type=file]::file-selector-button { padding: .3rem .8rem; cursor: pointer; }
+.page-body button:hover, .page-body input[type=file]::file-selector-button:hover { border-color: var(--accent); }
+.page-body input[type=file] { color: var(--text); }
+#models { padding: .4rem; }
+</style>
+<article class="page-body">
+<header class="page-header"><h1>Instruction Package Checker</h1></header>
+
+<p>This page reads the PDF files of an instruction package in your browser and reports a few things that can be checked mechanically. The files are not uploaded anywhere.</p>
+
+<p>It does not decide whether a product complies with the EU Machinery Regulation or any other law. For what the regulation asks of digital instructions, see <a href="/2026/10/eu-machinery-regulation-digital-instructions.html">EU Machinery Regulation Digital Instructions: What to Check in Your Manual Package</a>.</p>
+
+<h2>1. Languages you need</h2>
+<p>Select the languages required in the countries where the machine is sold.</p>
+<div id="langs"></div>
+
+<h2>2. Model designations (optional)</h2>
+<p>One per line, as marked on the machine. Each file is searched for each name.</p>
+<textarea id="models" spellcheck="false"></textarea>
+
+<h2>3. PDF files</h2>
+<div id="drop" class="pc-drop">
+<p>Drop PDF files here, or choose them:</p>
+<input id="files" type="file" accept="application/pdf,.pdf" multiple>
+</div>
+<p id="status" aria-live="polite"></p>
+<p><button id="rerun" type="button">Update the report after changing languages or models</button></p>
+
+<div id="results"></div>
+
+<h2>What it checks</h2>
+<ul>
+<li>Which languages it detects in each file, page by page, and which of the languages you selected it could not detect in any file. Detection uses common words and can be wrong on short pages, tables, or mixed-language pages. A language detected on only one page is flagged, because a cover or contents page that mixes languages can be assigned one of them.</li>
+<li>Whether each model designation you entered appears in each file.</li>
+<li>Whether the PDF's security settings allow printing, and whether it needs a password to open.</li>
+<li>How many pages have little or no extractable text. If no page in a file has enough extractable text, which usually means scanned images, the language and model checks do not run on it.</li>
+<li>For reference only: strings on the first two and last two pages that look like a revision number or a date, so you can compare language versions side by side.</li>
+<li>Only the first 600 pages of each file are checked for languages and model designations. The last two pages are always read for the revision and date strings.</li>
+</ul>
+<p>It does not check links, QR codes, how long documents stay online, paper copies, or the content of the instructions.</p>
+</article>
+<script type="module" src="/js/tools/package-check.js"></script>
