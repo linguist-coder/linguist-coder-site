@@ -1,0 +1,257 @@
+---
+title: "Word Fonts and Languages That Survive \"Remove Styles and Formatting\" in InDesign"
+date: 2026-10-16T11:48:00.000+09:00
+updated: 2026-10-16T11:48:00.000+09:00
+permalink: "/2026/10/word-fonts-survive-remove-styles.html"
+tags: ["ExtendScript", "InDesign", "automation"]
+layout: post.njk
+---
+<p>You place a Word manuscript with Remove Styles and Formatting from Text and Tables checked, and Preserve Local Overrides checked so the author's italics and bold come through. You apply your paragraph style. Most paragraphs follow it, but some keep Times New Roman. A few spaces inside italic quotes show a missing font. The Character panel says some words are Turkish or Greek.</p>
+
+<p>A <a href="https://graphicdesign.stackexchange.com/q/165806" target="_blank" rel="noopener">question with these symptoms</a> has had no answers on Graphic Design Stack Exchange since 2024. I can't see that author's file, so I made a controlled test file instead: I wrote the .docx XML with one kind of formatting per paragraph, then opened and saved it in Word 2007. I placed the saved file in InDesign 2026 (21.5.1) on Windows under each import setting.</p>
+
+<h2>What came through in my test</h2>
+
+<p>Word can store a font or a language in a style, or directly on a stretch of text. With Remove Styles and Preserve Local Overrides both checked, fonts from the Normal style and from paragraph styles were dropped. Fonts set directly on the text, and fonts that came from Word character styles, came in as local overrides.</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">In the Word file</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Result in my test file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Font from the Normal style or a paragraph style</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not imported</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Main font set directly on text (kept in the file Word saved)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Imported as a local override</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Font from a Word character style</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Imported as a local override; the character style itself was not imported</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Font set only in the East Asian or complex-script font slot</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not imported</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Font set only on the paragraph mark</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not imported</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Main language set directly on text</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Imported (Turkish, Greek and French)</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">East Asian language setting only</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not imported</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Italic, bold, underline</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Imported</td>
+</tr>
+</tbody>
+</table>
+
+<p>With Preserve Local Overrides unchecked, none of these came in, including italic and bold.</p>
+
+<h2>Why it looks random</h2>
+
+<p>After placing, I applied a paragraph style to every paragraph by clicking it in the Paragraph Styles panel (without holding Alt), which keeps overrides. I also did it by script with <code>applyParagraphStyle(style, false)</code> and got the same result. The imported overrides were handled in two ways:</p>
+
+<ul>
+<li>An override that covered <strong>the whole paragraph</strong> was removed. A paragraph that was entirely Calibri took the paragraph style's font. A paragraph that was entirely Turkish became English.</li>
+<li>An override that covered <strong>part of the paragraph</strong> stayed. One Calibri word in an otherwise plain paragraph stayed Calibri. One Turkish word stayed Turkish.</li>
+</ul>
+
+<p>That could explain a manuscript where some paragraphs follow the style and others don't, but I have not examined the file from the question.</p>
+
+<p><strong>Check fully italic paragraphs.</strong> The same thing happened to italic. A paragraph that was italic from start to finish lost its italic when the paragraph style was applied, while a paragraph with a few italic words kept them. The script later in this post does not bring that italic back, so check italic block quotes right after applying styles.</p>
+
+<h2>The Arial Unicode MS space</h2>
+
+<p>Word can give a single space its own font. In my test file, one space between two italic words had Arial Unicode MS set directly on it. It came into InDesign as Arial Unicode MS Regular, even though the space was italic in Word, and it stayed that way after the paragraph style was applied because it covered only part of the paragraph. A space set in a font that wasn't installed also came in with that font name.</p>
+
+<p>When I set the same font only in Word's East Asian or complex-script font slot, it did not come into InDesign.</p>
+
+<h2>Fixing a document you have already placed</h2>
+
+<p>Clearing all overrides removes the imported fonts and languages, but it also removes the remaining italics and bold. What worked in my test was setting each font family and language that differed from the paragraph style back to the paragraph style's value, while keeping the font style name.</p>
+
+<p>After that, the text followed the paragraph style again. When I changed the style from Verdana to Tahoma and from English: USA to English: UK, the corrected text changed with it.</p>
+
+<p>To list the fonts used in the document, open Type &gt; Find Font.</p>
+
+<p>For languages alone, Find/Change can do it: leave Find what and Change to empty, set Find Format to the language you want to remove (for example Turkish) and Change Format to your paragraph style's language. Repeat for each language. In my test, the changed words followed later changes to the style.</p>
+
+<p>For fonts, I used the script below. Read what it does before running it:</p>
+
+<ul>
+<li><strong>It works on the whole story</strong> of the selected text frame, including text you did not select. It does not process tables, footnotes or anchored frames.</li>
+<li><strong>It can't tell unwanted formatting from intentional formatting.</strong> Every font family or language that differs from the paragraph style is set back, unless an InDesign character style applied to that text specifies that font family or language. A symbol font, a passage in another script, or a quotation that should stay French will be changed otherwise. Before running it, apply an InDesign character style that specifies the font family or language you need to keep. A character style that only sets Italic does not protect the font. Word character styles don't help here, because they are not imported.</li>
+<li><strong>It preserves the current font style name when changing font families.</strong> It looks for a style with the same name (Italic, Bold) in the paragraph style's font family. If there isn't one, it leaves that font as it is and lists it; the language can still change. It does not restore italic that is already gone: in my test, the Arial Unicode MS space became Verdana Regular, not Verdana Italic.</li>
+<li><strong>It skips entire paragraphs</strong> that have nested styles, line styles, GREP styles or a drop cap character style. Unrelated font and language differences in those paragraphs are left unchanged too. The summary shows how many paragraphs were skipped.</li>
+</ul>
+
+<pre><code>// ResetImportedFonts.jsx
+// Works on the whole story of the selected text frame (main story text only;
+// tables, footnotes and anchored frames are not processed).
+// Wherever a run's font family or language differs from its paragraph style, it sets that
+// attribute back to the paragraph style's value. When it changes the font family, it keeps
+// the run's current font style name (Italic, Bold, ...). It does not restore italics that
+// are already gone.
+// Font changes are skipped if no installed font matches the target family and current
+// font style name; the language may still change.
+// Skipped: attributes set by an applied character style (including its Based On chain),
+// and whole paragraphs with nested, line or GREP styles, or a drop cap character style.
+// Shows a summary first. One Undo reverts a completed run.
+
+(function () {
+  if (app.documents.length === 0 || app.selection.length !== 1 || !app.selection[0].hasOwnProperty(&quot;parentStory&quot;)) {
+    alert(&quot;Select one text frame (or click in its text) first.&quot;);
+    return;
+  }
+  var story = app.selection[0].parentStory;
+  var doc = story.parent;
+  while (doc.constructor.name !== &quot;Document&quot;) doc = doc.parent;
+  var noneStyle = doc.characterStyles.itemByName(&quot;$ID/[None]&quot;);
+
+  function famOf(f) {
+    try { if (f &amp;&amp; f.hasOwnProperty(&quot;fontFamily&quot;)) return f.fontFamily; } catch (e) {}
+    return String(f).split(&quot;\t&quot;)[0];
+  }
+  function isNone(cs) {
+    try { return !cs || !cs.hasOwnProperty(&quot;id&quot;) || cs.id === noneStyle.id; } catch (e) { return false; }
+  }
+  // &quot;no&quot; = nothing in the character style chain sets this attribute; &quot;yes&quot; = it does;
+  // &quot;unknown&quot; = it could not be read (treated like &quot;yes&quot;: the attribute is not changed).
+  function styleSets(cs, prop) {
+    for (var guard = 0; guard &lt; 20 &amp;&amp; !isNone(cs); guard++) {
+      try {
+        var v = cs[prop];
+        if (v !== &quot;&quot; &amp;&amp; v !== NothingEnum.NOTHING &amp;&amp; v !== null) return &quot;yes&quot;;
+        cs = cs.basedOn;
+      } catch (e) { return &quot;unknown&quot;; }
+    }
+    return isNone(cs) ? &quot;no&quot; : &quot;unknown&quot;;
+  }
+  function hasAutoStyles(p) {
+    try {
+      if (p.nestedStyles.length || p.nestedLineStyles.length || p.nestedGrepStyles.length) return true;
+      if (p.dropCapCharacters &gt; 0 &amp;&amp; !isNone(p.dropCapStyle)) return true;
+      return false;
+    } catch (e) { return true; }
+  }
+  function add(o, k) { o[k] = (o[k] || 0) + 1; }
+
+  var jobs = [], fontCount = {}, langCount = {}, skipped = {};
+  var paras = story.paragraphs.everyItem().getElements();
+  for (var i = 0; i &lt; paras.length; i++) {
+    var p = paras[i];
+    var pStart = p.index, pEnd = p.index + p.length - 1;
+    var ps, pFont, pFam, pLang;
+    try { ps = p.appliedParagraphStyle; pFont = ps.appliedFont; pFam = famOf(pFont); pLang = ps.appliedLanguage; }
+    catch (e) { add(skipped, &quot;paragraph style could not be read&quot;); continue; }
+    if (hasAutoStyles(p)) { add(skipped, &quot;paragraph with nested / line / GREP styles or a drop cap style (not checked)&quot;); continue; }
+    var runs = p.textStyleRanges.everyItem().getElements();
+    for (var j = 0; j &lt; runs.length; j++) {
+      var r = runs[j], cs = r.appliedCharacterStyle;
+      var a = Math.max(r.index, pStart), b = Math.min(r.index + r.length - 1, pEnd);
+      if (b &lt; a) continue;
+      var job = { a: a, b: b, fam: null, lang: null };
+      var rFam = famOf(r.appliedFont);
+      if (rFam !== pFam) {
+        var sf = styleSets(cs, &quot;appliedFont&quot;);
+        if (sf === &quot;yes&quot;) add(skipped, &quot;font set by a character style: &quot; + rFam);
+        else if (sf === &quot;unknown&quot;) add(skipped, &quot;character style chain could not be checked (font left as is): &quot; + rFam);
+        else {
+          var target = app.fonts.itemByName(pFam + &quot;\t&quot; + String(r.fontStyle));
+          var ok = false;
+          try { ok = target.isValid &amp;&amp; target.status === FontStatus.INSTALLED; } catch (e) {}
+          if (ok) { job.fam = target; add(fontCount, rFam); }
+          else add(skipped, &quot;no installed &quot; + pFam + &quot; &quot; + r.fontStyle + &quot; (font left as is): &quot; + rFam);
+        }
+      }
+      var rLang = r.appliedLanguage.name;
+      if (rLang !== pLang.name) {
+        var sl = styleSets(cs, &quot;appliedLanguage&quot;);
+        if (sl === &quot;no&quot;) { job.lang = pLang; add(langCount, rLang); }
+        else add(skipped, &quot;language set by a character style or not readable: &quot; + rLang);
+      }
+      if (job.fam || job.lang) jobs.push(job);
+    }
+  }
+
+  function list(o) { var s = []; for (var k in o) s.push(&quot;  &quot; + k + &quot; (&quot; + o[k] + &quot;)&quot;); return s.join(&quot;\n&quot;); }
+  var skipText = list(skipped) ? &quot;\n\nNot changed:\n&quot; + list(skipped) : &quot;&quot;;
+  if (jobs.length === 0) {
+    alert(&quot;No eligible changes were found in this story.&quot; + skipText);
+    return;
+  }
+  var msg = &quot;This changes the whole story of the selected frame, not only selected words.\n\n&quot; +
+    &quot;Set back to the paragraph style:\n\nFonts:\n&quot; + (list(fontCount) || &quot;  (none)&quot;) +
+    &quot;\n\nLanguages:\n&quot; + (list(langCount) || &quot;  (none)&quot;) + skipText + &quot;\n\nContinue?&quot;;
+  if (!confirm(msg)) return;
+
+  var done = 0;
+  try {
+    app.doScript(function () {
+      for (var k = jobs.length - 1; k &gt;= 0; k--) {
+        var t = story.characters.itemByRange(jobs[k].a, jobs[k].b);
+        if (jobs[k].fam) t.appliedFont = jobs[k].fam;
+        if (jobs[k].lang) t.appliedLanguage = jobs[k].lang;
+        done++;
+      }
+    }, ScriptLanguage.JAVASCRIPT, undefined, UndoModes.ENTIRE_SCRIPT, &quot;Reset imported fonts&quot;);
+  } catch (e) {
+    alert(&quot;Stopped after completing &quot; + done + &quot; of &quot; + jobs.length + &quot; text ranges: &quot; + e +
+      &quot;\nThe current range may also have been partly changed, and earlier ranges may already have been changed.&quot; +
+      &quot;\nCheck the document against the copy you saved before running the script.&quot;);
+    return;
+  }
+  alert(&quot;Done. &quot; + done + &quot; text ranges changed. Press Ctrl+Z once to revert.&quot;);
+})();
+</code></pre>
+
+<p>To run it on Windows:</p>
+
+<ol>
+<li>Save a copy of the InDesign document.</li>
+<li>Open Window &gt; Utilities &gt; Scripts. In the Scripts panel, right-click the User folder and choose Reveal in Explorer.</li>
+<li>Paste the code into a plain text editor such as Notepad and save it in that folder as <code>ResetImportedFonts.jsx</code>. Make sure the name doesn't end in <code>.txt</code>.</li>
+<li>Apply your paragraph styles. For any text that should keep a different font or language, apply a character style that specifies that font family or language.</li>
+<li>With the Selection tool, select one text frame of the story.</li>
+<li>Double-click the script in the Scripts panel. Read the summary, then click OK, or Cancel to stop without changes.</li>
+<li>Check italic quotes, symbols and other languages. To revert, press Ctrl+Z once right away.</li>
+</ol>
+
+<h2>What to ask the author</h2>
+
+<p>Use these two steps only if the manuscript should be in one language and one font family. If some passages need a different language or font, these steps will overwrite them too.</p>
+
+<p>In my test (Word 2007), both steps removed the settings from the saved file:</p>
+
+<ul>
+<li><strong>Languages:</strong> select all text, then set the language to English (United States). After saving, the per-word languages were gone from the file.</li>
+<li><strong>Fonts:</strong> select all text and choose the font the Normal style already uses. After saving, the directly applied fonts, including the Arial Unicode MS space, were gone from the file. The two words that had a Word character style got that font applied directly instead.</li>
+</ul>
+
+<p>The italic, bold and underlined text was the same before and after both steps.</p>
+
+<h2>What I tested</h2>
+
+<p>Besides the Word test file, I ran the script on a story built in InDesign with an override that crossed a paragraph boundary, character styles that set a font through Based On or set a language, a GREP style, a drop cap style, a table and a footnote.</p>
+
+<p>I did not test a current version of Word, macOS, files from other word processors, or a real client manuscript.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/10/restore-word-index-entries-in-indesign.html" target="_blank" rel="noopener">How to Restore Missing Word Index Entries in an Edited InDesign Document</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/unused-paragraph-style-asks-for-replacement.html" target="_blank" rel="noopener">Why InDesign Asks for a Replacement When You Delete an Unused Paragraph Style</a></li>
+<li><a href="https://www.linguist-coder.com/2026/06/when-font-replacement-should-happen-at.html" target="_blank" rel="noopener">When Font Replacement Should Happen at the Definition Level in InDesign</a></li>
+</ul>
