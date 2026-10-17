@@ -9,9 +9,9 @@
    "InDesign",
    "translation"
   ],
-  "raw_sha256": "ea92f60890dcef70115d3f4e36ff86bcd992b7cdd8d89be2a8b6b87077208e9c",
-  "rewritten_sha256": "ea92f60890dcef70115d3f4e36ff86bcd992b7cdd8d89be2a8b6b87077208e9c",
-  "raw_len": 5591,
+  "raw_sha256": "e591bc5a7dcef3d2c072f89b5b418233aab6f836cc0edbfc4bd1eba04aeb247b",
+  "rewritten_sha256": "e591bc5a7dcef3d2c072f89b5b418233aab6f836cc0edbfc4bd1eba04aeb247b",
+  "raw_len": 6875,
   "images": {},
   "file": "src/posts/2026/10/what-to-check-when-replacing-fonts.html"
  },
@@ -25,9 +25,9 @@
    "InDesign",
    "automation"
   ],
-  "raw_sha256": "5a74d40e6b45ab2f44d041dc0d5ab9ff3c3c6d6617352cbf4b881161d78d9fea",
-  "rewritten_sha256": "5a74d40e6b45ab2f44d041dc0d5ab9ff3c3c6d6617352cbf4b881161d78d9fea",
-  "raw_len": 17192,
+  "raw_sha256": "284d6566e24f4d8fc477d550870ac236555453f15d87f5fa72de72d8b5de50da",
+  "rewritten_sha256": "284d6566e24f4d8fc477d550870ac236555453f15d87f5fa72de72d8b5de50da",
+  "raw_len": 17941,
   "images": {},
   "file": "src/posts/2026/10/word-fonts-survive-remove-styles.html"
  },

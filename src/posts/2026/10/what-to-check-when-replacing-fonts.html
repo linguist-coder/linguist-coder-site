@@ -7,6 +7,7 @@ tags: ["automation", "InDesign", "translation"]
 layout: post.njk
 ---
 <p>A translated InDesign file often comes back still set in the original fonts. If those fonts lack the Thai or Chinese characters, missing-glyph boxes appear, and the obvious fix is to replace the fonts. A suitable replacement can clear those boxes. It does not finish the job.</p>
+<figure class="diagram"><img src="/images/2026/10/what-to-check-when-replacing-fonts/missing-glyph-boxes.png" alt="A Thai quick guide still set in Minion Pro, with the Thai text drawn as missing-glyph boxes" width="970" height="440" loading="lazy" /><figcaption>A Thai quick guide still set in Minion Pro. The Thai characters are drawn as missing-glyph boxes.</figcaption></figure>
 
 <p>This post covers the settings I review after replacing fonts and how I find any remaining missing glyphs.</p>
 
@@ -50,6 +51,7 @@ layout: post.njk
 <p>Changing fonts does not guarantee that every character has a glyph. A Thai family may lack a symbol the source used, or a CJK font may lack a rare character.</p>
 
 <p>Preflight can list them. Enable the missing-glyph check in the Preflight profile you use, then select that profile in the panel. It lists each missing character with its page. Run it before and after the font change, and compare the individual errors as well as the counts: a font change can fix some and introduce others. Ask the translator before replacing a character.</p>
+<figure class="diagram native"><img src="/images/2026/10/what-to-check-when-replacing-fonts/preflight-missing-glyphs.png" alt="Preflight panel with a profile that checks only for missing glyphs, listing Thai characters and their page numbers" width="453" height="536" loading="lazy" /><figcaption>A profile with only the missing-glyph check, run on the same file. Each error names the character and its page.</figcaption></figure>
 
 <p>A zero count still needs a visual check for shaping, line breaks and overset text.</p>
 
@@ -58,6 +60,7 @@ layout: post.njk
 <p>For one file, this is a pass through Paragraph Styles, Character Styles, Find/Replace Font and Preflight. Existing composite fonts may also need editing by script. The same steps then repeat for the next document in the same language.</p>
 
 <p>I built <a href="https://aescripts.com/language-font-mapper/" target="_blank" rel="noopener">Language Font Mapper</a> to repeat these changes across documents. It maps fonts in paragraph styles, character styles and existing composite font entries, with optional language, composer and digit settings. You can save the map for reuse. A trial is available on aescripts.</p>
+<figure class="diagram"><img src="/images/2026/10/what-to-check-when-replacing-fonts/language-font-mapper-dialog.png" alt="Language Font Mapper dialog mapping each Minion Pro style to Tahoma, with Thai and the World-Ready Paragraph Composer set" width="1724" height="870" loading="lazy" /><figcaption>Language Font Mapper on the same file. Each Minion Pro style maps to a Tahoma style, and the language and composer are set to Thai and World-Ready.</figcaption></figure>
 
 <h2>Related</h2>
 

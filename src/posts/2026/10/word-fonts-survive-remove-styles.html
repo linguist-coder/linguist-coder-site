@@ -9,6 +9,7 @@ layout: post.njk
 <p>You place a Word manuscript with Remove Styles and Formatting from Text and Tables checked, and Preserve Local Overrides checked so the author's italics and bold come through. You apply your paragraph style. Most paragraphs follow it, but some keep Times New Roman. A few spaces inside italic quotes show a missing font. The Character panel says some words are Turkish or Greek.</p>
 
 <p>A <a href="https://graphicdesign.stackexchange.com/q/165806" target="_blank" rel="noopener">question with these symptoms</a> has had no answers on Graphic Design Stack Exchange since 2024. I can't see that author's file, so I made a controlled test file instead: I wrote the .docx XML with one kind of formatting per paragraph, then opened and saved it in Word 2007. I placed the saved file in InDesign 2026 (21.5.1) on Windows under each import setting.</p>
+<figure class="diagram"><img src="/images/2026/10/word-fonts-survive-remove-styles/word-import-options.png" alt="Microsoft Word Import Options with Remove Styles and Formatting from Text and Tables selected and Preserve Local Overrides checked" width="886" height="980" loading="lazy" /><figcaption>The import settings in the test: Remove Styles and Formatting from Text and Tables, with Preserve Local Overrides checked.</figcaption></figure>
 
 <h2>What came through in my test</h2>
 
@@ -67,6 +68,7 @@ layout: post.njk
 <li>An override that covered <strong>the whole paragraph</strong> was removed. A paragraph that was entirely Calibri took the paragraph style's font. A paragraph that was entirely Turkish became English.</li>
 <li>An override that covered <strong>part of the paragraph</strong> stayed. One Calibri word in an otherwise plain paragraph stayed Calibri. One Turkish word stayed Turkish.</li>
 </ul>
+<figure class="diagram"><img src="/images/2026/10/word-fonts-survive-remove-styles/diagram-01.svg" alt="When a paragraph style is applied with overrides kept, an override on the whole paragraph is removed and an override on part of a paragraph stays." width="1600" height="960" loading="lazy" /></figure>
 
 <p>That could explain a manuscript where some paragraphs follow the style and others don't, but I have not examined the file from the question.</p>
 

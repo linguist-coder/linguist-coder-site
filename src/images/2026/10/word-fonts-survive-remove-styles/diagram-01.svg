@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc">
+  <title id="title">What happens to imported Word overrides when a paragraph style is applied</title>
+  <desc id="desc">With overrides kept, an override that covers a whole paragraph is removed and the text follows the paragraph style. An override that covers only part of a paragraph stays.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; --mark:#f3d9cf; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; --mark:#4a2c22; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .muted { font: 28px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--muted) }
+    .warn { font: 700 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .ok { font: 700 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--accent) }
+    .box { fill:none; stroke:var(--line); stroke-width:4 }
+    .para { fill:none; stroke:var(--muted); stroke-width:3 }
+    .hl { fill:var(--mark) }
+    .flow { stroke:var(--accent); stroke-width:6; fill:none }
+    .head { fill:var(--accent) }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker>
+  </defs>
+  <rect width="1600" height="960" fill="var(--bg)"/>
+  <text x="800" y="70" text-anchor="middle" class="label">Applying a paragraph style with overrides kept</text>
+  <text x="800" y="115" text-anchor="middle" class="muted">Imported Word fonts and languages, in my test file</text>
+
+  <rect x="60" y="160" width="700" height="700" rx="18" class="box"/>
+  <text x="410" y="225" text-anchor="middle" class="label">Override on the whole paragraph</text>
+  <rect x="120" y="270" width="580" height="150" rx="8" class="hl"/>
+  <rect x="120" y="270" width="580" height="150" rx="8" class="para"/>
+  <text x="150" y="330" class="small">Entire paragraph in Calibri</text>
+  <text x="150" y="385" class="muted">(or entirely Turkish, or entirely italic)</text>
+  <path d="M410 440 L410 540" class="flow" marker-end="url(#arrow)"/>
+  <rect x="120" y="560" width="580" height="150" rx="8" class="para"/>
+  <text x="150" y="620" class="small">Paragraph style font</text>
+  <text x="150" y="675" class="muted">and paragraph style language</text>
+  <text x="410" y="790" text-anchor="middle" class="warn">Override removed</text>
+
+  <rect x="840" y="160" width="700" height="700" rx="18" class="box"/>
+  <text x="1190" y="225" text-anchor="middle" class="label">Override on part of a paragraph</text>
+  <rect x="900" y="270" width="580" height="150" rx="8" class="para"/>
+  <text x="930" y="330" class="small">Plain text, one</text>
+  <rect x="1150" y="296" width="114" height="46" rx="6" class="hl"/>
+  <text x="1160" y="330" class="small">Calibri</text>
+  <text x="1276" y="330" class="small">word</text>
+  <text x="930" y="385" class="muted">(or one Turkish word)</text>
+  <path d="M1190 440 L1190 540" class="flow" marker-end="url(#arrow)"/>
+  <rect x="900" y="560" width="580" height="150" rx="8" class="para"/>
+  <text x="930" y="620" class="small">Style font, one</text>
+  <rect x="1150" y="586" width="114" height="46" rx="6" class="hl"/>
+  <text x="1160" y="620" class="small">Calibri</text>
+  <text x="1276" y="620" class="small">word</text>
+  <text x="930" y="675" class="muted">The word keeps its override</text>
+  <text x="1190" y="790" text-anchor="middle" class="ok">Override stays</text>
+
+  <text x="800" y="920" text-anchor="middle" class="muted">Paragraph style applied without Alt, and by script with applyParagraphStyle(style, false)</text>
+</svg>
