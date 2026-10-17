@@ -1,0 +1,68 @@
+---
+title: "What to Check When Replacing Fonts in a Translated InDesign File"
+date: 2026-10-17T12:00:00.000+09:00
+updated: 2026-10-17T12:00:00.000+09:00
+permalink: "/2026/10/what-to-check-when-replacing-fonts.html"
+tags: ["automation", "InDesign", "translation"]
+layout: post.njk
+---
+<p>A translated InDesign file often comes back still set in the original fonts. If those fonts lack the Thai or Chinese characters, missing-glyph boxes appear, and the obvious fix is to replace the fonts. A suitable replacement can clear those boxes. It does not finish the job.</p>
+
+<p>This post covers the settings I review after replacing fonts and how I find any remaining missing glyphs.</p>
+
+<h2>Change the font where it is defined</h2>
+
+<p>I wrote about this in <a href="https://www.linguist-coder.com/2026/06/when-font-replacement-should-happen-at.html" target="_blank" rel="noopener">an earlier post on composite fonts</a>: a font can be set in a paragraph style, a character style, a composite font entry, or directly on the text. If the style owns the font, change the style. Changing the text instead gives you local overrides, and the old font comes back the next time someone clears them.</p>
+
+<p>Find/Replace Font can redefine the styles that use a font, so for one font in one file this is quick. The rest of this post is about what Find Font does not cover.</p>
+
+<h2>Map the font styles</h2>
+
+<p>In a script test in InDesign 21.5.1 on Windows, I set only the family on text that was Arial Bold and changed it to Microsoft YaHei. The result was YaHei Regular. Arial Bold Italic became YaHei with the style name "Bold Italic", which YaHei does not have.</p>
+
+<p>Map the font family and style together. The target family may not have matching weights or italics, so decide how unmatched styles will map, for example Semibold to Bold or Light to Regular, and review any emphasis that is lost on the way.</p>
+
+<h2>Set the language and the composer</h2>
+
+<p>The language setting selects the spelling dictionary and hyphenation rules. It can come from a paragraph style, a character style or local formatting, so check all three and make sure the Thai text is actually set to Thai.</p>
+
+<p>The Adobe World-Ready Paragraph Composer supports Thai, as well as Arabic and Hebrew. Check which composer the styles use before you judge the line breaks. For Arabic and Hebrew, check the paragraph direction too. It is a separate setting from the composer.</p>
+
+<h2>Watch the digits</h2>
+
+<p>With Thai, Arabic and similar languages, InDesign can draw native digit forms in place of 0-9. The numbers keep their values, but in a manual or spec sheet the native forms can conflict with what is required for part numbers, voltages or page references.</p>
+
+<p>The Digits setting can live in paragraph and character styles. Set the required digit forms in the relevant styles, with character styles for exceptions.</p>
+
+<h2>Composite fonts: edit the entries, then reopen</h2>
+
+<p>Chinese and Japanese files often use composite fonts, where one font name covers a CJK font for Han characters and a Latin font for letters and numbers. If the composite font's Latin entry lacks a required glyph, change that entry.</p>
+
+<p>Two things I found in InDesign 21.5.1 on Windows:</p>
+
+<ul>
+<li>In the Roman (Western) edition, a script could edit the entries of a composite font that was already in the document, but could not apply a new composite font to a style. If your file came from a CJK edition with composite fonts in place, you can work with them. If not, set a CJK font directly in the styles.</li>
+<li>After the entries changed, text that used the composite font was still drawn with the old fonts. Saving, closing and reopening the document showed the new ones. Text that got its font from a paragraph style updated right away. If you count missing glyphs after editing a composite font, reopen first.</li>
+</ul>
+
+<h2>Check what is left</h2>
+
+<p>Changing fonts does not guarantee that every character has a glyph. A Thai family may lack a symbol the source used, or a CJK font may lack a rare character.</p>
+
+<p>Preflight can list them. Enable the missing-glyph check in the Preflight profile you use, then select that profile in the panel. It lists each missing character with its page. Run it before and after the font change, and compare the individual errors as well as the counts: a font change can fix some and introduce others. Ask the translator before replacing a character.</p>
+
+<p>A zero count still needs a visual check for shaping, line breaks and overset text.</p>
+
+<h2>Doing it for every document</h2>
+
+<p>For one file, this is a pass through Paragraph Styles, Character Styles, Find/Replace Font and Preflight. Existing composite fonts may also need editing by script. The same steps then repeat for the next document in the same language.</p>
+
+<p>I built <a href="https://aescripts.com/language-font-mapper/" target="_blank" rel="noopener">Language Font Mapper</a> to repeat these changes across documents. It maps fonts in paragraph styles, character styles and existing composite font entries, with optional language, composer and digit settings. You can save the map for reuse. A trial is available on aescripts.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/06/when-font-replacement-should-happen-at.html" target="_blank" rel="noopener">When Font Replacement Should Happen at the Definition Level in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/10/word-fonts-survive-remove-styles.html" target="_blank" rel="noopener">Word Fonts and Languages That Survive "Remove Styles and Formatting" in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/how-to-check-translated-indesign-file.html" target="_blank" rel="noopener">How to Check a Translated InDesign File in a Language You Cannot Read</a></li>
+</ul>

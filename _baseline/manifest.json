@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/10/what-to-check-when-replacing-fonts.html",
+  "title": "What to Check When Replacing Fonts in a Translated InDesign File",
+  "published": "2026-10-17T12:00:00.000+09:00",
+  "updated": "2026-10-17T12:00:00.000+09:00",
+  "tags": [
+   "automation",
+   "InDesign",
+   "translation"
+  ],
+  "raw_sha256": "ea92f60890dcef70115d3f4e36ff86bcd992b7cdd8d89be2a8b6b87077208e9c",
+  "rewritten_sha256": "ea92f60890dcef70115d3f4e36ff86bcd992b7cdd8d89be2a8b6b87077208e9c",
+  "raw_len": 5591,
+  "images": {},
+  "file": "src/posts/2026/10/what-to-check-when-replacing-fonts.html"
+ },
+ {
   "path": "/2026/10/word-fonts-survive-remove-styles.html",
   "title": "Word Fonts and Languages That Survive \"Remove Styles and Formatting\" in InDesign",
   "published": "2026-10-16T11:48:00.000+09:00",
