@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/10/words-missing-after-placing-word-docx.html",
+  "title": "Words Missing After Placing a Word DOCX in InDesign: How to Check the File",
+  "published": "2026-10-22T20:32:00.000+09:00",
+  "updated": "2026-10-22T20:32:00.000+09:00",
+  "tags": [
+   "InDesign",
+   "automation",
+   "translation"
+  ],
+  "raw_sha256": "0d1c7ab9e815778a1babc9b3b345bf91b062aba3cf5540ad7a27d792cde20907",
+  "rewritten_sha256": "0d1c7ab9e815778a1babc9b3b345bf91b062aba3cf5540ad7a27d792cde20907",
+  "raw_len": 19907,
+  "images": {},
+  "file": "src/posts/2026/10/words-missing-after-placing-word-docx.html"
+ },
+ {
   "path": "/2026/10/what-to-check-when-replacing-fonts.html",
   "title": "What to Check When Replacing Fonts in a Translated InDesign File",
   "published": "2026-10-17T12:00:00.000+09:00",

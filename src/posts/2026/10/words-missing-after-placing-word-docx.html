@@ -1,0 +1,315 @@
+---
+title: "Words Missing After Placing a Word DOCX in InDesign: How to Check the File"
+date: 2026-10-22T20:32:00.000+09:00
+updated: 2026-10-22T20:32:00.000+09:00
+permalink: "/2026/10/words-missing-after-placing-word-docx.html"
+tags: ["InDesign", "automation", "translation"]
+layout: post.njk
+---
+<p>After you place a Word manuscript, a few words are gone. In <a href="https://www.reddit.com/r/indesign/comments/1phpqbl/" target="_blank" rel="noopener">one reported case on r/indesign</a>, the Word file said "John 1:11-12 said," and the placed text stopped at "John 1:11".</p>
+
+<p>In that thread and in an <a href="https://community.adobe.com/t5/indesign-discussions/problems-with-docx-word-import/td-p/10012547" target="_blank" rel="noopener">older Adobe Community thread</a>, invisible bidirectional control characters (U+202A, U+202C, U+202D) were found where the text went missing. These characters mark where left-to-right or right-to-left text starts and ends. The person in the r/indesign thread guessed that the reference had been copied from a website.</p>
+
+<p>To see how these characters relate to the missing words, I built a test .docx with one case per paragraph and placed it in InDesign 2026 (21.5.1) on Windows. The person in the thread had also shared a .docx and a .doc version of the manuscript. I inspected the XML in the shared .docx and the character sequence in the binary .doc file. I did not place those two files.</p>
+
+<h2>Text lost inside XML elements in my tests</h2>
+
+<p>When I put these control characters directly in the text (in <code>&lt;w:t&gt;</code>), InDesign imported them without losing the surrounding words:</p>
+
+<ul>
+<li>U+202A to U+202E (embedding and override marks, including the U+202C from the thread)</li>
+<li>U+2066 to U+2069 (isolate marks)</li>
+<li>U+200B to U+200F, U+2060 and U+FEFF (zero-width characters and direction marks)</li>
+</ul>
+
+<p>In my test file, text went missing in these cases:</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Element in the .docx</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">What it is for</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Result in my test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><code>&lt;w:dir&gt;</code></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Text with its own direction (embedding)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Dropped in the standalone cases</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><code>&lt;w:bdo&gt;</code></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Text with a forced direction (override)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Dropped in the standalone cases</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><code>&lt;w:customXml&gt;</code> around words</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Custom XML tags applied to text</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Dropped</td>
+</tr>
+</tbody>
+</table>
+
+<p>The words before and after the element stayed. The loss happened with Remove Styles and Formatting both on and off, and also in a footnote.</p>
+
+<p>There were exceptions. A <code>&lt;w:dir&gt;</code> inside a content control kept its text, and so did a <code>&lt;w:customXml&gt;</code> around a whole paragraph. The content control, smart tag, tracked insertion, hyperlink and simple field I tested also kept their text. I could reproduce the loss with these elements, but I did not find out why InDesign skips their contents.</p>
+
+<h2>What was in the file from the thread</h2>
+
+<p>The shared .docx records Microsoft Office Word 16.0 in its application metadata. In the paragraph with the reference, everything after "John 1:11" up to the end of the paragraph sat inside a single <code>&lt;w:bdo&gt;</code> element: the text "-12 said," and 45 U+202C characters. That matches the missing text shown in the thread's screenshot.</p>
+
+<p>The left-to-right override character (U+202D) that starts such a span did not appear in the .docx text. In the .doc version it was there as a character, right after "John 1:11" and before the hyphen.</p>
+
+<p>So in this file, Word stored the override as a character in the .doc and turned it into a <code>&lt;w:bdo&gt;</code> element in the .docx. The file contents and my test results support this as the reason for the difference reported in the thread. It may also explain why copying the text through Notepad did not help the person in the thread, though I did not test that.</p>
+
+<h2>Check the .docx before you place it</h2>
+
+<p>A .docx is a zip file, so you can check it without opening InDesign. The PowerShell script below reports <code>&lt;w:dir&gt;</code>, <code>&lt;w:bdo&gt;</code> and <code>&lt;w:customXml&gt;</code> elements in the main text, footnotes, endnotes, headers and footers. It does not check comments. In my tests I placed only main text and footnotes.</p>
+
+<p>Each line of the list is a place to check, and some reported elements kept their text in my tests. Context shows text from the reported location, with the element's text in <code>[[ ]]</code> and paragraph breaks shown as <code>|</code>. It does not reproduce tabs or formatting. Selected invisible characters are omitted from Context; HiddenInside counts those inside the element. For the file from the thread, the list had one line, <code>John 1:11[[-12 said,]]</code>, with 45 hidden characters.</p>
+
+<p>If the script reports that it found none of these elements, that only covers this check. Text can go missing for other reasons.</p>
+
+<p><strong>Read this before you make a fixed copy.</strong> Without <code>-ListOnly</code>, the script writes <code>&lt;name&gt;_fixed.docx</code>. It removes every listed element, including ones that may import correctly, and with them the direction settings they carry. Run <code>-ListOnly</code> first and confirm with the author that the direction settings were added by accident. Don't run the repair on Arabic, Hebrew or mixed-direction text; I have not tested those documents.</p>
+
+<p>A Note entry or an unsupported-part message prevents the script from writing a fixed copy. Review those cases manually. The script builds the copy in a temporary file, reads it back, and renames it only after that check passes. In my test file, the fixed copy brought back every word, including the footnote.</p>
+
+<pre><code># FixWordWrappers.ps1
+# Reports the outermost &lt;w:dir&gt;, &lt;w:bdo&gt; and &lt;w:customXml&gt; elements in a .docx, in
+# word/document.xml, footnotes.xml, endnotes.xml, header*.xml and footer*.xml (not comments).
+# Each line identifies a candidate for comparison with the placed text. In my tests
+# (InDesign 2026 on Windows), text inside these elements was often dropped on Place, and
+# some reported elements retained their text.
+# Context shows text from that location with the element's text in [[ ]]; paragraphs inside
+# one element are separated by &quot; | &quot;. HiddenInside counts U+200B-200F, U+202A-202E, U+2060,
+# U+2066-2069 and U+FEFF inside the element; those characters are left out of Context.
+#
+# Without -ListOnly, it writes a copy named &lt;name&gt;_fixed.docx with ALL listed elements removed
+# and their contents kept in place. This also removes the text direction they set. Do not use
+# it on Arabic, Hebrew or mixed-direction text. The original file is not changed.
+# It writes nothing if an element is in a structure it does not handle (see Note), or if a
+# part uses an XML namespace it does not handle.
+
+param(
+  [Parameter(Mandatory = $true)][string]$Path,
+  [switch]$ListOnly
+)
+
+$ErrorActionPreference = &quot;Stop&quot;
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+$src = (Resolve-Path -LiteralPath $Path).Path
+$W = &quot;http://schemas.openxmlformats.org/wordprocessingml/2006/main&quot;
+$MC = &quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;
+$names = @(&quot;dir&quot;, &quot;bdo&quot;, &quot;customXml&quot;)
+$partPattern = '^word/(document|footnotes|endnotes|header\d*|footer\d*)\.xml$'
+$xpath = ($names | ForEach-Object { &quot;//w:$_&quot; }) -join &quot; | &quot;
+$hiddenClass = &quot;[&quot; + [char]0x200B + &quot;-&quot; + [char]0x200F + [char]0x202A + &quot;-&quot; + [char]0x202E +
+  [char]0x2060 + [char]0x2066 + &quot;-&quot; + [char]0x2069 + [char]0xFEFF + &quot;]&quot;
+
+function New-Ns($xml) {
+  $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
+  $ns.AddNamespace(&quot;w&quot;, $W)
+  $ns.AddNamespace(&quot;mc&quot;, $MC)
+  return ,$ns
+}
+
+function Read-Part($entry) {
+  $xml = New-Object System.Xml.XmlDocument
+  $xml.PreserveWhitespace = $true
+  $stream = $entry.Open()
+  try { $xml.Load($stream) } finally { $stream.Dispose() }
+  return ,$xml
+}
+
+function Get-Blocker($n, $ns) {
+  foreach ($a in $n.Attributes) {
+    if ($a.Prefix -eq &quot;xmlns&quot; -or $a.Name -eq &quot;xmlns&quot;) { return &quot;declares its own namespace&quot; }
+    if ($a.NamespaceURI -eq $MC) { return &quot;has markup-compatibility attributes&quot; }
+    if ($a.NamespaceURI -eq &quot;http://www.w3.org/XML/1998/namespace&quot;) { return &quot;has xml: attributes (for example xml:space)&quot; }
+  }
+  if ($n.SelectSingleNode(&quot;ancestor::mc:AlternateContent&quot;, $ns)) { return &quot;inside mc:AlternateContent (Context may show both versions)&quot; }
+  if ($n.SelectSingleNode(&quot;.//mc:AlternateContent&quot;, $ns)) { return &quot;contains mc:AlternateContent (Context may show both versions)&quot; }
+  return &quot;&quot;
+}
+
+function Get-Context($n, $ns) {
+  $para = $n.SelectSingleNode(&quot;ancestor::w:p[1]&quot;, $ns)
+  if ($para -eq $null) { $para = $n }
+  $inside = @{}
+  foreach ($t in $n.SelectNodes(&quot;.//w:t&quot;, $ns)) { $inside[$t] = $true }
+  $s = &quot;&quot;; $open = $false; $lastP = $null
+  foreach ($t in $para.SelectNodes(&quot;.//w:t&quot;, $ns)) {
+    $p = $t.SelectSingleNode(&quot;ancestor::w:p[1]&quot;, $ns)
+    if ($lastP -ne $null -and -not $p.Equals($lastP)) { $s += &quot; | &quot; }
+    $lastP = $p
+    if ($inside.ContainsKey($t) -and -not $open) { $s += &quot;[[&quot;; $open = $true }
+    if (-not $inside.ContainsKey($t) -and $open) { $s += &quot;]]&quot;; $open = $false }
+    $s += $t.InnerText
+  }
+  if ($open) { $s += &quot;]]&quot; }
+  return [regex]::Replace($s, $hiddenClass, &quot;&quot;)
+}
+
+function Remove-Wrappers($xml, $ns) {
+  $nodes = @($xml.SelectNodes($xpath, $ns)) | Sort-Object { -$_.SelectNodes(&quot;ancestor::*&quot;).Count }
+  foreach ($n in $nodes) {
+    while ($n.HasChildNodes) {
+      $c = $n.FirstChild
+      if ($c.NamespaceURI -eq $W -and $c.LocalName -eq &quot;customXmlPr&quot;) { [void]$n.RemoveChild($c); continue }
+      [void]$n.ParentNode.InsertBefore($c, $n)
+    }
+    [void]$n.ParentNode.RemoveChild($n)
+  }
+}
+
+$found = New-Object System.Collections.ArrayList
+$fixed = @{}
+$unsupported = @()
+$blocked = $false
+$zip = [System.IO.Compression.ZipFile]::OpenRead($src)
+try {
+  foreach ($e in $zip.Entries) {
+    if ($e.FullName -notmatch $partPattern) { continue }
+    $xml = Read-Part $e
+    if ($xml.DocumentElement.NamespaceURI -ne $W) { $unsupported += $e.FullName; continue }
+    $ns = New-Ns $xml
+    $nodes = @($xml.SelectNodes($xpath, $ns))
+    if ($nodes.Count -eq 0) { continue }
+    foreach ($n in $nodes) {
+      $note = Get-Blocker $n $ns
+      if ($note) { $blocked = $true }
+      $isOuter = ($n.SelectSingleNode(&quot;ancestor::w:dir | ancestor::w:bdo | ancestor::w:customXml&quot;, $ns) -eq $null)
+      if (-not $isOuter -and -not $note) { continue }
+      $inner = ($n.SelectNodes(&quot;.//w:t&quot;, $ns) | ForEach-Object { $_.InnerText }) -join &quot;&quot;
+      [void]$found.Add([pscustomobject]@{
+        Part = $e.FullName; Element = &quot;w:&quot; + $n.LocalName
+        HiddenInside = [regex]::Matches($inner, $hiddenClass).Count
+        Note = $note; Context = (Get-Context $n $ns) })
+    }
+    Remove-Wrappers $xml $ns
+    $fixed[$e.FullName] = $xml
+  }
+} finally { $zip.Dispose() }
+
+if ($unsupported.Count -gt 0) {
+  &quot;These parts use an XML namespace this script does not handle (for example Strict Open XML):&quot;
+  $unsupported | ForEach-Object { &quot;  $_&quot; }
+  &quot;Nothing was checked or changed in them.&quot;
+}
+if ($found.Count -eq 0) {
+  if ($unsupported.Count -gt 0) { return }
+  &quot;No w:dir, w:bdo or w:customXml elements found in the checked parts.&quot;
+  &quot;This does not rule out other causes of missing text.&quot;
+  return
+}
+$found | Format-Table Part, Element, HiddenInside, Note, Context -AutoSize -Wrap | Out-String -Width 220
+if ($ListOnly) { return }
+if ($blocked -or $unsupported.Count -gt 0) {
+  &quot;No fixed copy was written: see the Note column, or the parts listed above.&quot;
+  return
+}
+
+$dst = Join-Path ([IO.Path]::GetDirectoryName($src)) ([IO.Path]::GetFileNameWithoutExtension($src) + &quot;_fixed.docx&quot;)
+if (Test-Path -LiteralPath $dst) { throw &quot;$dst already exists. Move or rename it first.&quot; }
+# A temporary file with a name unique to this run, created exclusively (fails if it exists).
+$tmp = $dst + &quot;.&quot; + [guid]::NewGuid().ToString(&quot;N&quot;) + &quot;.tmp&quot;
+$created = $false
+try {
+  $out = [System.IO.File]::Open($tmp, [System.IO.FileMode]::CreateNew)
+  $created = $true
+  try {
+    $in = [System.IO.File]::OpenRead($src)
+    try { $in.CopyTo($out) } finally { $in.Dispose() }
+  } finally { $out.Dispose() }
+  $zip = [System.IO.Compression.ZipFile]::Open($tmp, [System.IO.Compression.ZipArchiveMode]::Update)
+  try {
+    foreach ($part in $fixed.Keys) {
+      $zip.GetEntry($part).Delete()
+      $stream = $zip.CreateEntry($part).Open()
+      try {
+        $writer = New-Object System.IO.StreamWriter($stream, (New-Object System.Text.UTF8Encoding $false))
+        try { $fixed[$part].Save($writer) } finally { $writer.Dispose() }
+      } finally { $stream.Dispose() }
+    }
+  } finally { $zip.Dispose() }
+  # Re-read the copy: every changed part must parse and contain none of the elements.
+  $zip = [System.IO.Compression.ZipFile]::OpenRead($tmp)
+  try {
+    foreach ($part in $fixed.Keys) {
+      $xml = Read-Part ($zip.GetEntry($part))
+      if ($xml.SelectNodes($xpath, (New-Ns $xml)).Count -ne 0) { throw &quot;Check failed in $part.&quot; }
+    }
+  } finally { $zip.Dispose() }
+  Move-Item -LiteralPath $tmp -Destination $dst
+} catch {
+  # Only this run's temporary file is removed.
+  if ($created -and (Test-Path -LiteralPath $tmp)) { Remove-Item -LiteralPath $tmp }
+  throw
+}
+&quot;Wrote $dst&quot;
+&quot;Place it in a new InDesign document first and compare each listed location with the Word file.&quot;
+</code></pre>
+
+<h2>Run it on Windows</h2>
+
+<ol>
+<li>Open Notepad, paste the code and choose File &gt; Save As. Pick a folder, set Save as type to <strong>All files</strong>, and type <code>FixWordWrappers.ps1</code> as the file name. If File Explorer shows file name extensions, check that the name doesn't end in <code>.txt</code>.</li>
+<li>Open <strong>Windows PowerShell</strong> from the Start menu. You don't need to run it as administrator.</li>
+<li>To list the elements, paste this as one line, replace the two paths with your own, keep the quotation marks, and press Enter:</li>
+</ol>
+
+<pre><code>powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;C:\scripts\FixWordWrappers.ps1&quot; -Path &quot;C:\work\manuscript.docx&quot; -ListOnly
+</code></pre>
+
+<ol>
+<li>Check the list for Note entries and for a message about unsupported parts. If there are none, write the fixed copy by running the same line without <code>-ListOnly</code>:</li>
+</ol>
+
+<pre><code>powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;C:\scripts\FixWordWrappers.ps1&quot; -Path &quot;C:\work\manuscript.docx&quot;
+</code></pre>
+
+<ol>
+<li>If the script printed <code>Wrote ...</code>, place <code>manuscript_fixed.docx</code> in a new InDesign document first. Compare each listed location, and the footnotes, with the Word file before you use it in your layout.</li>
+</ol>
+
+<p><code>-ExecutionPolicy Bypass</code> applies only to that run. If your computer is managed by your company, a Group Policy setting can still block scripts; ask whoever manages it.</p>
+
+<h2>If you have already placed and formatted the file</h2>
+
+<p>Text dropped this way never reached InDesign, so Find/Change can't bring it back. Run the script on the original .docx with <code>-ListOnly</code> and use Context to find each reported passage in InDesign. Compare it with the Word file, restore only text that is actually missing, and check its formatting against the original.</p>
+
+<h2>Removing the direction characters</h2>
+
+<p>The fixed copy still contains any direction characters that were typed into the text. If you have confirmed they were added by accident, find them with this GREP expression in Find/Change:</p>
+
+<pre><code>[\x{200E}\x{200F}\x{202A}-\x{202E}\x{2066}-\x{2069}]
+</code></pre>
+
+<p>Leave Change to empty. Use Find Next to inspect each match and Change to remove an unwanted character. Use Change All only if every match in the search scope is unwanted. In my test file, Change All removed all 20 of these characters and kept every word.</p>
+
+<p>U+200B (zero-width space) and U+2060 (word joiner) affect where lines can break. <code>[\x{200B}\x{2060}]</code> found them in my test. Remove them only after confirming they are unwanted, and check the line breaks afterward. I left out U+200C and U+200D, which can be required for text shaping and emoji sequences, and U+00AD (soft hyphen). This GREP search did not match U+FEFF in my test, and I have not verified a way to remove it in InDesign.</p>
+
+<p>These searches remove characters only. They don't bring back text that was never imported.</p>
+
+<h2>What to tell the author</h2>
+
+<p>Ask the author whether the direction settings at the reported places were intended. If they were not, ask them to retype the affected reference and send a revised file, and check that file with the script before you place it.</p>
+
+<p>Both threads mention saving the manuscript as a Word 97-2003 document (.doc) as a workaround. In the .doc from the thread, the text after "John 1:11" was stored as ordinary characters, with the direction characters among them. I did not place that .doc.</p>
+
+<h2>What I tested</h2>
+
+<p>I wrote the test .docx by hand, one case per paragraph, and checked the placed text paragraph by paragraph. I also saved it from Word 2007 as .docx and .doc and placed those. I inspected the files shared in the thread without opening them in Word or InDesign, and ran the script on that .docx. I ran the script on small test files with a namespace declaration or an <code>xml:space</code> attribute on the element, <code>mc:AlternateContent</code>, an element around two paragraphs, and a Strict document, and checked that a failure while writing the copy left no files behind.</p>
+
+<p>I did not test macOS, RTF files, copy and paste from Word, or right-to-left documents. The shared manuscript provided one observed instance of a left-to-right override.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/10/word-fonts-survive-remove-styles.html" target="_blank" rel="noopener">Word Fonts and Languages That Survive "Remove Styles and Formatting" in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/10/restore-word-index-entries-in-indesign.html" target="_blank" rel="noopener">How to Restore Missing Word Index Entries in an Edited InDesign Document</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/missing-footnotes-empty-table-cells.html" target="_blank" rel="noopener">Missing Footnotes, Empty Table Cells, and Stale Index Pages After IDML Translation</a></li>
+</ul>
