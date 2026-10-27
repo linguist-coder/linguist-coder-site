@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/10/google-docs-to-indesign-specific-pages.html",
+  "title": "Google Docs to InDesign: Place Text on Specific Pages with a Script",
+  "published": "2026-10-28T05:44:00.000+09:00",
+  "updated": "2026-10-28T05:44:00.000+09:00",
+  "tags": [
+   "ExtendScript",
+   "InDesign",
+   "automation"
+  ],
+  "raw_sha256": "4191960ebb2796c28853480f7b43b49c1aac231b96470df46857a4d69e6aa3c8",
+  "rewritten_sha256": "4191960ebb2796c28853480f7b43b49c1aac231b96470df46857a4d69e6aa3c8",
+  "raw_len": 19740,
+  "images": {},
+  "file": "src/posts/2026/10/google-docs-to-indesign-specific-pages.html"
+ },
+ {
   "path": "/2026/10/words-missing-after-placing-word-docx.html",
   "title": "Words Missing After Placing a Word DOCX in InDesign: How to Check the File",
   "published": "2026-10-22T20:32:00.000+09:00",

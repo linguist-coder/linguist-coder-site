@@ -1,0 +1,345 @@
+---
+title: "Google Docs to InDesign: Place Text on Specific Pages with a Script"
+date: 2026-10-28T05:44:00.000+09:00
+updated: 2026-10-28T05:44:00.000+09:00
+permalink: "/2026/10/google-docs-to-indesign-specific-pages.html"
+tags: ["ExtendScript", "InDesign", "automation"]
+layout: post.njk
+---
+<p><a href="https://www.reddit.com/r/indesign/comments/1xelwok/" target="_blank" rel="noopener">A question on r/indesign</a> described an existing 160-page InDesign document with five page templates in an irregular order. The author wanted to place the headline and body text for each page from a Google Doc instead of copying and pasting each one.</p>
+
+<p>The script below does the transfer. You name the destination frames on the parent pages and add a marker such as <code>[[120 body]]</code> above each passage in the Doc. The script moves each passage into the named frame on that page and reports anything it cannot match.</p>
+
+<h2>What you still do by hand</h2>
+
+<p>You decide which passage belongs on each page and record that choice in the markers. You name the frames once, on the parent pages the document uses. For a 160-page book with a headline and a body on every page, that means adding 320 markers to the Doc. You still check the finished pages against the Doc, because a marker with the wrong page number that points to a real page is filled without complaint.</p>
+
+<p>The example works on one open InDesign document whose pages and parent pages are already in place. It does not add pages or apply parent pages. I tested independent text frames and a body threaded through two frames on one parent page. I did not test parent-page threads that are already partly overridden on the document page.</p>
+
+<h2>Why Data Merge does not fit</h2>
+
+<p>Data Merge reads CSV or tab-delimited text and repeats a target layout for each record. This book starts with pages already arranged in five layouts, and the data file cannot carry italic or bold inside a paragraph.</p>
+
+<h2>Name the frames on the parent pages</h2>
+
+<p>Open each parent page and name its text frames in the Layers panel (click the frame's name in the list twice, slowly, and type the new name). Use the same name for the same job on every template, for example <code>headline</code>, <code>body</code> and <code>caption</code>.</p>
+
+<p>Put a line of placeholder text in each named frame and apply the paragraph style that frame should use. When a frame already has text, the script applies the paragraph style of its first paragraph to every incoming paragraph. It does not clear overrides. Italic text inside a paragraph was preserved in my tests. A frame with no placeholder kept the paragraph style imported from Word.</p>
+
+<p>You do not need to override the frames on the document pages. When a named frame exists only on the parent page, the script overrides it onto the page before filling it. In my test with a body threaded through two frames on one parent page, the script overrode both frames and linked them again in the same order.</p>
+
+<p>The script replaces all text in the destination story, including text in its other threaded frames. It stops before replacing anything if two markers point to the same story, or if the story has a text frame on another page.</p>
+
+<h2>Mark the text in the Doc</h2>
+
+<p>Before each passage, add a line with the page name and the frame name in double square brackets:</p>
+
+<pre><code>[[120 headline]]
+Spring planting calendar
+[[120 body]]
+The first paragraph of page 120 ...
+The second paragraph ...
+[[121 body]]
+...
+</code></pre>
+
+<p>The text between one marker and the next is moved into the destination story. The result also depends on your Word import settings. I did not test with <strong>Remove Styles and Formatting from Text and Tables</strong> turned on.</p>
+
+<p>The page name is the number shown in the Pages panel. I did not test documents with section numbering.</p>
+
+<p>When the Doc is ready, download it with <strong>File &gt; Download &gt; Microsoft Word (.docx)</strong>.</p>
+
+<h2>The script</h2>
+
+<p>Copy only the code inside the block below into a plain text editor such as Notepad. Save it as <code>FillPagesFromDoc.jsx</code>, not <code>FillPagesFromDoc.jsx.txt</code>.</p>
+
+<pre><code>// FillPagesFromDoc.jsx
+// Fills named text frames on specific pages of the active InDesign document
+// from a Word file (for example a Google Doc downloaded as .docx).
+//
+// In the Word file, put a marker line before each piece of text:
+//   [[120 headline]]
+//   The headline for page 120
+//   [[120 body]]
+//   The body text for page 120 ...
+// &quot;120&quot; is the page name as shown in the Pages panel. &quot;headline&quot; is the frame
+// name as shown in the Layers panel. The frame can be on the page or on its
+// parent page; a frame on the parent page is overridden onto the page first.
+//
+// The script checks every marker before it replaces any text. It stops and
+// lists the problems if a marker points to a missing page or frame, has no
+// text, appears twice, shares a story with another marker, points to a
+// story that continues onto another page, or points to a locked frame.
+// Otherwise it replaces all text in each destination story, including text
+// in its other threaded frames, with the text after the marker.
+// One Edit &gt; Undo reverts the whole run.
+
+var MARKER = /^\[\[\s*(\S+)\s+(\S+)\s*\]\]\s*$/;
+
+function isNamed(item) {
+  return item.name !== &quot;&quot; &amp;&amp; item.name.charAt(0) !== &quot;&lt;&quot;;
+}
+
+function pageIdOf(frame) {
+  try { return frame.parentPage ? frame.parentPage.id : null; } catch (e) { return null; }
+}
+
+// Treat a frame that cannot be checked as locked.
+function isLocked(frame) {
+  try { return frame.locked || frame.itemLayer.locked; } catch (e) { return true; }
+}
+
+function chainLocked(chain) {
+  for (var j = 0; j &lt; chain.length; j++) if (isLocked(chain[j])) return true;
+  return false;
+}
+
+// Find the destination for one marker without changing the document.
+function findDestination(page, name) {
+  var i, j, items = page.allPageItems, f, chain, shown = {};
+  for (i = 0; i &lt; items.length; i++) {
+    f = items[i];
+    if (f instanceof TextFrame &amp;&amp; f.name === name) {
+      chain = f.parentStory.textContainers;
+      if (chainLocked(chain)) return { error: &quot;'&quot; + name + &quot;' or a frame threaded to it is locked&quot; };
+      for (j = 0; j &lt; chain.length; j++) {
+        if (pageIdOf(chain[j]) !== page.id) return { error: &quot;the '&quot; + name + &quot;' story continues onto another page&quot; };
+      }
+      return { frame: f, parent: false, storyKey: page.id + &quot;:&quot; + f.parentStory.id };
+    }
+  }
+  items = page.masterPageItems;
+  for (i = 0; i &lt; items.length; i++) shown[items[i].id] = true;
+  for (i = 0; i &lt; items.length; i++) {
+    f = items[i];
+    if (f instanceof TextFrame &amp;&amp; f.name === name) {
+      chain = f.parentStory.textContainers;
+      if (chainLocked(chain)) return { error: &quot;'&quot; + name + &quot;' or a frame threaded to it is locked&quot; };
+      for (j = 0; j &lt; chain.length; j++) {
+        if (!shown[chain[j].id]) return { error: &quot;'&quot; + name + &quot;' is threaded to a frame that is not on this page&quot; };
+      }
+      return { frame: f, parent: true, storyKey: page.id + &quot;:&quot; + f.parentStory.id };
+    }
+  }
+  return { error: &quot;no text frame named '&quot; + name + &quot;'&quot; };
+}
+
+// Override a parent-page frame (and the frames threaded to it) onto the page.
+function prepare(page, target) {
+  if (!target.parent) return target.frame;
+  var chain = target.frame.parentStory.textContainers, copies = [], first = null, j, o;
+  for (j = 0; j &lt; chain.length; j++) {
+    o = chain[j].override(page);
+    if (chain[j].id === target.frame.id) first = o;
+    copies.push(o);
+  }
+  // In my two-frame test, overriding a threaded parent-page story from a
+  // script left separate stories. Link the copies again; their placeholder
+  // text is replaced anyway.
+  for (j = 1; j &lt; copies.length; j++) {
+    if (copies[j].parentStory.id !== copies[0].parentStory.id) {
+      copies[j].parentStory.contents = &quot;&quot;;
+      copies[j - 1].nextTextFrame = copies[j];
+    }
+  }
+  return first;
+}
+
+function slotNames(page) {
+  var names = {}, i, items = page.allPageItems;
+  for (i = 0; i &lt; items.length; i++) {
+    if (items[i] instanceof TextFrame &amp;&amp; isNamed(items[i])) names[items[i].name] = true;
+  }
+  items = page.masterPageItems;
+  for (i = 0; i &lt; items.length; i++) {
+    if (items[i] instanceof TextFrame &amp;&amp; isNamed(items[i])) names[items[i].name] = true;
+  }
+  return names;
+}
+
+function fillPages(doc, file) {
+  var prevLayer = doc.activeLayer, result, failure = null, cleanupFailed = false;
+  var layer = doc.layers.add({ name: &quot;FillPagesFromDoc temp&quot; });
+  try {
+    result = fillFromLayer(doc, file, layer);
+  } catch (e) {
+    failure = e;
+  }
+  try { layer.remove(); } catch (e1) { cleanupFailed = true; }
+  try { doc.activeLayer = prevLayer; } catch (e2) {}
+  var warning = &quot;The temporary layer \&quot;FillPagesFromDoc temp\&quot; could not be removed. Delete it in the Layers panel.&quot;;
+  if (failure !== null) {
+    throw Error((failure.message || String(failure)) + (cleanupFailed ? &quot;\n&quot; + warning : &quot;&quot;));
+  }
+  if (cleanupFailed) result.summary += &quot;\n\n&quot; + warning;
+  return result;
+}
+
+function fillFromLayer(doc, file, layer) {
+  var notes = [], problems = [], lines = [];
+  var spread = doc.spreads[0];
+  var temp = spread.textFrames.add({ itemLayer: layer, geometricBounds: spread.pages[0].bounds });
+  temp.insertionPoints[0].place(file, false);
+  var src = temp.parentStory, whole = src.contents, n = src.characters.length;
+
+  // Collect markers and the character range of the text after each one.
+  var marks = [], paras = src.paragraphs, i, m, mk;
+  for (i = 0; i &lt; paras.length; i++) {
+    m = MARKER.exec(paras[i].contents.replace(/\r$/, &quot;&quot;));
+    if (m) marks.push({ page: m[1], slot: m[2], index: paras[i].index, len: paras[i].characters.length });
+  }
+  if (marks.length === 0) {
+    return { summary: &quot;No marker lines like [[120 body]] were found in the file. No destination text was replaced.&quot;, full: &quot;&quot; };
+  }
+  if (marks[0].index &gt; 0) notes.push(&quot;Text before the first marker was ignored.&quot;);
+  for (i = 0; i &lt; marks.length; i++) {
+    mk = marks[i];
+    mk.key = mk.page + &quot; &quot; + mk.slot;
+    mk.start = mk.index + mk.len;
+    mk.end = (i + 1 &lt; marks.length) ? marks[i + 1].index - 1 : n - 1;
+    if (mk.end &gt;= mk.start &amp;&amp; whole.charAt(mk.end) === &quot;\r&quot;) mk.end--;
+  }
+
+  // Check every marker before changing the pages.
+  var seen = {}, stories = {}, page, r;
+  for (i = 0; i &lt; marks.length; i++) {
+    mk = marks[i];
+    if (seen[mk.key]) { problems.push(&quot;[[&quot; + mk.key + &quot;]] appears more than once.&quot;); continue; }
+    seen[mk.key] = true;
+    if (mk.end &lt; mk.start || !/\S/.test(whole.substring(mk.start, mk.end + 1))) {
+      problems.push(&quot;[[&quot; + mk.key + &quot;]] has no text after it.&quot;);
+    }
+    page = doc.pages.itemByName(mk.page);
+    if (!page.isValid) { problems.push(&quot;[[&quot; + mk.key + &quot;]]: there is no page named &quot; + mk.page + &quot;.&quot;); continue; }
+    r = findDestination(page, mk.slot);
+    if (r.error) { problems.push(&quot;[[&quot; + mk.key + &quot;]]: on page &quot; + mk.page + &quot;, &quot; + r.error + &quot;.&quot;); continue; }
+    if (stories[r.storyKey]) {
+      problems.push(&quot;[[&quot; + mk.key + &quot;]] and [[&quot; + stories[r.storyKey] + &quot;]] point to the same story.&quot;);
+      continue;
+    }
+    stories[r.storyKey] = mk.key;
+    mk.pageObj = page;
+    mk.target = r;
+  }
+  if (problems.length) {
+    lines.push(&quot;No destination text was replaced. Fix these in the Word file or the layout, then run the script again:&quot;);
+    lines.push(&quot;  &quot; + problems.join(&quot;\n  &quot;));
+    lines.push(&quot;The styles that came in with the Word file are still in the document. Edit &gt; Undo removes them.&quot;);
+    return { summary: lines.join(&quot;\n&quot;), full: lines.join(&quot;\n&quot;) };
+  }
+
+  // Fill, working backwards so earlier character positions stay valid.
+  var overset = [], filled = {}, frame, story, oldStyle;
+  for (i = marks.length - 1; i &gt;= 0; i--) {
+    mk = marks[i];
+    frame = prepare(mk.pageObj, mk.target);
+    story = frame.parentStory;
+    oldStyle = story.characters.length &gt; 0 ? story.paragraphs[0].appliedParagraphStyle : null;
+    if (story.characters.length &gt; 0) story.characters.itemByRange(0, story.characters.length - 1).remove();
+    src.characters.itemByRange(mk.start, mk.end).move(LocationOptions.AT_BEGINNING, story.insertionPoints[0]);
+    if (oldStyle) story.paragraphs.everyItem().applyParagraphStyle(oldStyle, false);
+    if (story.overflows) overset.push(&quot;page &quot; + mk.page + &quot; '&quot; + mk.slot + &quot;'&quot;);
+    filled[mk.key] = true;
+  }
+
+  // Named frames in the layout that no marker pointed to.
+  var empty = [], pg, names, nm;
+  for (i = 0; i &lt; doc.pages.length; i++) {
+    pg = doc.pages[i];
+    names = slotNames(pg);
+    for (nm in names) {
+      if (!filled[pg.name + &quot; &quot; + nm]) empty.push(&quot;page &quot; + pg.name + &quot; '&quot; + nm + &quot;'&quot;);
+    }
+  }
+
+  var head = &quot;Filled &quot; + marks.length + &quot; destination stories from &quot; + marks.length + &quot; markers.&quot;;
+  var full = [head], summary = [head];
+  if (overset.length) {
+    full.push(&quot;Overset after filling (&quot; + overset.length + &quot;):\n  &quot; + overset.join(&quot;\n  &quot;));
+    summary.push(&quot;Overset after filling: &quot; + overset.length);
+  } else {
+    full.push(&quot;Overset after filling: none&quot;);
+  }
+  full.push(&quot;Named frames without a matching marker (&quot; + empty.length + &quot;):&quot; + (empty.length ? &quot;\n  &quot; + empty.join(&quot;\n  &quot;) : &quot; none&quot;));
+  summary.push(&quot;Named frames without a matching marker: &quot; + empty.length);
+  if (notes.length) { full.push(notes.join(&quot;\n&quot;)); summary.push(notes.join(&quot;\n&quot;)); }
+  return { summary: summary.join(&quot;\n&quot;), full: full.join(&quot;\n\n&quot;) };
+}
+
+if (typeof FILL_PAGES_TEST === &quot;undefined&quot;) {
+  (function () {
+    if (app.documents.length === 0) { alert(&quot;Open the InDesign document first.&quot;); return; }
+    var f = File.openDialog(&quot;Choose the Word file&quot;, &quot;*.docx&quot;);
+    if (!f) return;
+    var doc = app.activeDocument, result;
+    app.doScript(function () {
+      try {
+        result = fillPages(doc, f);
+      } catch (e) {
+        result = { summary: &quot;The script stopped with an error: &quot; + e + &quot;\nUse Edit &gt; Undo once to revert any changes.&quot;, full: &quot;&quot; };
+      }
+    }, ScriptLanguage.JAVASCRIPT, undefined, UndoModes.ENTIRE_SCRIPT, &quot;Fill pages from Word file&quot;);
+    if (result.full) {
+      // Each run replaces the previous report for the same Word file.
+      var rf = File(f.fsName.replace(/\.docx$/i, &quot;&quot;) + &quot; - fill report.txt&quot;), saved = false;
+      try {
+        rf.encoding = &quot;UTF-8&quot;;
+        if (rf.open(&quot;w&quot;)) {
+          saved = rf.write(result.full);
+          saved = rf.close() &amp;&amp; saved;
+        }
+      } catch (e) {
+        saved = false;
+      }
+      result.summary += saved ? &quot;\n\nFull report: &quot; + rf.fsName : &quot;\n\nThe full report could not be saved next to the Word file.&quot;;
+    }
+    alert(result.summary);
+  })();
+}
+</code></pre>
+
+<p>To install it, open <strong>Window &gt; Utilities &gt; Scripts</strong>, right-click the <strong>User</strong> folder, choose <strong>Reveal in Explorer</strong> (or <strong>Reveal in Finder</strong>), and put the file in that folder. Check that <code>FillPagesFromDoc.jsx</code> appears under <strong>User</strong> in the Scripts panel. If you have not run a script before, <a href="https://www.linguist-coder.com/2026/01/how-to-run-javascript-in-adobe-indesign.html" target="_blank" rel="noopener">this walkthrough</a> covers the steps.</p>
+
+<h2>Run it</h2>
+
+<p>The text in each destination story is replaced, including edits made on the document pages. Save a separate copy of the InDesign document and run the script on that copy. In my tests, one <strong>Edit &gt; Undo</strong> restored the document.</p>
+
+<ol>
+<li>Open the .indd document you want to fill, so that it is the active document.</li>
+<li>Double-click <code>FillPagesFromDoc.jsx</code> in the Scripts panel.</li>
+<li>Choose the .docx file.</li>
+</ol>
+
+<p>The script places the Word file into a temporary frame on a temporary layer, using your current Word import settings. Then it checks every marker before it replaces any text. It looks for missing pages and frames, markers with no text, repeated markers, and two markers for one story. It also rejects stories with a frame on another page, and destinations where the named frame or a frame threaded to it is locked.</p>
+
+<p>If any marker fails, the script lists the problems and replaces no text. The styles that came in with the Word file stay in the document; one <strong>Edit &gt; Undo</strong> removes them.</p>
+
+<p>If every marker passes, the script fills the destination stories and shows a short summary. The full report is saved as a text file next to the .docx, and each run replaces the previous report for that file. If the report cannot be saved, the summary says so. The report lists:</p>
+
+<ul>
+<li>destination stories that are overset after filling</li>
+<li>named frames without a matching marker, page by page</li>
+<li>text before the first marker, which is ignored</li>
+</ul>
+
+<p>Even when every marker is filled and no overset text is reported, the script cannot tell whether you assigned the right page. Check the pages against the Doc.</p>
+
+<h2>What I tested</h2>
+
+<p>I built a nine-page document with four parent pages: headline and body; headline and a body threaded over two columns; an empty image frame with a caption and a body; and a body threaded to a frame on a locked layer. On the document pages I added a frame on a locked layer, two named frames in one story, and a named story that continues onto the next page.</p>
+
+<p>A Word file with nine bad markers stopped the run. All nine were listed, and no text on the pages changed. A Word file with 15 valid markers filled all 15 destination stories. Italic text inside a paragraph stayed italic, and the long text ran into the second column. A single marker for the story with two named frames filled both frames. One Undo restored the document, including a headline I had edited by hand before the run.</p>
+
+<p>I also made the script fail on purpose partway through a run. The temporary layer was removed, and one Undo restored the document.</p>
+
+<p>In an earlier version, overriding the threaded body from the script broke the thread and left the text overset. That is why the script links the overridden frames again.</p>
+
+<p>I tested on Windows with Word files written by a script, and with a short Google Doc downloaded as .docx. I did not test macOS, section numbering, facing-pages layouts, three or more threaded frames, partly overridden threads, or images.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/01/how-to-run-javascript-in-adobe-indesign.html" target="_blank" rel="noopener">How to Run JavaScript in Adobe InDesign (Without Learning JavaScript First)</a></li>
+<li><a href="https://www.linguist-coder.com/2026/10/word-fonts-survive-remove-styles.html" target="_blank" rel="noopener">Word Fonts and Languages That Survive "Remove Styles and Formatting" in InDesign</a></li>
+<li><a href="https://www.linguist-coder.com/2026/10/words-missing-after-placing-word-docx.html" target="_blank" rel="noopener">Words Missing After Placing a Word DOCX in InDesign: How to Check the File</a></li>
+</ul>
