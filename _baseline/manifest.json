@@ -626,9 +626,9 @@
   "published": "2026-01-03T15:35:00.000-08:00",
   "updated": "2026-04-10T15:19:43.333-07:00",
   "tags": [],
-  "raw_sha256": "0df3022df799966e4f54760925198d96a6a08408ebfe372c88cfd1d832881cfa",
-  "rewritten_sha256": "0df3022df799966e4f54760925198d96a6a08408ebfe372c88cfd1d832881cfa",
-  "raw_len": 6277,
+  "raw_sha256": "c4b376d10bf96a6a21f6c8b98265cba5132c44bc12ea5f63624c9061ecf54afb",
+  "rewritten_sha256": "c4b376d10bf96a6a21f6c8b98265cba5132c44bc12ea5f63624c9061ecf54afb",
+  "raw_len": 5938,
   "images": {},
   "file": "src/posts/2026/01/scaling-multilingual-dtp-by-eliminating.html"
  },
