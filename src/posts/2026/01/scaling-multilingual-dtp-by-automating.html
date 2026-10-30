@@ -52,10 +52,10 @@ License: MIT. Use at your own risk.</p>
     Want the ready-to-use version?
   </div>
   <div style="color: #d1d5db; font-size: 15px; line-height: 1.6; margin-bottom: 14px;">
-    Skip the copy-paste and download the script directly from Gumroad.
+    Skip the copy-paste and download the script from GitHub.
   </div>
-  <a href="https://linguistcoder.gumroad.com/l/export-IDML" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
-    Download on Gumroad (Free) →
+  <a href="https://github.com/linguist-coder/indesign-export-idml/releases/latest" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
+    Download on GitHub (Free) →
   </a>
 </div>
 <pre class="overflow-visible! px-0!" data-end="3944" data-start="1961"><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">exportIDML</span>(<span class="hljs-params"></span>)
@@ -89,9 +89,6 @@ License: MIT. Use at your own risk.</p>
         }
         
         <span class="hljs-keyword">try</span> {
-            <span class="hljs-comment">// Set object style default to "None"</span>
-            docObj[z].<span class="hljs-property">pageItemDefaults</span>.<span class="hljs-property">appliedTextObjectStyle</span> = docObj[z].<span class="hljs-property">objectStyles</span>[<span class="hljs-number">0</span>];
-            
             <span class="hljs-comment">// Get file path (save as .idml in the same location as original file)</span>
             <span class="hljs-keyword">var</span> originalPath = docObj[z].<span class="hljs-property">fullName</span>.<span class="hljs-title function_">toString</span>();
             <span class="hljs-keyword">var</span> idmlPath = originalPath.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\.indd$/i</span>, <span class="hljs-string">".idml"</span>);
