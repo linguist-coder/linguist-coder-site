@@ -1,0 +1,50 @@
+---
+title: "A Translation Quality Score Is Not Enough to Approve an InDesign Document"
+date: 2026-10-31T12:00:00.000+09:00
+updated: 2026-10-31T12:00:00.000+09:00
+permalink: "/2026/10/translation-quality-score-not-enough.html"
+tags: ["IDML", "InDesign", "translation"]
+layout: post.njk
+---
+<p>I would not approve a translated InDesign document on a segment quality score alone. Two papers published this month examine the performance and reliability of automated translation evaluation.</p>
+
+<p>The findings of the WMT26 shared task on automated translation quality evaluation compared evaluation systems on 21 translation directions. On that benchmark, unsupervised LLM-as-a-judge approaches outperformed traditional and supervised metrics across all three primary tasks: marking error spans, predicting a quality score, and identifying translations with no errors.</p>
+
+<p>A paper by researchers at Apple, accepted at EMNLP 2026, compared LLM and human annotators on two annotation schemes, MQM and ESA, using a long-context test set of 70 language pairs and data from WMT23 and WMT25. The authors report that agreement between LLMs and humans sometimes exceeds agreement between human annotators, but both vary across schemes, language pairs, and domains and remain unreliable in most settings.</p>
+
+<p>The findings need not conflict. Better performance than other automated metrics can coexist with unreliable agreement with human annotators.</p>
+
+<p>Neither abstract addresses IDML extraction or merge. My own tests examined those operations.</p>
+
+<h2>Three checks a segment score does not cover</h2>
+
+<p>The WMT task scores translations at the segment level. For an InDesign handoff, I check three things that a score on those segments does not tell me.</p>
+
+<p><strong>Whether the content that needs translation was extracted.</strong> Text on hidden layers, master pages, or the pasteboard is in the IDML archive whether or not it shows on the page. In Okapi's IDML filter, separate settings control whether each of those locations is extracted. Some of that text may not need translation. If text that does need it is left out of extraction, it never reaches an evaluator.</p>
+
+<p><strong>Whether the merged file kept its structure.</strong> In a test with Okapi Tikal and a synthetic IDML file, I left the target of a footnote empty and merged the file. The merge finished without an error or a warning. The footnote came back as an empty <code>&lt;Footnote/&gt;</code> element, with its paragraph structure gone. In the same test, a table cell and an ordinary story behaved the same way. The details are in <a href="https://www.linguist-coder.com/2026/09/missing-footnotes-empty-table-cells.html" target="_blank" rel="noopener">Missing Footnotes, Empty Table Cells, and Stale Index Pages After IDML Translation</a>.</p>
+
+<p>An empty-target check on the bilingual file can catch that case before the merge. After the merge, comparing the source and translated InDesign files story by story, with table sizes and footnote counts, can reveal structural losses. Neither check requires reading the target language. The checklist is in <a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a>.</p>
+
+<p><strong>Whether the text appears on the page.</strong> Overset text remains in the story. Confirming that the text is present does not establish that it appears on the page. InDesign marks an overset frame with a red indicator. In my test, the Preflight panel's [Basic] profile listed overset table cells under TEXT &gt; Overset text.</p>
+
+<h2>Using the scores</h2>
+
+<p>Before using an LLM judge to decide which segments a person reviews first, test it on your own material: which real errors it misses and which of its flags are wrong, for each language.</p>
+
+<p>If your workflow already includes the document checks described above, a segment score gives no reason to remove them.</p>
+
+<h2>Sources</h2>
+
+<ul>
+<li>Lavie et al., <a href="https://aclanthology.org/2026.wmt-main.49/" target="_blank" rel="noopener">Findings of the WMT26 Shared Task on Automated Translation Quality Evaluation Systems: Compact Open Models are Competitive Quality Evaluators</a>, Proceedings of the Eleventh Conference on Machine Translation (WMT), 2026.</li>
+<li>Almaghout, Federmann, and Gao, <a href="https://arxiv.org/abs/2610.10918" target="_blank" rel="noopener">Large Language Models for Machine Translation Quality Annotation: Humans and Models Are Both Challenged</a>, arXiv:2610.10918, accepted at EMNLP 2026.</li>
+</ul>
+
+<h2>Related</h2>
+
+<ul>
+<li><a href="https://www.linguist-coder.com/2026/09/missing-footnotes-empty-table-cells.html" target="_blank" rel="noopener">Missing Footnotes, Empty Table Cells, and Stale Index Pages After IDML Translation</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/comparing-indesign-files-after.html" target="_blank" rel="noopener">Comparing InDesign Files After Translation: What to Check</a></li>
+<li><a href="https://www.linguist-coder.com/2026/09/how-to-check-translated-indesign-file.html" target="_blank" rel="noopener">How to Check a Translated InDesign File in a Language You Cannot Read</a></li>
+</ul>

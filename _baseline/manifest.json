@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/10/translation-quality-score-not-enough.html",
+  "title": "A Translation Quality Score Is Not Enough to Approve an InDesign Document",
+  "published": "2026-10-31T12:00:00.000+09:00",
+  "updated": "2026-10-31T12:00:00.000+09:00",
+  "tags": [
+   "IDML",
+   "InDesign",
+   "translation"
+  ],
+  "raw_sha256": "e9615f69041c9c4bb9be98e8cee5b6a56e6683edc90287d1fd2e08ad29fce452",
+  "rewritten_sha256": "e9615f69041c9c4bb9be98e8cee5b6a56e6683edc90287d1fd2e08ad29fce452",
+  "raw_len": 4989,
+  "images": {},
+  "file": "src/posts/2026/10/translation-quality-score-not-enough.html"
+ },
+ {
   "path": "/2026/10/google-docs-to-indesign-specific-pages.html",
   "title": "Google Docs to InDesign: Place Text on Specific Pages with a Script",
   "published": "2026-10-28T05:44:00.000+09:00",
