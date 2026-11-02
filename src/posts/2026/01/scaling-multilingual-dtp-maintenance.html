@@ -205,10 +205,10 @@ That increases the chance that link behavior remains predictable.</p>
 <h3 data-end="5823" data-start="5774">Script: IDML Cleanup Helper (non-destructive)</h3><div><div style="background: rgb(31, 41, 55); border-radius: 10px; border: 1px solid rgb(55, 65, 81); color: #f9fafb; margin: 20px 0px; padding: 18px;"><div style="color: #f9fafb; font-size: 18px; font-weight: 700; margin-bottom: 8px;">Want the ready-to-use version?
   </div>
   <div style="color: #d1d5db; font-size: 15px; line-height: 1.6; margin-bottom: 14px;">
-    Skip the copy-paste and download the script directly from Gumroad.
+    Skip the copy-paste and download the script from GitHub.
   </div>
-  <a href="https://linguistcoder.gumroad.com/l/IDML-Cleanup-Helper" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
-    Download on Gumroad (Free) →
+  <a href="https://github.com/linguist-coder/indesign-idml-cleanup/releases/latest" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
+    Download on GitHub (Free) →
   </a>
 </div>
 
@@ -224,6 +224,7 @@ That increases the chance that link behavior remains predictable.</p>
 
     var proceed = confirm(
         "This will export each saved document to IDML, reopen it, and save a cleaned copy as a new INDD file.\n\n" +
+        "Documents with unsaved changes will be skipped. Save them first.\n" +
         "Original files will NOT be overwritten.\n" +
         "IDML files will be kept for troubleshooting.\n\n" +
         "Continue?"
@@ -245,6 +246,12 @@ That increases the chance that link behavior remains predictable.</p>
 
                 if (!doc.saved) {
                     skipped.push(doc.name + " (not saved)");
+                    continue;
+                }
+
+                // Unsaved changes would go into the cleaned copy but not the original
+                if (doc.modified) {
+                    skipped.push(doc.name + " (unsaved changes - save first)");
                     continue;
                 }
 

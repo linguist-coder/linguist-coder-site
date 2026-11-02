@@ -520,7 +520,7 @@
   "updated": "2026-09-18T16:12:07.013-07:00",
   "tags": [],
   "raw_sha256": "7966b4824a1aef7aa3e7f7808a44a9899bbb4c91165590fdb378c6fa01f56804",
-  "rewritten_sha256": "7966b4824a1aef7aa3e7f7808a44a9899bbb4c91165590fdb378c6fa01f56804",
+  "rewritten_sha256": "134ed507756d050fbcb5cfc4de538c39a2225364a7e8517c40dbfdfcea3f2415",
   "raw_len": 22689,
   "images": {},
   "file": "src/posts/2026/01/scaling-multilingual-dtp-maintenance.html"
