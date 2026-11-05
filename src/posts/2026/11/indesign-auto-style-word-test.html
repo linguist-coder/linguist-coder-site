@@ -1,0 +1,222 @@
+---
+title: "InDesign Auto Style with Word: Testing a Messy File and a Custom Template"
+date: 2026-11-05T04:06:00.000+09:00
+updated: 2026-11-05T04:06:00.000+09:00
+permalink: "/2026/11/indesign-auto-style-word-test.html"
+tags: ["InDesign", "Word", "automation"]
+layout: post.njk
+---
+<p>This article is also available as a short video on YouTube: <a href="https://youtu.be/5nFASJsktro">InDesign Auto Style with Word: Two Files Tested</a></p>
+
+<p>InDesign has a feature called Auto Style. You select a text frame, pick a Style Pack in the Style Packs panel (Window &gt; Styles &gt; Style Packs), and InDesign assigns paragraph styles from that pack. Adobe's help page says it uses <a href="https://helpx.adobe.com/indesign/desktop/format-and-style-text/text-styles/auto-style-text-and-paragraphs.html" target="_blank" rel="noopener">artificial intelligence to identify headings, subheadings, paragraphs and bullets</a>, and that a placed Word file needs at least 1,000 characters.</p>
+
+<p>I prepare Word manuscripts for InDesign, and assigning styles by hand is the slow part when the Word file is messy. So I ran Auto Style on two test files. The first mixes Word styles with direct formatting. The second is cleanly styled in Word and goes into a template of my own.</p>
+
+<h2>How I tested</h2>
+
+<p>I used InDesign 2026 (21.6) on Windows, with English text. Both Word files are synthetic: I wrote them for this test, with an answer key that gives the intended role of every paragraph. I placed each file with Preserve Styles and Formatting enabled and the InDesign style definition taking precedence on name clashes. Show Import Options was off. I confirmed the imported styles before running Auto Style on the text frame, then read the resulting paragraph styles with a script.</p>
+
+<p>My first runs used Remove Styles and Formatting by mistake. I reran both tests with Preserve Styles and Formatting in InDesign 21.6. The numbers below come from those reruns. Every paragraph received the same role as in the earlier runs.</p>
+
+<p>Two small files are not a benchmark. The numbers describe what happened on these files. You can <a href="/images/2026/11/indesign-auto-style-word-test/auto-style-test-files.zip">download the Word files, template, answer keys and results</a> and run it yourself.</p>
+
+<h2>Test 1: a messy Word file and a preset Style Pack</h2>
+
+<p>InDesign offers a list of preset Style Packs. I used one called August. The first file is a 25-paragraph user guide for a desk lamp. Some headings are Normal paragraphs made bold and larger, and one is 16 pt without bold. Others use styles named <code>Heading 1</code>, <code>Heading1</code>, <code>H2</code> and <code>Title 1</code>, and the body style is called <code>Body Copy</code>. Lists are typed by hand with a bullet and a tab, a hyphen and a tab, or <code>1.</code> and a tab. There is one real Word list, a local Arial override, and a short warning set in bold, which looks like a heading but is body text.</p>
+
+<figure class="diagram"><img src="/images/2026/11/indesign-auto-style-word-test/fig1-before-after.png" alt="The test page before and after Auto Style with the August preset" width="1760" height="1100" loading="lazy"><figcaption>Left: the first file after placing. Right: after Auto Style with August. Missing fonts replaced with Arial after the run.</figcaption></figure>
+
+<p>The answer key has two heading roles: Heading for the title and the chapter headings, and Subheading for the section headings. I counted two ways. <strong>By group</strong> (any heading role, body, or list), every paragraph matched: 25 of 25. <strong>By role</strong>, Heading and Subheading must also match: 20 of 25.</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Expected role</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Paragraphs</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matched by group</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matched by role</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">1</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">the title got Heading; 5 chapter headings got Subheading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Subheading</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Body</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">7</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">7</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">7</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">bold removed from the warning</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Bulleted list</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3 kept the typed bullet</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Numbered list</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">typed numbers removed</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>Total</strong></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>25</strong></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>25</strong></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>20</strong></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+
+<p>The parts I expected to fail came out right. The 16 pt heading without bold became a heading, and the bold warning stayed body text. The typed numbers and hyphens were removed and those paragraphs became list paragraphs. The Arial override was cleared.</p>
+
+<p>What still needed work:</p>
+
+<ul>
+<li><strong>Heading roles.</strong> Only the title got Heading. The five chapter headings got the same Subheading as the section headings below them.</li>
+<li><strong>Typed bullets.</strong> The three paragraphs that started with a bullet and a tab got the bulleted list style, but the typed bullet stayed in the text, so those lines show two bullets. The hyphen lines in the same list were cleaned up.</li>
+<li><strong>Lost emphasis.</strong> The warning lost its bold.</li>
+<li><strong>Checking the result.</strong> After the run I saw no notice, no list of restyled paragraphs, and nothing new in the Properties or Style Packs panel. The missing-font highlighting made it hard to rule out a marker on the text itself. The Edit menu showed "Undo Apply Auto Style". I checked the assigned styles with a script.</li>
+</ul>
+
+<h2>Test 2: a clean Word file and my own template</h2>
+
+<p>My production files use templates with their own paragraph styles. I wanted to see how much work Auto Style would leave before the text used those styles. Adobe's help page does not promise that mapping. This test checks my use of the feature.</p>
+
+<p>The template has eight paragraph styles (Chapter Head, Section Head, Subsection Head, Body, Note, Caption, Step, Bullet) and two character styles (Term, Product Name). The Word file has 22 paragraphs and is styled in Word: Heading 1 to 3, a <code>Note</code> style, a <code>Caption Text</code> style, List Number, List Bullet, and character styles <code>Term</code> and <code>Product</code>.</p>
+
+<p>I made a Style Pack from the template with <a href="https://helpx.adobe.com/indesign/desktop/format-and-style-text/text-styles/create-a-style-pack.html" target="_blank" rel="noopener">Copy to New Style Pack</a>. The dialog shows six roles: Heading, Subheading, Paragraph, Numbered List 1, Numbered List 2, Bulleted List. None of them is a separate role for a note, a caption or a third heading level.</p>
+
+<p>On my first try I kept the mapping the dialog proposed, which put Subsection Head on the Paragraph role. So I made a second pack and mapped it myself: Chapter Head to Heading, Section Head to Subheading, Body to Paragraph, Step to Numbered List 1, Bullet to Bulleted List. I left Numbered List 2 at [Basic Paragraph].</p>
+
+<figure class="diagram"><img src="/images/2026/11/indesign-auto-style-word-test/new-style-pack-dialog.png" alt="New Style Pack dialog with six roles mapped to template styles" width="1033" height="594" loading="lazy"><figcaption>My mapping: Body to Paragraph and Step to Numbered List 1. The name field reads Style Pack 1 in this screenshot. The pack with this mapping appears as Style Pack 2 in the panel.</figcaption></figure>
+
+<p>For the rerun I placed the Word file in a fresh copy of the template and ran Auto Style once with each pack. On import, Word's <code>Note</code> style had already landed on the template's <code>Note</code>, because the names match.</p>
+
+<p><strong>After Auto Style, no paragraph used an original template style.</strong> The dialog describes copying styles: "Map Paragraph styles you would like to copy in the style pack." Auto Style applied new paragraph styles in a group named after the pack (<code>Style: Style Pack 1</code>, then <code>Style: Style Pack 2</code>) with the look of the template styles. This happened with my own mapping too. No paragraph used Chapter Head, Body, Note or the other original styles. Before handing over a document that needs those styles, I would have to remap the text.</p>
+
+<figure class="diagram"><img src="/images/2026/11/indesign-auto-style-word-test/fig3-paragraph-styles.png" alt="Paragraph Styles panel with the template styles at the top and the Style: Style Pack 2 group at the bottom" width="1186" height="435" loading="lazy"><figcaption>The same panel scrolled to the top and to the bottom: the template styles, the styles imported from Word, and the new group.</figcaption></figure>
+
+<p>After Auto Style, 0 of the 22 paragraphs used an original template style. For the table below I counted something easier: whether the assigned role fits the paragraph's intended function. Heading counts for Chapter Head, Subheading for Section Head, Paragraph for Body, a numbered list role for Step, and Bulleted List for Bullet. Note, Caption and Subsection Head need a distinction these six roles do not have, so those six paragraphs cannot match.</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Word style</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Paragraphs</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Template style</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Auto Style gave</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Function matches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading 1</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">1</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Chapter Head</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">1</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading 2</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Section Head</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Subheading</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading 3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">2</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Subsection Head</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Subheading</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Normal</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">5</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Body</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Paragraph (4), Bulleted List (1)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">4</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Note</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">2</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Note</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Paragraph</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Caption Text</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">2</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Caption</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Paragraph</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">List Number</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">4</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Step</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Bulleted List</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">List Bullet</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Bullet</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Bulleted List</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">3</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>Total</strong></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>22</strong></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"><strong>11</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>The four numbered steps became a bulleted list, so the step numbers are gone. That happened even with Step mapped to Numbered List 1. Paragraph 21, a body paragraph that comes after the bullet list and a Note, also got Bulleted List. Word's <code>Note</code>, <code>Caption Text</code>, <code>Heading 3</code> and <code>List Number</code> styles were all in the document when Auto Style ran, and the assigned roles did not keep those distinctions. The two Note paragraphs left the template's <code>Note</code> and became Paragraph.</p>
+
+<figure class="diagram"><img src="/images/2026/11/indesign-auto-style-word-test/fig4-steps-bulleted.png" alt="The four numbered steps shown as a bulleted list" width="1175" height="280" loading="lazy"><figcaption>The four steps after Auto Style. I added a second page so the text would fit.</figcaption></figure>
+
+<p><code>Term</code> and <code>Product</code> both stayed as character styles, and the product names kept their italics. With the proposed mapping, the body text around them took bold italics from Subsection Head. In the earlier runs with Remove Styles and Formatting enabled, <code>Product</code> was not retained. It remained in both Preserve Styles reruns.</p>
+
+<p>Both packs gave the same role to every one of the 22 paragraphs. So did the three earlier runs with Word styles removed. My mapping changed how the text looked (the body text took Body's font instead of Subsection Head's) but not which role any paragraph got.</p>
+
+<h2>Calling it from a script</h2>
+
+<p>I found no Auto Style method or property on the application, document, story or text frame objects in InDesign 21.6. I could not call it directly through the scripting objects I checked, so I used the user interface.</p>
+
+<h2>What I take from this</h2>
+
+<p>On the first file, the August preset put every paragraph in the expected group. Heading roles, the leftover typed bullets and the lost bold still needed correction.</p>
+
+<p>On the second file, the text still needed the template's original styles. Notes, captions, numbered steps and the third heading level also needed correction.</p>
+
+<p>If your Word file is already styled and you need your template's styles, choose File &gt; Place and turn on Show Import Options. Use <a href="https://helpx.adobe.com/indesign/desktop/format-and-style-text/text-styles/map-word-styles.html" target="_blank" rel="noopener">Customize Style Import</a> &gt; Style Mapping to map the Word styles to your template's styles.</p>
+
+<h2>Limits of this test</h2>
+
+<ul>
+<li>Two synthetic Word files, 25 and 22 paragraphs, English only, InDesign 21.6 on Windows. The November 2 runs used 21.5. The version used for the November 4 run was not recorded, so the import settings were not compared under the same recorded version.</li>
+<li>One template, with two Style Packs: the mapping the dialog proposed and my own.</li>
+<li>One preset, August, in Test 1. I did not score the other presets.</li>
+<li>I could not activate all of August's fonts, so InDesign reported missing fonts. In the screenshots I replaced them with Arial after Auto Style had run.</li>
+</ul>

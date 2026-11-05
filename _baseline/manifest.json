@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/11/indesign-auto-style-word-test.html",
+  "title": "InDesign Auto Style with Word: Testing a Messy File and a Custom Template",
+  "published": "2026-11-05T04:06:00.000+09:00",
+  "updated": "2026-11-05T04:06:00.000+09:00",
+  "tags": [
+   "InDesign",
+   "Word",
+   "automation"
+  ],
+  "raw_sha256": "ba35b7dd4e9e4a194ee663b105ef87252a968c08c9f4db43657c05655aeba334",
+  "rewritten_sha256": "ba35b7dd4e9e4a194ee663b105ef87252a968c08c9f4db43657c05655aeba334",
+  "raw_len": 19969,
+  "images": {},
+  "file": "src/posts/2026/11/indesign-auto-style-word-test.html"
+ },
+ {
   "path": "/2026/10/translation-quality-score-not-enough.html",
   "title": "A Translation Quality Score Is Not Enough to Approve an InDesign Document",
   "published": "2026-10-31T12:00:00.000+09:00",
