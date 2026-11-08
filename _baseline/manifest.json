@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/11/ai-agent-word-styles-indesign-template.html",
+  "title": "Mapping Word Styles to an InDesign Template: An AI Agent Test on 208 Paragraphs",
+  "published": "2026-11-08T17:00:00.000+09:00",
+  "updated": "2026-11-08T17:00:00.000+09:00",
+  "tags": [
+   "InDesign",
+   "Word",
+   "automation"
+  ],
+  "raw_sha256": "14aab9213c248f01f3166fe5af988934730a03da02c20be26c6eeaf3024a36da",
+  "rewritten_sha256": "14aab9213c248f01f3166fe5af988934730a03da02c20be26c6eeaf3024a36da",
+  "raw_len": 16203,
+  "images": {},
+  "file": "src/posts/2026/11/ai-agent-word-styles-indesign-template.html"
+ },
+ {
   "path": "/2026/11/indesign-auto-style-word-test.html",
   "title": "InDesign Auto Style with Word: Testing a Messy File and a Custom Template",
   "published": "2026-11-05T13:06:00.000+09:00",

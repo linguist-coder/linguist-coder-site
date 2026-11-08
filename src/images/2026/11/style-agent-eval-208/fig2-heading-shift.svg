@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 880" role="img" aria-labelledby="title desc">
+  <title id="title">Headings one level too low in H3</title>
+  <desc id="desc">Six headings from the H3 test file. The answer key and the agent's structural-check run 1 agree on the title and the lowest-level headings, but the run gave every section heading the next style down. None of these paragraphs was flagged.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; } }
+    .title { font:700 40px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .head { font:700 30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--accent) }
+    .cell { font:30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--fg) }
+    .wrong { font:700 30px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--warn) }
+    .note { font:26px system-ui,-apple-system,"Segoe UI",sans-serif; fill:var(--muted) }
+    .grid { stroke:var(--line); stroke-width:4 }
+  </style>
+  <rect width="1600" height="880" fill="var(--bg)"/>
+  <text x="60" y="72" class="title">H3, structural check, run 1: headings one level low</text>
+  <g class="grid">
+    <rect x="60" y="110" width="1480" height="690" rx="12" fill="none"/>
+    <line x1="700" y1="110" x2="700" y2="800"/>
+    <line x1="1120" y1="110" x2="1120" y2="800"/>
+    <line x1="60" y1="200" x2="1540" y2="200"/>
+    <line x1="60" y1="300" x2="1540" y2="300"/>
+    <line x1="60" y1="400" x2="1540" y2="400"/>
+    <line x1="60" y1="500" x2="1540" y2="500"/>
+    <line x1="60" y1="600" x2="1540" y2="600"/>
+    <line x1="60" y1="700" x2="1540" y2="700"/>
+  </g>
+  <text x="95" y="168" class="head">Heading in the Word file</text>
+  <text x="735" y="168" class="head">Answer key</text>
+  <text x="1155" y="168" class="head">Agent's style</text>
+
+  <text x="95" y="262" class="cell">Bobbin winder workshop guide</text>
+  <text x="735" y="262" class="cell">Division Banner</text>
+  <text x="1155" y="262" class="cell">Division Banner</text>
+
+  <text x="95" y="362" class="cell">Prepare the bench</text>
+  <text x="735" y="362" class="cell">Unit Heading</text>
+  <text x="1155" y="362" class="wrong">Detail Heading</text>
+
+  <text x="95" y="462" class="cell">Select a bobbin</text>
+  <text x="735" y="462" class="cell">Detail Heading</text>
+  <text x="1155" y="462" class="cell">Detail Heading</text>
+
+  <text x="95" y="562" class="cell">Arrange the supply reel</text>
+  <text x="735" y="562" class="cell">Unit Heading</text>
+  <text x="1155" y="562" class="wrong">Detail Heading</text>
+
+  <text x="95" y="662" class="cell">Threading and adjustment</text>
+  <text x="735" y="662" class="cell">Division Banner</text>
+  <text x="1155" y="662" class="wrong">Unit Heading</text>
+
+  <text x="95" y="762" class="cell">Thread the guide</text>
+  <text x="735" y="762" class="cell">Unit Heading</text>
+  <text x="1155" y="762" class="wrong">Detail Heading</text>
+
+  <text x="60" y="850" class="note">Wrong styles in red. None of these paragraphs was flagged. The two image runs that got H3 right match the answer key here.</text>
+</svg>

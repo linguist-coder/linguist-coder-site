@@ -1,0 +1,195 @@
+---
+title: "Mapping Word Styles to an InDesign Template: An AI Agent Test on 208 Paragraphs"
+date: 2026-11-08T17:00:00.000+09:00
+updated: 2026-11-08T17:00:00.000+09:00
+permalink: "/2026/11/ai-agent-word-styles-indesign-template.html"
+tags: ["InDesign", "Word", "automation"]
+layout: post.njk
+---
+<p>In the <a href="/2026/11/indesign-auto-style-word-test.html">Auto Style article</a> I placed Word files into a template of my own, and after Auto Style no paragraph used an original template style. This time I built an AI agent for that job and tested it on 208 paragraphs it had never seen.</p>
+
+<p>The agent assigns the template's own styles, checks its work, and flags paragraphs for a person to look at. Before the test I set three pass marks: no change to the wording, at most 4 wrong styles without a flag, and at most 30 flags. Neither version of the agent passed. Both raised more than 30 flags, and the version without page images also left more than 4 wrong styles unflagged. For the version with page images, the median was 3 unflagged style errors and 37 flags.</p>
+
+<h2>What I built</h2>
+
+<p>The agent is a set of instructions for Claude and a small local server that gives it tools for InDesign on Windows. The tools read the Word file and the placed text, apply styles, remove typed list markers, add flags, run a structural check, and export pages as images. They work only on a copy of the template.</p>
+
+<p>The model chooses every style from the Word data and the template's style definitions. The structural check only reports things to look at, such as typed list markers and changed text.</p>
+
+<p>I tested two versions: the structural check only, and the check plus an image of every page.</p>
+
+<h2>How I tested</h2>
+
+<p>I developed the agent on the two files from the Auto Style article. For the test I had OpenAI's Codex write three Word files, three templates and an answer key for each paragraph from a written spec. I did not open them while building the agent, and I recorded their hashes before the first run.</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">File</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Paragraphs</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Template</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">What makes it hard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">H1</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">64</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">9 styles with names like Topic Heading and Reading Text</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">headings made from bold Normal text, typed lists, short bold warnings</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">H2</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">66</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">10 styles with opaque names like P-01 and X-20</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Word style names that vary, such as <code>Heading1</code>, <code>Überschrift 1</code> and <code>Titre 2</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">H3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">78</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">14 styles, three heading levels</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">real Word lists (some nested) and typed ones, more styles to choose from</td>
+</tr>
+</tbody>
+</table>
+
+<p>For six paragraphs the answer key accepts either of two styles, because nothing in the file separates them.</p>
+
+<p>Each run used Claude Sonnet 5.5, started in an empty folder with only the server's tools, and could not read the answer keys. Each version ran three times on each file. Word import used Preserve Styles and Formatting in InDesign 2026 (21.6).</p>
+
+<p>I also ran name mapping and Auto Style on the same files:</p>
+
+<ul>
+<li><strong>Name mapping:</strong> a fixed table from Word style names to template styles, with nothing else. I used the table that came with the test files. It maps only Normal in H1 and H2, and maps every named Word style in H3. H1 uses only Normal. In H2, every style other than Normal stayed unmapped. The numbers describe this table, not a fully configured style map.</li>
+<li><strong>Auto Style:</strong> I made a Style Pack from each template, assigned its six roles, placed the Word file and ran Auto Style. Adobe does not say Auto Style maps text to a template's original styles, so this measures my use of the feature.</li>
+</ul>
+
+<p>"Wrong style, no flag" counts paragraphs whose style is not one the answer key accepts and which have no flag. Wrong styles with a flag are counted separately. This assumes a person checks every flagged paragraph.</p>
+
+<h2>Results</h2>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;"></th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Wrong style, no flag</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Flags</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Correct paragraph style</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Typed markers left</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Missing numbered style</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Auto Style</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">208</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">21</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">32</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Name mapping</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">126</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">82</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">35</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">25</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Agent, structural check (median)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">12</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">37</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">188</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Agent, check and page images (median)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">37</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">202</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">0</td>
+</tr>
+</tbody>
+</table>
+
+<p>All counts are paragraphs out of 208, and no approach changed the wording. "Correct" means any style the answer key accepts for that paragraph. Auto Style's role styles count as wrong even where the role fits the paragraph. Each agent value is the median of three totals, taken separately for each column, so a row does not describe a single output.</p>
+
+<p>Every agent paragraph that needed a numbered style got one. Some lists still continued their numbers from an earlier list. The tools cannot restart a list, and the scoring did not count this.</p>
+
+<p>The run totals show how much the agent varied:</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Run</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Wrong style, no flag</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Flags</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Flagged and actually wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">Structural check 1 / 2 / 3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">11 / 13 / 12</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">42 / 35 / 37</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">10 / 6 / 8</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">With page images 1 / 2 / 3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">3 / 14 / 3</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">45 / 37 / 33</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left; overflow-wrap: normal;">3 / 5 / 3</td>
+</tr>
+</tbody>
+</table>
+
+<p>A run took about a minute per file and cost about $0.30 at API prices.</p>
+
+<h2>Where the unflagged errors came from</h2>
+
+<p>Most of them were one decision repeated. In H3 the template has three heading levels: Division Banner, Unit Heading and Detail Heading. In four of the six runs the agent put a whole set of headings one level too low, so section headings became Unit Heading and their subsections became Detail Heading. That one misreading gave nine or ten errors in each of those runs.</p>
+
+<figure class="diagram"><img src="/images/2026/11/style-agent-eval-208/fig2-heading-shift.svg" alt="Six H3 headings with the answer key style and the style from structural-check run 1. Four section headings got the next style down, and none was flagged." width="1600" height="880" loading="lazy"><figcaption>H3, structural check, run 1. The title and the lowest headings match the key; the section headings are one level low.</figcaption></figure>
+
+<p>The two runs that got H3's headings right both had page images, but no paragraph style changed after the pages were exported. In every image run the agent applied paragraph styles once, before the export, so H3's better assignments were already in place. I cannot tell from six runs whether having the image tool changed that first pass or whether it was chance.</p>
+
+<p>The other unflagged errors were close calls: a note that could take either of two note styles, an opening paragraph that got the normal body style, and two paragraphs that the answer key puts in the advisory style, one of them a warning.</p>
+
+<h2>What the flags were</h2>
+
+<p>With page images, 33 to 45 paragraphs were flagged and 3 to 5 of them had a wrong style. Most flags named an alternative, such as "Workshop Aside chosen; Reader Advisory is the alternative", and the agent's first choice was the right one.</p>
+
+<p>In four of the nine image runs the agent added flags after looking at the pages. Most of them were about list numbering: a new numbered list continued from the previous one, showing 9 to 11 where it should start at 1. Other flags said italic words had been mapped to the only italic character style, which the template meant for technical terms. These flags are worth a person's attention, and they still count toward the limit of 30.</p>
+
+<p>Character styles were the weak spot. Of 12 runs of text that needed a template character style, the agent got 6 to 10 right.</p>
+
+<h2>Auto Style on the same files</h2>
+
+<p>As in the earlier article, no paragraph used an original template style. Each file got one Heading, on the title, and Bulleted List went to 97 paragraphs. Thirty-two numbered paragraphs did not get a numbered style, and nine of them still begin with typed text such as <code>Step 1:</code>.</p>
+
+<p>The Style Pack has one heading role below Heading, so a template with three heading levels cannot keep them apart. When I assigned the roles, I was not sure which template style belonged to Numbered List 2 in H1 and H2. Auto Style used that role for no paragraph in any file. In the earlier test, both the dialog's mapping and my own mapping applied styles copied into the pack. Neither used the template's original styles.</p>
+
+<h2>What I take from this</h2>
+
+<p>Compared with this name-mapping table, the agent reduced the median unflagged style errors from 126 to 12 with the structural check and to 3 with page images. It removed every typed marker. Unflagged errors matter most when review is limited to flagged paragraphs.</p>
+
+<p>It is not ready to hand a file over without a check. One of the three image runs had 14 unflagged errors, some lists number on from the previous list, and 37 flags on 208 paragraphs means a person still reads about one paragraph in six. The next step is fewer flags on paragraphs it already got right, tested on new files.</p>
+
+<p>I am not publishing the agent itself yet.</p>
+
+<h2>Limits of this test</h2>
+
+<ul>
+<li>Three synthetic Word files written by another AI from my spec, 208 paragraphs, English only. They are not production files.</li>
+<li>InDesign 2026 (21.6) on Windows, one model (Claude Sonnet 5.5), three runs per version.</li>
+<li>The answer keys came from the same tool that wrote the files. I did not change them after scoring.</li>
+<li>The scoring checks styles, wording, typed markers and character styles. It does not check whether list numbers restart where they should.</li>
+<li>Tables, footnotes and right-to-left text were out of scope.</li>
+<li>The text of the Word file goes to the AI provider during a run.</li>
+<li>I ran Auto Style once per file, with role assignments I chose.</li>
+</ul>
+
+<p>You can <a href="/images/2026/11/style-agent-eval-208/style-agent-test-files.zip">download the Word files, templates, answer keys and every run's result</a>.</p>
