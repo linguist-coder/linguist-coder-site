@@ -1,0 +1,91 @@
+---
+title: "How to Create PDF Bookmarks for Each Chapter in an InDesign Book"
+date: 2026-11-10T12:00:00.000+09:00
+updated: 2026-11-10T12:00:00.000+09:00
+permalink: "/2026/11/indesign-book-pdf-chapter-bookmarks.html"
+tags: ["InDesign", "PDF"]
+layout: post.njk
+---
+<p>A reader on <a href="https://www.reddit.com/r/indesign/comments/1xoxbex/" target="_blank" rel="noopener">r/indesign</a> wanted a parent PDF bookmark for each chapter file in a book, with that chapter's headings nested underneath. They also wanted to keep the chapter titles out of the printed table of contents.</p>
+
+<p>I tested one way to get both with a single table of contents. The chapter titles go into the table of contents at Level 1, which makes them parent bookmarks. Their entries are then set to a paragraph style that does not show on the page.</p>
+
+<h2>What the book needs</h2>
+
+<p>For this setup, each chapter file needs exactly one chapter title paragraph in the same paragraph style, such as <code>Chapter Title</code>. Use separate styles for the headings within each chapter. The table of contents picks up paragraphs by style, so one title paragraph per file is what gives you one parent bookmark per file.</p>
+
+<p>The table of contents itself goes in a document that is part of the same book. In my test it was a front-matter file at the top of the book.</p>
+
+<h2>Set up the hidden entry style first</h2>
+
+<p>In the document that will hold the table of contents, create a paragraph style for the chapter title entries, for example <code>TOC Chapter (hidden)</code>:</p>
+
+<ul>
+<li>Point Size: 0.1 pt</li>
+<li>Leading: 0 pt</li>
+<li>Space Before and Space After: 0</li>
+<li>Character Color: [None]</li>
+</ul>
+
+<p>Do this before you generate the table of contents. In my tests, each setup was generated from scratch with these settings already in place. I did not test changing them on a table of contents that was already placed.</p>
+
+<h2>Generate the table of contents</h2>
+
+<ol>
+<li>Open the book, and open the document that will hold the table of contents.</li>
+<li>Choose Layout &gt; Table of Contents and click More Options.</li>
+<li>Add <code>Chapter Title</code> to Include Paragraph Styles, then the heading styles. Set <code>Chapter Title</code> to Level 1 and the headings to Level 2.</li>
+<li>Select <code>Chapter Title</code> in the list. Set its Entry Style to <code>TOC Chapter (hidden)</code> and its Page Number to No Page Number.</li>
+<li>Turn on Create PDF Bookmarks and Include Book Documents. If Include Book Documents is grayed out, check that the book is open and that this document is in it.</li>
+<li>Click OK and place the table of contents.</li>
+<li>Check the contents page, then save the document.</li>
+</ol>
+
+<p>In my test, the printed table of contents showed only the headings, with no empty lines where the chapter titles had been. The chapter titles are still in the InDesign story. They are only too small and colorless to see.</p>
+
+<p>Include Book Documents matters. With it turned off, the table of contents looked only at the document it was in. My front-matter file had no titles or headings of its own, so the PDF had no bookmarks at all.</p>
+
+<p>If you base the hidden style on an existing style, check the contents page for gaps. Other settings inherited by the entry style, such as alignment to a baseline grid, were not tested.</p>
+
+<h2>Export the whole book</h2>
+
+<p>Export from the Book panel menu with Export Book to PDF, so every document is included. In the Export Adobe PDF dialog, turn on Bookmarks under Include in the General section.</p>
+
+<p>Check the preset first. PDF/X-1a does not allow bookmarks, so a book exported with that preset has no bookmarks however the table of contents is set up. I used a preset with no PDF/X standard and Acrobat 7 compatibility.</p>
+
+<p>Open the exported PDF and check that each chapter bookmark contains the expected headings and opens the first page of its chapter.</p>
+
+<h2>What I tested</h2>
+
+<p>I built a small book in InDesign 21.6 on Windows: a front-matter file and three chapter files of three pages each. I generated the table of contents from the book, exported the whole book to PDF, and read the bookmarks from the PDF.</p>
+
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Table of contents setup</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Printed contents page</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">PDF bookmarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Chapter titles at Level 1, visible, Include Book Documents on</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Chapter titles and headings</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Chapter titles with headings nested under them</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Same, with the hidden entry style and No Page Number</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Headings only, no gaps</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Same hierarchy and destinations as the row above</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Include Book Documents off</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Only the "Contents" title</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+
+<p>Text extraction with PyMuPDF's <code>get_text()</code> did not return the chapter titles from the exported contents page.</p>
+
+<p>I did not test macOS, other InDesign versions, long books, tagged PDF output or screen readers. I also did not test a chapter with no chapter title paragraph or with more than one, or updating an existing table of contents after changing the setup.</p>

@@ -1,5 +1,20 @@
 [
  {
+  "path": "/2026/11/indesign-book-pdf-chapter-bookmarks.html",
+  "title": "How to Create PDF Bookmarks for Each Chapter in an InDesign Book",
+  "published": "2026-11-10T12:00:00.000+09:00",
+  "updated": "2026-11-10T12:00:00.000+09:00",
+  "tags": [
+   "InDesign",
+   "PDF"
+  ],
+  "raw_sha256": "828fbbf7725c01d6c6e7f71e819c64c22eb70187b3a699f69bfa80a00b2918d1",
+  "rewritten_sha256": "828fbbf7725c01d6c6e7f71e819c64c22eb70187b3a699f69bfa80a00b2918d1",
+  "raw_len": 5916,
+  "images": {},
+  "file": "src/posts/2026/11/indesign-book-pdf-chapter-bookmarks.html"
+ },
+ {
   "path": "/2026/11/ai-agent-word-styles-indesign-template.html",
   "title": "Mapping Word Styles to an InDesign Template: An AI Agent Test on 208 Paragraphs",
   "published": "2026-11-08T17:00:00.000+09:00",
