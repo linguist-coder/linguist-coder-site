@@ -1,11 +1,13 @@
 ---
 title: "How to Create PDF Bookmarks for Each Chapter in an InDesign Book"
-date: 2026-11-10T12:00:00.000+09:00
-updated: 2026-11-10T12:00:00.000+09:00
+date: 2026-11-10T16:20:00.000+09:00
+updated: 2026-11-10T16:20:00.000+09:00
 permalink: "/2026/11/indesign-book-pdf-chapter-bookmarks.html"
 tags: ["InDesign", "PDF"]
 layout: post.njk
 ---
+<p>This article is also available as a short video on YouTube: <a href="https://youtu.be/xpxqcxH4Foc" target="_blank" rel="noopener">How to Create PDF Bookmarks for Each Chapter in an InDesign Book</a></p>
+
 <p>A reader on <a href="https://www.reddit.com/r/indesign/comments/1xoxbex/" target="_blank" rel="noopener">r/indesign</a> wanted a parent PDF bookmark for each chapter file in a book, with that chapter's headings nested underneath. They also wanted to keep the chapter titles out of the printed table of contents.</p>
 
 <p>I tested one way to get both with a single table of contents. The chapter titles go into the table of contents at Level 1, which makes them parent bookmarks. Their entries are then set to a paragraph style that does not show on the page.</p>
@@ -49,7 +51,7 @@ layout: post.njk
 
 <h2>Export the whole book</h2>
 
-<p>Export from the Book panel menu with Export Book to PDF, so every document is included. In the Export Adobe PDF dialog, turn on Bookmarks under Include in the General section.</p>
+<p>Export from the Book panel menu with Export Book to PDF, so every document is included. If a document is selected in the Book panel, the menu shows Export Selected Documents to PDF instead. Click an empty area of the panel first. In the Export Adobe PDF dialog, turn on Bookmarks under Include in the General section.</p>
 
 <p>Check the preset first. PDF/X-1a does not allow bookmarks, so a book exported with that preset has no bookmarks however the table of contents is set up. I used a preset with no PDF/X standard and Acrobat 7 compatibility.</p>
 
