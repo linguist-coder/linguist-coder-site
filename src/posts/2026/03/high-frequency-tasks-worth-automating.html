@@ -52,17 +52,17 @@ the <strong>expected file path</strong> of the missing asset.</p><p>To resolve t
 </li>
 <li>folder structures grow more complex<br />
 </li>
-</ul><p>In multilingual projects, this becomes particularly problematic when shared assets change.</p><p>If a common asset — such as a logo or illustration — is updated, every packaged language folder may need to be updated manually.</p><p>In other words, the problem shifts from <strong>link detection</strong> to <strong>asset maintenance</strong>.</p><hr /><h2 data-heading="A Minimal Script: Missing Link Reporter">A Minimal Script: Missing Link Reporter</h2><p><strong>This removes the repeated step of manually tracing where a file should be.</strong></p><div class="separator" style="clear: both; text-align: center;"><iframe loading="lazy" allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/KXxkwIhdslA" width="320" youtube-src-id="KXxkwIhdslA"></iframe></div><br /><p>The goal here is not to automatically repair links.</p><p>Instead, the goal is to remove one repeated manual step:<br />
+</ul><p>In multilingual projects, this becomes particularly problematic when shared assets change.</p><p>If a common asset — such as a logo or illustration — is updated, every packaged language folder may need to be updated manually.</p><p>In other words, the problem shifts from <strong>link detection</strong> to <strong>asset maintenance</strong>.</p><hr /><h2 data-heading="A Minimal Script: Missing Link Reporter">A Minimal Script: Missing Link Reporter</h2><p><strong>This removes the repeated step of manually tracing where a file should be.</strong></p><div class="separator" style="clear: both; text-align: center;"><iframe loading="lazy" allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/KXxkwIhdslA" width="320" youtube-src-id="KXxkwIhdslA"></iframe></div><p>This script is also shown in a short video on YouTube, with a walkthrough of the code: <a href="https://youtu.be/2xSNOWfoaIQ">List Missing Links in InDesign</a></p><br /><p>The goal here is not to automatically repair links.</p><p>Instead, the goal is to remove one repeated manual step:<br />
 <strong>identifying where the missing file was expected to be located.</strong></p><p>A small helper script can scan the document and generate a simple report of missing links.</p><hr /><h2 data-heading="Script Example">Script Example</h2>
 <div><div style="background: rgb(31, 41, 55); border-radius: 10px; border: 1px solid rgb(55, 65, 81); color: #f9fafb; margin: 20px 0px; padding: 18px;">
   <div style="color: #f9fafb; font-size: 18px; font-weight: 700; margin-bottom: 8px;">
     Want the ready-to-use version?
   </div>
   <div style="color: #d1d5db; font-size: 15px; line-height: 1.6; margin-bottom: 14px;">
-    Skip the copy-paste and download the script directly from Gumroad.
+    Skip the copy-paste and download the script from GitHub.
   </div>
-  <a href="https://linguistcoder.gumroad.com/l/missing-links-report" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
-    Download on Gumroad (Free) →
+  <a href="https://github.com/linguist-coder/indesign-missing-links-report/releases/latest" style="background: rgb(79, 70, 229); border-radius: 8px; color: white; display: inline-block; font-weight: 600; padding: 10px 16px; text-decoration: none;">
+    Download on GitHub (Free) →
   </a>
 </div>
 <pre style="background: rgb(17, 24, 39); border-radius: 8px; color: #e5e7eb; font-family: Consolas, Monaco, monospace; overflow: auto; padding: 16px; white-space: pre;"><code>#target indesign
@@ -101,14 +101,16 @@ if (missingCount === 0) {
     exit();
 }
 
-// Save report: use document folder only if document has been saved
+// Save report: use the document folder only if the document has been saved.
+// doc.filePath throws an error on a never-saved document, so check doc.saved first.
 var reportFile;
-var docPath = doc.filePath;
 
-if (docPath &amp;&amp; docPath !== "") {
-    var docFolder = new Folder(docPath);
-    reportFile = new File(docFolder.fsName + "/Missing_Links_Report.txt");
+if (doc.saved) {
+    // One report per document: &lt;document name&gt;_Missing_Links_Report.txt
+    var baseName = doc.name.replace(/\.[^.]+$/, "");
+    reportFile = new File(doc.filePath.fsName + "/" + baseName + "_Missing_Links_Report.txt");
 } else {
+    // Document not saved: let user choose location
     reportFile = File.saveDialog("Save Missing Links Report As", "Missing_Links_Report.txt");
     if (reportFile === null) {
         alert("Save cancelled.");
@@ -122,7 +124,7 @@ if (reportFile.open("w")) {
     reportFile.write(report);
     reportFile.close();
     alert("Report created:\r" + reportFile.fsName);
-    reportFile.execute();
+    reportFile.execute();  // Open with default app (e.g. Notepad)
 } else {
     alert("Failed to create the report file.");
 }

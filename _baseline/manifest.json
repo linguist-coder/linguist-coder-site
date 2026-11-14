@@ -535,7 +535,7 @@
   "updated": "2026-03-21T14:57:37.502-07:00",
   "tags": [],
   "raw_sha256": "ea036539e54ee3595f1db2733684571fa41c86b10350814c284c40d745ea2de4",
-  "rewritten_sha256": "ea036539e54ee3595f1db2733684571fa41c86b10350814c284c40d745ea2de4",
+  "rewritten_sha256": "628306457bf54b02c92be541414e5bf472e4d960b60e0334028d229a831e9e37",
   "raw_len": 11534,
   "images": {},
   "file": "src/posts/2026/03/high-frequency-tasks-worth-automating.html"
