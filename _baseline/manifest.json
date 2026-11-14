@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/11/what-to-check-after-translating-idml.html",
+  "title": "What to Check in InDesign After Translating IDML with DeepL, Smartcat and Redokun",
+  "published": "2026-11-14T09:11:00.000+09:00",
+  "updated": "2026-11-14T09:11:00.000+09:00",
+  "tags": [
+   "IDML",
+   "InDesign",
+   "translation"
+  ],
+  "raw_sha256": "596d7cddb3b1b3fc42dc39ab3bcbee80974c1a77fefe42fbfcbd75c88034f76e",
+  "rewritten_sha256": "596d7cddb3b1b3fc42dc39ab3bcbee80974c1a77fefe42fbfcbd75c88034f76e",
+  "raw_len": 12410,
+  "images": {},
+  "file": "src/posts/2026/11/what-to-check-after-translating-idml.html"
+ },
+ {
   "path": "/2026/11/indesign-book-pdf-chapter-bookmarks.html",
   "title": "How to Create PDF Bookmarks for Each Chapter in an InDesign Book",
   "published": "2026-11-10T16:20:00.000+09:00",

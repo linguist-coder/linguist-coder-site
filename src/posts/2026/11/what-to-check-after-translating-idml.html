@@ -1,0 +1,128 @@
+---
+title: "What to Check in InDesign After Translating IDML with DeepL, Smartcat and Redokun"
+date: 2026-11-14T09:11:00.000+09:00
+updated: 2026-11-14T09:11:00.000+09:00
+permalink: "/2026/11/what-to-check-after-translating-idml.html"
+tags: ["IDML", "InDesign", "translation"]
+layout: post.njk
+---
+<p>This article is also available as a short video on YouTube: <a href="https://youtu.be/1QBIts1Q1y0" target="_blank" rel="noopener">What to Check After Translating an InDesign Document</a></p>
+
+<p>In November 2026, I sent one four-page IDML file through DeepL, Smartcat and Redokun using the settings below. Each service returned a German, a Japanese and an Arabic file, and I opened all nine in InDesign without editing the translations.</p>
+<h2>The test</h2>
+<p>The file is a made-up quick guide for a label printer, set in Arial with one Courier New character style. It has:</p>
+<ul>
+<li>a footnote, a table with a merged cell, an index marker and a cross-reference to a heading on page 3</li>
+<li>character styles inside sentences, plus local underline and tracking overrides</li>
+<li>a footer with an automatic page number on the parent page</li>
+<li>a text frame on a hidden layer and a text frame on the pasteboard</li>
+<li>an anchored frame and a group</li>
+<li>one frame on page 3 with very little spare room</li>
+</ul>
+<p>I exported the IDML from InDesign 21.6 on Windows. The tools were run like this:</p>
+<ul>
+<li><strong>DeepL:</strong> API Free, document translation, default settings, no glossary. November 12.</li>
+<li><strong>Redokun:</strong> 14-day trial. Pre-Translate in the editor with the default engine, OpenAI (ChatGPT), and the Neutral tone. No glossary or translation memory. I confirmed the drafts unchanged and downloaded the IDML. November 14.</li>
+<li><strong>Smartcat:</strong> trial plan. A new project with the default workflow, a single AI translation stage. I downloaded the IDML without editing. November 14.</li>
+</ul>
+<p>I opened the nine files and exported PDFs in InDesign 21.6. I also checked the Redokun files in InDesign 22.0 and got the same results.</p>
+<p>This is one small synthetic file, one run per tool and language, with default settings. I checked selected Japanese terms against the source. For German and Arabic, I checked the file and the layout.</p>
+<h2>German text was cut off in the PDF</h2>
+<p>All three German IDML files contained the full passage for page 3, and InDesign reported one overset frame on that page in each. In the PDFs, the passage simply ends: DeepL's lost its last sentence, Redokun's stopped partway through the third of four sentences, and Smartcat's stopped partway through the fourth.</p>
+<figure class="diagram"><img src="/images/2026/11/what-to-check-after-translating-idml/german-page3-cut-off.png" alt="Page 3 in the English source and in the German PDFs from DeepL, Redokun and Smartcat. Each German passage ends before the source passage does." width="1472" height="834" loading="lazy"></figure>
+<p>Nothing on the page marks the missing text. A reviewer reading the PDF without the source would have to notice that the paragraph ends early. Check overset in InDesign. I wrote about <a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html" target="_blank" rel="noopener">a script that lists pages with overset text</a> earlier.</p>
+<h2>Missing glyphs in Japanese IDML</h2>
+<p>Japanese characters appeared as boxes throughout all three PDFs. The files still used Arial, and the text language was still English: USA.</p>
+<figure class="diagram"><img src="/images/2026/11/what-to-check-after-translating-idml/japanese-missing-glyphs.png" alt="The top of page 1 in the English source and in the Japanese file from Redokun. Every Japanese character is a box. All three Japanese PDFs showed missing-glyph boxes." width="1160" height="996" loading="lazy"></figure>
+<p>Use a font that covers Japanese in the affected paragraph and character styles. Set the text language to Japanese as well. I covered what to check in <a href="https://www.linguist-coder.com/2026/10/what-to-check-when-replacing-fonts.html" target="_blank" rel="noopener">What to Check When Replacing Fonts in a Translated InDesign File</a>.</p>
+<h2>Arabic text running left to right</h2>
+<p>The Redokun Arabic file used right-to-left paragraphs and the Adobe World-Ready Paragraph Composer. The DeepL and Smartcat Arabic files kept left-to-right paragraphs and the Adobe Paragraph Composer, and the Arabic in their PDFs was not joined correctly.</p>
+<figure class="diagram"><img src="/images/2026/11/what-to-check-after-translating-idml/arabic-direction.png" alt="The top of page 1 in the Arabic PDFs from DeepL, Redokun and Smartcat, each labeled with its paragraph direction and composer. The DeepL and Smartcat text is left-aligned with letters that are not joined. The Redokun text is right-aligned and joined." width="1160" height="1584" loading="lazy"></figure>
+<p>In all three, the language stayed English: USA, and text set in Arial Italic (captions, callouts, the footnote and one italic word) showed boxes.</p>
+<h2>Cross-references showed "on page"</h2>
+<p>The source cross-reference read "'Cleaning the print head' on page 3", built from the format Paragraph Text &amp; Page Number. Every tool translated the heading on page 3. Inside the cross-reference itself, the results differed. DeepL's files still had the English text. The Redokun and Smartcat German files had "auf Seite".</p>
+<p>After I updated cross-references in InDesign, all nine files showed the translated heading followed by "on page 3", because the format still contained the English words "on page".</p>
+<p>Edit the words in the format (Define Cross-Reference Formats in the Cross-References panel menu), keep the heading and page number building blocks, update, and read the whole sentence again.</p>
+<h2>The index topic stayed in English</h2>
+<p>All nine files kept the page reference. The index topic still read "label rolls". Check topic names before generating an index.</p>
+<h2>Hidden layers and the pasteboard</h2>
+<figure class="diagram"><img src="/images/2026/11/what-to-check-after-translating-idml/diagram-01.svg" alt="Page 3 with its pasteboard. A frame on a hidden layer sits on the page and a frame on the pasteboard sits outside it. Neither prints, and both are in the IDML." width="1600" height="900" loading="lazy"></figure>
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Text on a hidden layer</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Text on the pasteboard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">DeepL</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Left in English</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Redokun</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Left in English</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Smartcat</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated</td>
+</tr>
+</tbody>
+</table>
+<p>The hidden layer held an internal note, and the pasteboard held an old caption. Both stayed out of these PDFs, so check both in the IDML. A hidden layer can be turned on later, and English text there is easy to miss.</p>
+<h2>A character style on a different word</h2>
+<p>In the source sentence "The status light turns <em>green</em> when the printer is ready", "green" has the <code>UI Label</code> character style. In Smartcat's Japanese file, <code>UI Label</code> was on the Japanese words for "is ready" and not on the word for "green". In the DeepL and Redokun files it was on "green".</p>
+<p>To step through styled text in InDesign, open Find/Change, leave Find what empty, choose the character style under Find Format, set the search scope and use Find Next.</p>
+<h2>Labels and terms</h2>
+<p>The printer has a button labeled POWER.</p>
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Japanese</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Arabic</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">German</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">DeepL</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Kept POWER</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translation plus "(POWER)"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Kept POWER</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Redokun</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated (電源)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Kept POWER</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Smartcat</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translated (電源)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Translation plus "(POWER)"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Kept POWER</td>
+</tr>
+</tbody>
+</table>
+<p>Match the manual's button label to the hardware.</p>
+<p>Two Japanese terms a reviewer would check:</p>
+<ul>
+<li>"Feed slot", a callout: DeepL 給餌口 (a feeding slot, as for animals), Redokun ラベル排出口 (label outlet), Smartcat 給紙スロット (paper feed slot). The file has no diagram that settles which way the labels travel.</li>
+<li>"Shipping", a table row for a label type: DeepL 送料 (shipping fee), Redokun 配送用 (for shipping), Smartcat 配送 (shipping).</li>
+</ul>
+<p>A list of strings that must not be translated and a short glossary are inputs to send with the file. I did not test whether they change these results.</p>
+<h2>What my comparison script caught</h2>
+<p>My comparison script flagged the English note on the hidden layer in all three DeepL files. It found the English pasteboard caption in the Redokun files and suppressed the warning because the caption does not print. It flagged changes in character-style order in the DeepL and Redokun Japanese files. All three Japanese files drew a warning when "five" became "5". The quantity stayed the same. It missed that Smartcat's <code>UI Label</code> style had moved from "green" to "is ready". I found that by reading the styled text in the IDML.</p>
+<h2>A checklist in working order</h2>
+<ol>
+<li><strong>Before sending:</strong> agree which hidden-layer and pasteboard text should be translated. List the labels that must match the product.</li>
+<li><strong>On return:</strong> check the fonts and language in the paragraph and character styles, including the faces used in footnotes and styled text. For Arabic, check paragraph direction and composer. Run Preflight with a profile that checks for overset text and missing glyphs. In InDesign 21.6, the [Basic] profile checks overset text but not missing glyphs. Fix the fonts and text direction, then resolve any overset.</li>
+<li><strong>Compare with the source:</strong> turn on hidden layers and look at the pasteboard against what was agreed. Compare footnotes, table cells, parent-page text and anchored items. Check styled words, local overrides and product labels.</li>
+<li><strong>Update cross-references</strong> and read them in the surrounding sentence. If there is an index, check the topic names before generating it.</li>
+<li><strong>At the end:</strong> run the same Preflight checks before exporting. Check the repaired pages in the PDF.</li>
+</ol>

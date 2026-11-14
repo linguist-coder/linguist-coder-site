@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Where the two non-printing frames sit</title>
+  <desc id="desc">An InDesign spread for page 3. On the page are the heading and the body frame. A frame on a hidden layer, also on the page, holds an internal note and does not print. A frame on the pasteboard, outside the page, holds an old caption and does not print. Both are in the IDML that goes to the translation tool.</desc>
+  <style>
+    svg { --bg:#f8f7f3; --fg:#242522; --muted:#666962; --line:#d8d8d1; --accent:#225f77; --warn:#a4462f; --page:#ffffff; }
+    @media (prefers-color-scheme: dark) { svg { --bg:#161816; --fg:#e8e9e4; --muted:#adafa8; --line:#3b3e39; --accent:#82c7df; --warn:#e08a70; --page:#222522; } }
+    .label { font: 700 34px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .small { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--fg) }
+    .muted { font: 28px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--muted) }
+    .note { font: 30px system-ui, -apple-system, "Segoe UI", sans-serif; fill:var(--warn) }
+    .frame { fill:none; stroke:var(--accent); stroke-width:4 }
+    .hidden { fill:none; stroke:var(--warn); stroke-width:4; stroke-dasharray:14 10 }
+    .line { stroke:var(--line); stroke-width:10; stroke-linecap:round }
+  </style>
+  <rect width="1600" height="900" fill="var(--bg)"/>
+  <text x="70" y="80" class="label">Page 3 of the test file, with its pasteboard</text>
+
+  <!-- pasteboard area -->
+  <rect x="70" y="120" width="1460" height="700" rx="12" fill="none" stroke="var(--line)" stroke-width="4"/>
+  <text x="1500" y="800" text-anchor="end" class="muted">pasteboard</text>
+
+  <!-- page -->
+  <rect x="140" y="160" width="600" height="620" fill="var(--page)" stroke="var(--line)" stroke-width="4"/>
+  <text x="750" y="770" class="muted">page</text>
+
+  <!-- heading frame -->
+  <rect x="185" y="200" width="510" height="70" class="frame"/>
+  <path d="M215 235H520" class="line" stroke-width="16"/>
+  <!-- body frame -->
+  <rect x="185" y="300" width="330" height="190" class="frame"/>
+  <path d="M215 340H485M215 380H485M215 420H485M215 460H420" class="line"/>
+  <!-- hidden layer frame -->
+  <rect x="185" y="540" width="510" height="90" class="hidden"/>
+  <path d="M215 585H640" class="line"/>
+
+  <!-- pasteboard frame -->
+  <rect x="860" y="300" width="330" height="90" class="hidden"/>
+  <path d="M890 345H1150" class="line"/>
+
+  <!-- callouts -->
+  <text x="185" y="680" class="note">Hidden layer: "Internal note"</text>
+  <text x="185" y="720" class="small">On the page, does not print</text>
+  <text x="860" y="440" class="note">Pasteboard: "Old caption"</text>
+  <text x="860" y="480" class="small">Off the page, does not print</text>
+
+  <text x="860" y="610" class="small">Both frames are in the IDML.</text>
+</svg>
