@@ -1,0 +1,60 @@
+---
+layout: base.njk
+title: Language Font Mapper
+permalink: /tools/language-font-mapper.html
+eleventyExcludeFromCollections: true
+description: "Language Font Mapper is an InDesign script that maps the fonts of a translated document to installed target fonts in paragraph styles, character styles and composite fonts in one run."
+---
+<article class="page-body">
+<header class="page-header"><h1>Language Font Mapper</h1></header>
+
+<p>Language Font Mapper is a script for Adobe InDesign. A translated document often still uses the fonts of the original, and when those fonts have no glyphs for Thai, Chinese or another script, the missing characters show as pink boxes. You map each source font to a target family once, and the script applies the whole map to paragraph styles, character styles and existing composite font entries in one run.</p>
+
+<p><a href="https://aescripts.com/language-font-mapper/">Free trial and full version on aescripts</a></p>
+
+<p><iframe loading="lazy" allowfullscreen title="Language Font Mapper for Adobe InDesign, overview video" src="https://www.youtube-nocookie.com/embed/ETk8BUA-960"></iframe></p>
+
+<h2>What it does</h2>
+<ul>
+<li>It lists every font the document uses and where: paragraph styles, character styles, composite fonts and local formatting.</li>
+<li>Apply changes the font in the style definitions, so text that follows a style keeps following it, with no new overrides.</li>
+<li>It can set the language and the paragraph composer on paragraph styles in the same run.</li>
+<li>For Thai, Arabic and similar languages, "Keep numbers as 0-9" is on by default, so part numbers and specifications are not redrawn with native digits.</li>
+<li>You can save the map for a target language as a profile and load it for the next document in that language.</li>
+<li>The result dialog shows the missing-glyph count before and after, counted with Preflight. A TXT report and a CSV are written next to the document.</li>
+</ul>
+<p>The whole run is one undo step.</p>
+
+<h2>What to know before you run it</h2>
+<ul>
+<li>After composite font entries change, text that uses the composite font may still be drawn with the old fonts until you save, close and reopen the document.</li>
+<li>If the target family has no style with the same name, the nearest available style is used, for example Semibold to Bold. The report lists each fallback.</li>
+<li>It does not change paragraph or text direction for right-to-left languages.</li>
+<li>It does not create composite fonts, install fonts, translate text or replace missing glyphs.</li>
+<li>It works on the active document. It does not process a book or a folder.</li>
+</ul>
+
+<h2>Trial</h2>
+<p>The trial is a separate build. Scanning, the dialog, the missing-glyph count and the report are unlimited. Apply changes up to 5 definitions per document, where a definition is one paragraph style, one character style or one composite font entry.</p>
+
+<h2>Requirements</h2>
+<ul>
+<li>Adobe InDesign 2026 or later</li>
+<li>Windows. macOS has not been tested, so try the free trial on your Mac before buying.</li>
+<li>Compiled ExtendScript (.jsxbin), run from the Scripts panel</li>
+<li>The document must be saved, and the target fonts must already be installed</li>
+</ul>
+
+<h2>Tutorial</h2>
+<p><iframe loading="lazy" allowfullscreen title="Language Font Mapper tutorial" src="https://www.youtube-nocookie.com/embed/AHt3Uqm6Gzs"></iframe></p>
+
+<h2>Related articles</h2>
+<ul>
+<li><a href="/2026/10/what-to-check-when-replacing-fonts.html">What to Check When Replacing Fonts in a Translated InDesign File</a></li>
+<li><a href="/2026/06/when-font-replacement-should-happen-at.html">When Font Replacement Should Happen at the Definition Level in InDesign</a></li>
+</ul>
+
+<h2>Custom work and support</h2>
+<p>If the script comes close to what your job needs but stops short, I take paid work to adjust it or to write a separate script for your files. See <a href="/work-with-me.html">Work with me</a>.</p>
+<p>To report a bug or ask a question, email <a href="mailto:&#104;&#105;&#64;&#108;&#105;&#110;&#103;&#117;&#105;&#115;&#116;&#45;&#99;&#111;&#100;&#101;&#114;&#46;&#99;&#111;&#109;">&#104;&#105;&#64;&#108;&#105;&#110;&#103;&#117;&#105;&#115;&#116;&#45;&#99;&#111;&#100;&#101;&#114;&#46;&#99;&#111;&#109;</a>.</p>
+</article>

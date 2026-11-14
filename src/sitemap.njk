@@ -6,6 +6,10 @@ eleventyExcludeFromCollections: true
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>{{ site.url }}/</loc></url>
   <url><loc>{{ site.url }}/tools/instruction-package-check.html</loc></url>
+  <url><loc>{{ site.url }}/tools/overset-fixer-pro.html</loc></url>
+  <url><loc>{{ site.url }}/tools/linksafe.html</loc></url>
+  <url><loc>{{ site.url }}/tools/language-font-mapper.html</loc></url>
+  <url><loc>{{ site.url }}/tools/translate-fit.html</loc></url>
   <url><loc>{{ site.url }}/work-with-me.html</loc></url>
 {% for post in collections.posts | newest %}
   <url><loc>{{ site.url }}{{ post.url }}</loc><lastmod>{{ post.data.updated | isoDate }}</lastmod></url>

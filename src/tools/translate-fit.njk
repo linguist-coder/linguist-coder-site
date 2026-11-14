@@ -1,0 +1,62 @@
+---
+layout: base.njk
+title: Translate & Fit for Illustrator
+permalink: /tools/translate-fit.html
+eleventyExcludeFromCollections: true
+description: "Translate & Fit exports Illustrator text to XLIFF, imports the translation into the same document with its inline formatting tags, and fits overset frames within limits you set."
+---
+<article class="page-body">
+<header class="page-header"><h1>Translate &amp; Fit for Illustrator</h1></header>
+
+<p>Translate &amp; Fit is a tool for Adobe Illustrator. It exports the text of a document as XLIFF for a translation tool, imports the translated XLIFF into the same document, then lists the frames that overflow and fits them within limits you set.</p>
+
+<ul>
+<li><a href="https://aescripts.com/translate-fit-for-illustrator/">Script version on aescripts</a> (run from File &gt; Scripts)</li>
+<li><a href="https://exchange.adobe.com/apps/cc/206152">Panel version on Adobe Exchange</a>, listed as Translate and Fit for Illustrator</li>
+<li><a href="https://github.com/linguist-coder/translate-fit">Free trial with a sample document on GitHub</a></li>
+</ul>
+
+<p><iframe loading="lazy" allowfullscreen title="Translate &amp; Fit for Illustrator, overview video" src="https://www.youtube-nocookie.com/embed/D9YV2OF9ml8"></iframe></p>
+
+<h2>What it does</h2>
+<ul>
+<li>Each paragraph is one translation unit. Bold, italic, color and size changes inside a paragraph travel as tags such as <code>&lt;g id="1"&gt;two years&lt;/g&gt;</code>, which the translator keeps around the matching words.</li>
+<li>Threaded text frames are exported as one story, so a sentence that runs from one frame into the next stays in one unit.</li>
+<li>Before it writes any text, import checks the XLIFF against the export and the current document: missing or unknown tags, paragraphs missing from the XLIFF, paragraphs edited after the export, and fonts that are not installed. If a check fails, it lists each problem with its paragraph and does not import.</li>
+<li>Check overset lists the frames that overflow after import.</li>
+<li>Fit tightens tracking first, then horizontal scale, then font size, and stops as soon as the text fits. A frame that cannot fit within your limits is put back as it was and listed.</li>
+</ul>
+
+<h2>What to know before you run it</h2>
+<ul>
+<li>Illustrator cannot undo the whole script run in one step. To discard an import or a Fit run, close the document without saving or choose File &gt; Revert.</li>
+<li>Point text is not flagged by the overset check, so check by eye that translated headings still fit.</li>
+<li>Text converted to outlines and text inside images are not exported.</li>
+<li>Frames are not resized and other objects are not moved.</li>
+<li>Right-to-left and vertical text have not been tested.</li>
+<li>It works on the active document. It does not process a folder.</li>
+</ul>
+
+<h2>Trial</h2>
+<p>The trial is a separate build and comes with a sample document, so you can run export, import and Fit from start to finish. Export, Check overset and pseudo-translation are unrestricted. Import and Fit have per-document limits. Pseudo-translation makes the text of your own XLIFF longer by a percentage you choose and keeps the tags, which shows how your layout responds before any real translation exists.</p>
+
+<h2>Requirements</h2>
+<ul>
+<li>Adobe Illustrator 2026 or later for the script version. The panel version supports Illustrator 2026.</li>
+<li>Windows. macOS has not been tested, so try the free trial on your Mac before buying.</li>
+<li>The document must be saved before you export, and the fonts for the translated text must be installed</li>
+</ul>
+
+<h2>Tutorial</h2>
+<p><iframe loading="lazy" allowfullscreen title="Translate &amp; Fit for Illustrator tutorial" src="https://www.youtube-nocookie.com/embed/N-ZbdR5Ry6Y"></iframe></p>
+
+<h2>Related articles</h2>
+<ul>
+<li><a href="/2026/09/why-idml-formatting-can-produce.html">Why IDML Formatting Can Produce Translation Tags, and What to Check in InDesign</a></li>
+<li><a href="/2026/09/how-to-check-translated-indesign-file.html">How to Check a Translated InDesign File in a Language You Cannot Read</a></li>
+</ul>
+
+<h2>Custom work and support</h2>
+<p>If the tool comes close to what your job needs but stops short, I take paid work to adjust it or to write a separate script for your files. See <a href="/work-with-me.html">Work with me</a>.</p>
+<p>To report a bug or ask a question, email <a href="mailto:&#104;&#105;&#64;&#108;&#105;&#110;&#103;&#117;&#105;&#115;&#116;&#45;&#99;&#111;&#100;&#101;&#114;&#46;&#99;&#111;&#109;">&#104;&#105;&#64;&#108;&#105;&#110;&#103;&#117;&#105;&#115;&#116;&#45;&#99;&#111;&#100;&#101;&#114;&#46;&#99;&#111;&#109;</a>.</p>
+</article>

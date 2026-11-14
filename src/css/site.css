@@ -45,7 +45,7 @@ h2 { font-size: 1.45rem; }
 .post-body figure.diagram.native img { width: auto; max-width: 100%; }
 .post-body figure.diagram figcaption { margin-top: .5rem; font-size: .9rem; color: var(--muted); }
 .post-body iframe { max-width: 100%; }
-.post-body iframe[src*="youtube.com"], .post-body iframe[src*="youtu.be"] { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
+.post-body iframe[src*="youtube.com"], .post-body iframe[src*="youtu.be"], .page-body iframe[src*="youtube-nocookie.com"] { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
 .post-body pre { max-width: 100%; overflow-x: auto; padding: 1rem; background: var(--code-bg); border: 1px solid var(--border); }
 .post-body code { font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace; font-size: .9em; }
 .post-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }

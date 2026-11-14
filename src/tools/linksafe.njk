@@ -1,0 +1,60 @@
+---
+layout: base.njk
+title: LinkSafe
+permalink: /tools/linksafe.html
+eleventyExcludeFromCollections: true
+description: "LinkSafe is an InDesign script that copies linked files from outside the document's Links folder into it, relinks the document to the copies, and logs every relink."
+---
+<article class="page-body">
+<header class="page-header"><h1>LinkSafe</h1></header>
+
+<p>LinkSafe is a script for Adobe InDesign. It finds linked files that sit outside the Links folder beside your document, copies them into that folder, relinks the document to the copies, and checks each relink. Three read-only reports let you look at the links first.</p>
+
+<p><a href="https://aescripts.com/linksafe/">Free trial and full version on aescripts</a></p>
+
+<p><iframe loading="lazy" allowfullscreen title="LinkSafe for Adobe InDesign, overview video" src="https://www.youtube-nocookie.com/embed/zN5TkmJ5yq8"></iframe></p>
+
+<h2>What it does</h2>
+<ul>
+<li>Collect &amp; Relink copies each external file into the Links folder beside the document and relinks the working document to the copy. A name conflict gets a new file name. Existing files are never overwritten.</li>
+<li>After each relink it reads back the link's status and path, then writes a text report, a JSON log and a CSV with one row for every link it checked.</li>
+<li>External Links Report lists every link whose file is outside the Links folder.</li>
+<li>Missing Links Report lists every missing link with the last path InDesign has for it.</li>
+<li>All Links Inventory writes one CSV row per link with its status. Run it before and after to see what changed.</li>
+</ul>
+<p>One Ctrl+Z (Cmd+Z on macOS) reverts all of the relinks. The copied files stay in the Links folder.</p>
+
+<h2>How it differs from File &gt; Package</h2>
+<p>File &gt; Package makes a new copy of the document, with its links and fonts, in a new folder. The document you are working in keeps its old links. LinkSafe changes the links of the working document itself. It does not collect fonts.</p>
+
+<h2>What to know before you run it</h2>
+<ul>
+<li>A file counts as external when it is outside the Links folder beside the saved document, even if it is in another folder of the same project. This is LinkSafe's rule. InDesign has no such category.</li>
+<li>Embedded and missing links are skipped, each with a reason code. LinkSafe cannot recover a missing file.</li>
+<li>Placed INDD and PDF files are relinked like any other file. The links inside a placed INDD are not collected.</li>
+<li>Save the document before running it.</li>
+</ul>
+
+<h2>Trial</h2>
+<p>The trial is the complete script with one limit: Collect &amp; Relink handles up to 5 relinked files per document. The three reports are not limited and do not modify the document.</p>
+
+<h2>Requirements</h2>
+<ul>
+<li>Adobe InDesign 2024 or later</li>
+<li>macOS or Windows</li>
+<li>A JSX script, run from the Scripts panel</li>
+</ul>
+
+<h2>Tutorial</h2>
+<p><iframe loading="lazy" allowfullscreen title="LinkSafe tutorial" src="https://www.youtube-nocookie.com/embed/Ccm4zA4w6dw"></iframe></p>
+
+<h2>Related articles</h2>
+<ul>
+<li><a href="/2026/08/indesign-will-not-warn-you-about.html">InDesign Will Not Warn You About External Links</a></li>
+<li><a href="/2026/09/where-indesign-script-should-stop.html">Where an InDesign Script Should Stop</a></li>
+</ul>
+
+<h2>Custom work and support</h2>
+<p>If the script comes close to what your job needs but stops short, I take paid work to adjust it or to write a separate script for your files. See <a href="/work-with-me.html">Work with me</a>.</p>
+<p>To report a bug or ask a question, email <a href="mailto:&#104;&#105;&#64;&#108;&#105;&#110;&#103;&#117;&#105;&#115;&#116;&#45;&#99;&#111;&#100;&#101;&#114;&#46;&#99;&#111;&#109;">&#104;&#105;&#64;&#108;&#105;&#110;&#103;&#117;&#105;&#115;&#116;&#45;&#99;&#111;&#100;&#101;&#114;&#46;&#99;&#111;&#109;</a>.</p>
+</article>
