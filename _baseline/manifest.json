@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/11/indesign-image-captions-from-spreadsheet.html",
+  "title": "InDesign Image Captions from a Spreadsheet",
+  "published": "2026-11-17T12:00:00.000+09:00",
+  "updated": "2026-11-17T12:00:00.000+09:00",
+  "tags": [
+   "ExtendScript",
+   "InDesign",
+   "automation"
+  ],
+  "raw_sha256": "976d51d9bd50f4c34677ad62ec3ed3af7146970d7528f48297c6cdcea99f3e1b",
+  "rewritten_sha256": "976d51d9bd50f4c34677ad62ec3ed3af7146970d7528f48297c6cdcea99f3e1b",
+  "raw_len": 43884,
+  "images": {},
+  "file": "src/posts/2026/11/indesign-image-captions-from-spreadsheet.html"
+ },
+ {
   "path": "/2026/11/what-to-check-after-translating-idml.html",
   "title": "What to Check in InDesign After Translating IDML with DeepL, Smartcat and Redokun",
   "published": "2026-11-14T09:11:00.000+09:00",

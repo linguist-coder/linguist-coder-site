@@ -1,0 +1,760 @@
+---
+title: "InDesign Image Captions from a Spreadsheet"
+date: 2026-11-17T12:00:00.000+09:00
+updated: 2026-11-17T12:00:00.000+09:00
+permalink: "/2026/11/indesign-image-captions-from-spreadsheet.html"
+tags: ["ExtendScript", "InDesign", "automation"]
+layout: post.njk
+---
+<p>This article is also available as a short video on YouTube: <a href="https://youtu.be/zjFzvkvZHmM" target="_blank" rel="noopener">InDesign Image Captions from Excel (Free Script)</a></p>
+
+<p><a href="https://www.reddit.com/r/indesign/comments/1wwpq5n/" target="_blank" rel="noopener">A question on r/indesign</a> came from a designer who had finished a 200-page book when the editor started sending image captions. The designer was pasting each caption into a new frame by hand. If the captions come in a spreadsheet with file names, the script in this post places them.</p>
+<p>InDesign's own Caption Setup (<strong>Object &gt; Captions &gt; Caption Setup</strong>) is the better tool when the captions are already in the image metadata, such as the Description field. Typing the editor's captions into the image files first is extra work for a finished book.</p>
+<h2>Before you run it</h2>
+<p>Work on a copy of the document. The script does not recognize captions made by hand or by Caption Setup, so a list that includes those images gives them a second caption. The safest first run uses a list of only the images that still need captions.</p>
+<h2>Prepare the list</h2>
+<p>The first row must be the header <code>File,Caption</code>, with no other columns. Put the file name from the Links panel beside each caption:</p>
+<pre><code>File,Caption
+harbor-01.jpg,&quot;Harbor at dawn, 1968.&quot;
+harbor-02,The same harbor in 2024.
+market.tif,&quot;Fish market, east side
+Photo: A. Example&quot;
+</code></pre>
+<ul>
+<li>Letter case does not matter, and spaces around a name are ignored. <code>harbor-02</code>, <code>harbor-02.jpg</code> and <code>HARBOR-02.JPG</code> all match <code>harbor-02.jpg</code>.</li>
+<li>You can leave the extension off when the name has no other dot and only one placed file has that name. Any other row needs the full file name. If the list says <code>market.jpg</code> and the layout has <code>market.tif</code>, the row is not used and the report names <code>market.tif</code>.</li>
+<li>Exact file names win. If two rows match the file the same way, the first row wins, even if its caption is blank.</li>
+<li>A line break inside a cell (Alt+Enter in Excel) becomes a forced line break in the caption.</li>
+<li>In Excel, use <strong>File &gt; Save As &gt; CSV UTF-8 (Comma delimited)</strong>. The script stops if the file is not valid UTF-8. Semicolon and tab separators also work.</li>
+<li>With <strong>Use Typographer's Quotes</strong> on (Preferences &gt; Type), InDesign turns straight quotes and apostrophes into curly ones, as it does when you type them.</li>
+<li>If the editor's list gives only page order, ask for file names. One missing image can put later captions out of step.</li>
+</ul>
+<p>If a row cannot be read, for example a caption with a comma but no quotes around it, the script names the row and stops before it touches the document. Excel adds the quotes itself when it saves.</p>
+<h2>Run it</h2>
+<p>Make a paragraph style for the captions. An object style for the frame is optional. The dialog preselects the first style with "caption" in its name, so check it before you click OK.</p>
+<p><a href="https://github.com/linguist-coder/indesign-captions-from-list/releases/latest/download/CaptionsFromList.jsx" target="_blank" rel="noopener">Download CaptionsFromList.jsx</a>. The full code is also at the end of this post. To install it, open <strong>Window &gt; Utilities &gt; Scripts</strong>, right-click the <strong>User</strong> folder, choose <strong>Reveal in Explorer</strong> (or <strong>Reveal in Finder</strong>), and save the file there. If you have not run a script before, <a href="https://www.linguist-coder.com/2026/01/how-to-run-javascript-in-adobe-indesign.html">this walkthrough</a> covers the steps.</p>
+<ol>
+<li>Open the copy of the document.</li>
+<li>Double-click <code>CaptionsFromList.jsx</code> in the Scripts panel.</li>
+<li>Choose the CSV file.</li>
+<li>In the dialog, choose the paragraph style, the object style (or "(none)"), and the <strong>Gap below image</strong>. Leave <strong>Accept all same-name relinks matched by this list</strong> off (see the rerun section).</li>
+<li>Click OK.</li>
+</ol>
+<p>The script puts each caption frame directly behind its image and groups the two, so they move together. The frame starts as wide as the image's visible bounds. Its height follows the text unless the object style sets its own auto-sizing.</p>
+<p>An image with a usable row gets no new caption, and is listed in the report, if it is anchored in text, inside a group or another frame, on the pasteboard, hidden, or locked or on a locked or hidden layer. Handle those by hand. Images on parent pages are ignored, and so are graphics pasted without a link, because they have no file name to match.</p>
+<p>When the run finishes, a message gives the counts. Skipped means the image had a row but got no caption or update. If there is anything to report, the script saves a report named with <code>-captions-</code> and the date next to the document (on the desktop if it is unsaved), and the message says where, or that it could not be saved. One <strong>Edit &gt; Undo</strong> removes the new caption frames and restores the previous caption text.</p>
+<h2>Read the report</h2>
+<p>The report is a CSV file with the columns Status, File, Page and Detail.</p>
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Status</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">in the list but not in the document</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Check the spelling.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">no usable row in the list</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">No row gives this image a caption. Add a row if it needs one.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">only a similar file name is placed (row ignored)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Check the picture in the Links panel, then copy its file name into the list.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">matches more than one file (row ignored)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">For example <code>interview.jpg</code> and <code>interview.tif</code>, or one name in two folders. Add the extension, or rename and relink one file.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">duplicate row (row N used)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Row N is used for that file. Delete the other row or fix its name.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">caption contains the replacement character U+FFFD (row has no usable text)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Check the source caption for <code>�</code> and replace it with the intended character.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">placed N times</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Page lists the placements. Check any skip entries for that file.</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">caption whose image was not found (left as is)</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Check the leftover caption and delete it if it should go.</td>
+</tr>
+</tbody>
+</table>
+<p>After every caption is in place, the script checks the captions it added or updated. These lines start with <code>added,</code> or <code>updated,</code>:</p>
+<ul>
+<li><code>text overset</code>: the caption does not fit in its frame.</li>
+<li><code>frame runs into the bottom margin</code>, <code>frame runs past the bottom of the page</code> or <code>frame is below the page</code>.</li>
+<li><code>frame overlaps another object</code>: Detail gives the object types, text frames first. The check includes visible body text frames even when they surround the image. It leaves out hidden objects, and a full-page object other than text on a layer below the image's layer, such as a page background. A full-page object on the same layer or above is listed with <code>(covers the page)</code>. The overlap check compares the frame bounds of visible objects. Check flagged pages in the exported PDF too.</li>
+</ul>
+<h2>When the editor sends a new version</h2>
+<p>Run the script again with the new list. Each caption carries hidden labels with its source text, file name and folder, and a rerun compares the list with them:</p>
+<ul>
+<li>If a row's text changed, the script replaces the text and applies the chosen paragraph style with overrides cleared, so hand edits to that caption are lost.</li>
+<li>If a row's text did not change, the caption is left alone, including your edits.</li>
+<li>If no matching row supplies usable text, the existing caption stays in place. The report lists it as "has an earlier caption but no usable row now (left as is)".</li>
+<li>A new row gets a new caption if it matches an image the script can caption. The gap and the object style apply only to new frames.</li>
+</ul>
+<p>A rerun skips a caption and reports it when:</p>
+<ul>
+<li>two frames carry the same image's label, which usually means the caption was copied</li>
+<li>the caption is no longer grouped with its image</li>
+<li>the image was relinked to a file with a different name, or to a file of the same name in another folder</li>
+<li>the caption is threaded to another frame</li>
+<li>the caption, or its layer, is locked or hidden, or the image or its layer is hidden</li>
+</ul>
+<p>A file of the same name in another folder may be a different picture, so the report lists the relink for review, with the old and the new path. If the move is expected, for example after you packaged the book, run the script again with <strong>Accept all same-name relinks matched by this list</strong> ticked. It accepts every such relink that a row in the list matches. To review a smaller batch, use a list with only those full file names. Check every flagged placement of each file before you tick the box. The same run can also update caption text. Later runs use the new folder.</p>
+<p>To adjust a caption, select its frame inside the group (double-click it with the Selection tool). If you ungrouped the pair, group the original image and caption again before you rerun the script.</p>
+<h2>What I tested</h2>
+<p>I tested in InDesign 21.6 on Windows. A test script built the documents and called the captioning function directly, so the dialog and the final message were not covered, and the relink option was passed as a setting instead of a clicked checkbox. The main document had 20 single pages and 35 image files in 36 placements, not counting the parent page. A smaller document with facing pages checked that text on the other page of a spread is not reported as overlapping a caption. The test lists were written by Python as UTF-8 with a byte order mark. I then tested a CSV UTF-8 list saved from Excel version 2610. It contained commas, accented letters, Japanese, a line break in a cell and quotes. The script placed all five captions.</p>
+<p>The first run added 22 captions and skipped five. The rerun added none and reported 22 unchanged. The revised list updated two captions. A same-name relink was skipped until I accepted it. The other cases, from revised lists to broken files and runs made to fail part way, are in the <a href="https://github.com/linguist-coder/indesign-captions-from-list/tree/main/tests" target="_blank" rel="noopener">test script and its log</a>.</p>
+<p>I also ran the script from the Scripts panel on a saved four-page document. It added seven captions and saved the report beside the document. A broken list left the document unchanged. One Undo removed all seven captions.</p>
+<p>I did not test macOS, other InDesign versions, or images that cross a spread.</p>
+<h2>The full script</h2>
+<details>
+<summary>Show the full script</summary>
+<pre><code>// CaptionsFromList.jsx
+// Adds captions to placed images in the active InDesign document from a
+// list (CSV) that pairs image file names with caption text.
+//
+// The list:
+//   - the first row must be the header File,Caption and nothing else
+//   - column 1 = image file name as shown in the Links panel. Letter case
+//     does not matter. The extension can be left off when the name has no
+//     other dot and only one placed file has that name. Any other row that
+//     does not give the full file name is not used; the report names the
+//     file it would have matched.
+//   - column 2 = caption text. A line break inside a cell becomes a forced
+//     line break in the caption.
+//   - save from Excel as &quot;CSV UTF-8&quot;. Comma, semicolon and tab separators
+//     are detected from the header row.
+//   - if the file is not UTF-8 or a row cannot be read (for example a
+//     caption with a comma but no quotes), the script stops before it
+//     changes the document.
+//
+// For each image whose file name is in the list, the script places a text
+// frame under the image frame, as wide as the image frame, and groups the
+// two. Run it again after the list changes: the text in the captions it
+// placed before is replaced, and no second frame is made. A caption whose
+// image was relinked to a file of the same name in another folder is skipped
+// unless you tick &quot;Accept all same-name relinks matched by this list&quot; in the dialog.
+//
+// It saves a report (CSV) next to the document. One Edit &gt; Undo reverts
+// the changes to the document.
+//
+// Linguist Coder - https://www.linguist-coder.com/
+
+var CFL_LABEL = &quot;captionsFromList&quot;;          // on a caption: id of its image frame
+var CFL_TEXT_LABEL = &quot;captionsFromListText&quot;; // on a caption: the list text it was made from
+var CFL_FILE_LABEL = &quot;captionsFromListFile&quot;; // on a caption: the image file name it was made for
+var CFL_PATH_LABEL = &quot;captionsFromListPath&quot;; // on a caption: the full path of that file
+
+// ---------- list ----------
+
+// Returns the position of the first byte that is not valid UTF-8, or -1.
+function cflUtf8Error(b) {
+  var i = 0, n = b.length, c, d, need, lo, hi, k;
+  while (i &lt; n) {
+    c = b.charCodeAt(i);
+    if (c &lt; 0x80) { i++; continue; }
+    lo = 0x80; hi = 0xBF;
+    if (c &gt;= 0xC2 &amp;&amp; c &lt;= 0xDF) need = 1;
+    else if (c &gt;= 0xE0 &amp;&amp; c &lt;= 0xEF) { need = 2; if (c === 0xE0) lo = 0xA0; if (c === 0xED) hi = 0x9F; }
+    else if (c &gt;= 0xF0 &amp;&amp; c &lt;= 0xF4) { need = 3; if (c === 0xF0) lo = 0x90; if (c === 0xF4) hi = 0x8F; }
+    else return i;
+    for (k = 1; k &lt;= need; k++) {
+      d = i + k &lt; n ? b.charCodeAt(i + k) : -1;
+      if (k === 1 ? (d &lt; lo || d &gt; hi) : (d &lt; 0x80 || d &gt; 0xBF)) return i;
+    }
+    i += need + 1;
+  }
+  return -1;
+}
+
+function cflLineAt(s, pos) {
+  var n = 1;
+  for (var i = 0; i &lt; pos; i++) {
+    var c = s.charAt(i);
+    if (c === &quot;\n&quot; || (c === &quot;\r&quot; &amp;&amp; s.charAt(i + 1) !== &quot;\n&quot;)) n++;
+  }
+  return n;
+}
+
+// Decodes bytes that cflUtf8Error has accepted.
+function cflDecodeUtf8(b) {
+  var out = [], i = 0, n = b.length, c, cp;
+  while (i &lt; n) {
+    c = b.charCodeAt(i);
+    if (c &lt; 0x80) { cp = c; i += 1; }
+    else if (c &lt; 0xE0) { cp = ((c &amp; 0x1F) &lt;&lt; 6) | (b.charCodeAt(i + 1) &amp; 0x3F); i += 2; }
+    else if (c &lt; 0xF0) { cp = ((c &amp; 0x0F) &lt;&lt; 12) | ((b.charCodeAt(i + 1) &amp; 0x3F) &lt;&lt; 6) | (b.charCodeAt(i + 2) &amp; 0x3F); i += 3; }
+    else {
+      cp = ((c &amp; 0x07) &lt;&lt; 18) | ((b.charCodeAt(i + 1) &amp; 0x3F) &lt;&lt; 12) | ((b.charCodeAt(i + 2) &amp; 0x3F) &lt;&lt; 6) | (b.charCodeAt(i + 3) &amp; 0x3F);
+      i += 4;
+    }
+    if (cp &gt; 0xFFFF) { cp -= 0x10000; out.push(String.fromCharCode(0xD800 + (cp &gt;&gt; 10), 0xDC00 + (cp &amp; 0x3FF))); }
+    else out.push(String.fromCharCode(cp));
+  }
+  return out.join(&quot;&quot;);
+}
+
+function cflReadText(file) {
+  // open() may detect an encoding and skip a byte order mark, so switch to
+  // binary after opening and read from the first byte.
+  if (!file.open(&quot;r&quot;)) throw new Error(&quot;Cannot open &quot; + file.fsName);
+  var bytes;
+  try {
+    file.encoding = &quot;BINARY&quot;;
+    if (!file.seek(0)) throw new Error(&quot;Cannot read &quot; + file.fsName + &quot; from the start.&quot;);
+    bytes = file.read();
+    if (file.error) throw new Error(&quot;Cannot read &quot; + file.fsName + &quot;: &quot; + file.error);
+  } finally {
+    file.close();
+  }
+  var bad = cflUtf8Error(bytes);
+  if (bad &gt;= 0) throw new Error(&quot;The list is not saved as UTF-8 (line &quot; + cflLineAt(bytes, bad) +
+    &quot; of the file). In Excel, save it as CSV UTF-8.&quot;);
+  var s = cflDecodeUtf8(bytes);
+  if (s.charCodeAt(0) === 0xFEFF) s = s.substring(1);
+  var nul = s.indexOf(String.fromCharCode(0));
+  if (nul &gt;= 0) throw new Error(&quot;Line &quot; + cflLineAt(s, nul) + &quot; of the list contains a NUL character. Check the file.&quot;);
+  return s;
+}
+
+// Counts separators in the header row, outside quotes.
+function cflDetectSeparator(text) {
+  var counts = { &quot;,&quot;: 0, &quot;;&quot;: 0, &quot;\t&quot;: 0 }, q = false, best = &quot;,&quot;, n = 0;
+  for (var i = 0; i &lt; text.length; i++) {
+    var c = text.charAt(i);
+    if (c === '&quot;') q = !q;
+    else if (!q &amp;&amp; (c === &quot;\r&quot; || c === &quot;\n&quot;)) break;
+    else if (!q &amp;&amp; counts.hasOwnProperty(c)) counts[c]++;
+  }
+  for (var k in counts) if (counts.hasOwnProperty(k) &amp;&amp; counts[k] &gt; n) { n = counts[k]; best = k; }
+  return best;
+}
+
+// RFC 4180 style: quoted cells may hold separators, &quot;&quot; and line breaks.
+// Throws on quotes that do not follow those rules. Row numbers in the
+// messages are spreadsheet rows.
+function cflParseCsv(text, sep) {
+  var rows = [], row = [], cell = &quot;&quot;, q = false, i = 0, c;
+  function bad(msg) { throw new Error(&quot;Row &quot; + (rows.length + 1) + &quot; of the list: &quot; + msg); }
+  while (i &lt; text.length) {
+    c = text.charAt(i);
+    if (q) {
+      if (c === '&quot;') {
+        if (text.charAt(i + 1) === '&quot;') { cell += '&quot;'; i += 2; continue; }
+        q = false; i++;
+        var next = text.charAt(i);
+        if (i &lt; text.length &amp;&amp; next !== sep &amp;&amp; next !== &quot;\r&quot; &amp;&amp; next !== &quot;\n&quot;) bad(&quot;text after a closing quote.&quot;);
+        continue;
+      }
+      cell += c; i++; continue;
+    }
+    if (c === '&quot;') {
+      if (cell !== &quot;&quot;) bad(&quot;a quote inside a cell that does not start with a quote.&quot;);
+      q = true; i++; continue;
+    }
+    if (c === sep) { row.push(cell); cell = &quot;&quot;; i++; continue; }
+    if (c === &quot;\r&quot; || c === &quot;\n&quot;) {
+      if (c === &quot;\r&quot; &amp;&amp; text.charAt(i + 1) === &quot;\n&quot;) i++;
+      row.push(cell); rows.push(row); row = []; cell = &quot;&quot;; i++; continue;
+    }
+    cell += c; i++;
+  }
+  if (q) bad(&quot;a quote that is never closed.&quot;);
+  if (cell !== &quot;&quot; || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+
+function cflTrim(s) { return String(s).replace(/^\s+|\s+$/g, &quot;&quot;); }
+
+// Returns { rows: [{name, text, line}], problems: [[status, file, page, detail]] }
+function cflLoadList(file) {
+  var text = cflReadText(file);
+  var rows = cflParseCsv(text, cflDetectSeparator(text));
+  var h = rows.length ? rows[0] : [], extra = false;
+  for (var x0 = 2; x0 &lt; h.length; x0++) if (cflTrim(h[x0]) !== &quot;&quot;) extra = true;
+  if (h.length &lt; 2 || extra || cflTrim(h[0]).toLowerCase() !== &quot;file&quot; || cflTrim(h[1]).toLowerCase() !== &quot;caption&quot;)
+    throw new Error(&quot;The first row of the list must be the header File,Caption, with no other columns.&quot;);
+  var out = [], problems = [];
+  for (var r = 1; r &lt; rows.length; r++) {
+    var row = rows[r], line = r + 1;
+    for (var x = 2; x &lt; row.length; x++) {
+      if (cflTrim(row[x]) !== &quot;&quot;)
+        throw new Error(&quot;Row &quot; + line + &quot; of the list has more than two columns. &quot; +
+          &quot;A caption that contains the separator must be in quotes (Excel does this when it saves).&quot;);
+    }
+    var name = row.length ? cflTrim(row[0]) : &quot;&quot;;
+    var cap = row.length &gt; 1 ? cflTrim(row[1].replace(/\r\n|\r/g, &quot;\n&quot;)) : &quot;&quot;;
+    if (name === &quot;&quot; &amp;&amp; cap === &quot;&quot;) continue;
+    if (name === &quot;&quot;) { problems.push([&quot;no file name (row ignored)&quot;, &quot;&quot;, &quot;&quot;, &quot;row &quot; + line]); continue; }
+    var invalid = cap.indexOf(String.fromCharCode(0xFFFD)) &gt;= 0;
+    if (invalid) {
+      // InDesign drops U+FFFD when the text goes into a frame. The row still
+      // claims its file, so a looser row cannot supply other text.
+      problems.push([&quot;caption contains the replacement character U+FFFD (row has no usable text)&quot;, name, &quot;&quot;, &quot;row &quot; + line]);
+      cap = &quot;&quot;;
+    }
+    out.push({ name: name, text: cap, line: line, invalid: invalid });
+  }
+  return { rows: out, problems: problems };
+}
+
+// ---------- document ----------
+
+function cflPageName(item) {
+  try { var p = item.parentPage; return p ? p.name : &quot;&quot;; } catch (e) { return &quot;&quot;; }
+}
+
+function cflOnParentPage(item) {
+  try {
+    var p = item.parentPage;
+    return p &amp;&amp; p.parent instanceof MasterSpread;
+  } catch (e) { return false; }
+}
+
+function cflLocked(item) {
+  try { return item.locked || item.itemLayer.locked; } catch (e) { return true; }
+}
+
+function cflHidden(item) {
+  try { return !item.visible || !item.itemLayer.visible; } catch (e) { return false; }
+}
+
+function cflBaseName(lower) {
+  var d = lower.lastIndexOf(&quot;.&quot;);
+  return d &gt; 0 ? lower.substring(0, d) : lower;
+}
+
+// Placed images outside parent pages, grouped by file.
+// Returns { files: {path: {name, path, places: [{img, holder, page}], row, emptyRow}},
+//           byName: {lower name: [paths]}, byBase: {lower base name: [paths]} }
+function cflIndexImages(doc) {
+  var files = {}, byName = {}, byBase = {}, graphics = doc.allGraphics;
+  function add(map, key, path) {
+    if (!map.hasOwnProperty(key)) map[key] = [];
+    for (var j = 0; j &lt; map[key].length; j++) if (map[key][j] === path) return;
+    map[key].push(path);
+  }
+  for (var g = 0; g &lt; graphics.length; g++) {
+    var img = graphics[g], link = null;
+    try { link = img.itemLink; } catch (e) {}
+    if (!link || cflOnParentPage(img)) continue;
+    var path = link.filePath, lower = link.name.toLowerCase();
+    if (!files.hasOwnProperty(path)) files[path] = { name: link.name, path: path, places: [], row: null, emptyRow: 0 };
+    files[path].places.push({ img: img, holder: img.parent, page: cflPageName(img.parent) });
+    add(byName, lower, path);
+    add(byBase, cflBaseName(lower), path);
+  }
+  return { files: files, byName: byName, byBase: byBase };
+}
+
+// Captions placed by an earlier run, keyed by the image frame id.
+function cflEarlierCaptions(doc) {
+  var map = {}, items = doc.allPageItems;
+  for (var i = 0; i &lt; items.length; i++) {
+    var it = items[i];
+    if (!(it instanceof TextFrame)) continue;
+    var v = it.extractLabel(CFL_LABEL);
+    if (v === &quot;&quot;) continue;
+    if (!map.hasOwnProperty(v)) map[v] = [];
+    map[v].push(it);
+  }
+  return map;
+}
+
+function cflSetCaption(frame, text, pStyle, fileName, path) {
+  frame.contents = text;
+  frame.parentStory.paragraphs.everyItem().applyParagraphStyle(pStyle, true);
+  frame.insertLabel(CFL_TEXT_LABEL, text);
+  frame.insertLabel(CFL_FILE_LABEL, fileName);
+  frame.insertLabel(CFL_PATH_LABEL, path);
+}
+
+function cflBoxesOverlap(a, b) {
+  return a[0] &lt; b[2] &amp;&amp; b[0] &lt; a[2] &amp;&amp; a[1] &lt; b[3] &amp;&amp; b[1] &lt; a[3];
+}
+
+function cflContains(a, b) {
+  return a[0] &lt;= b[0] &amp;&amp; a[1] &lt;= b[1] &amp;&amp; a[2] &gt;= b[2] &amp;&amp; a[3] &gt;= b[3];
+}
+
+// Objects on the spread whose frame bounds overlap the caption frame, text
+// frames first. Not counted: the caption's own image, hidden objects, and an
+// object other than a text frame that covers the whole page from a layer
+// below the image's layer (a background). A full-page object on the same
+// layer or above is reported, marked &quot;covers the page&quot;, because the script
+// cannot tell whether it is in front of the caption.
+// Bounds are compared in spread coordinates. With the page origin, an object
+// on the facing page has the same numbers as one on this page.
+function cflOverlaps(frame, holder, pg) {
+  var doc = pg.parent.parent, was = doc.viewPreferences.rulerOrigin;
+  doc.viewPreferences.rulerOrigin = RulerOrigin.SPREAD_ORIGIN;
+  try { return cflOverlapsIn(frame, holder, pg); }
+  finally { doc.viewPreferences.rulerOrigin = was; }
+}
+
+function cflOverlapsIn(frame, holder, pg) {
+  var spread = pg.parent, fb = frame.geometricBounds, pb = pg.bounds, mine = holder.itemLayer.index;
+  var items = spread.allPageItems, texts = [], others = [];
+  for (var i = 0; i &lt; items.length; i++) {
+    var it = items[i];
+    if (it instanceof Group || it.id === frame.id || it.id === holder.id) continue;
+    if (!(it.parent instanceof Spread || it.parent instanceof Group)) continue; // frame contents, anchored items
+    if (cflHidden(it)) continue;
+    var ob = it.geometricBounds;
+    if (!cflBoxesOverlap(fb, ob)) continue;
+    var kind = it.getElements()[0].constructor.name, page = kind !== &quot;TextFrame&quot; &amp;&amp; cflContains(ob, pb);
+    if (page &amp;&amp; it.itemLayer.index &gt; mine) continue; // layers[0] is the top layer
+    (kind === &quot;TextFrame&quot; ? texts : others).push(kind + (page ? &quot; (covers the page)&quot; : &quot;&quot;));
+  }
+  var hits = texts.concat(others), out = hits.slice(0, 3);
+  if (hits.length &gt; 3) out.push((hits.length - 3) + &quot; more&quot;);
+  return out;
+}
+
+// Layout checks for a caption frame that was added or updated. They run
+// after every caption is placed, so a frame that grew later is seen.
+function cflCheck(c, report) {
+  var frame = c.frame, pg = c.holder.parentPage, fb = frame.geometricBounds;
+  function add(s, d) { report.push([c.what + &quot;, &quot; + s, c.name, c.page, d || &quot;&quot;]); }
+  if (frame.parentStory.overflows) add(&quot;text overset&quot;);
+  if (!pg) return;
+  var pb = pg.bounds, mb = pg.marginPreferences.bottom;
+  if (fb[0] &gt;= pb[2]) add(&quot;frame is below the page&quot;);
+  else if (fb[2] &gt; pb[2]) add(&quot;frame runs past the bottom of the page&quot;);
+  else if (fb[2] &gt; pb[2] - mb) add(&quot;frame runs into the bottom margin&quot;);
+  var hits = cflOverlaps(frame, c.holder, pg);
+  if (hits.length) add(&quot;frame overlaps another object&quot;, hits.join(&quot;; &quot;));
+}
+
+function cflRestoreLayer(doc, was) {
+  // A locked layer cannot be made active by script, so unlock it for a moment.
+  var relock = false;
+  try {
+    relock = was.locked;
+    if (relock) was.locked = false;
+    doc.activeLayer = was;
+  } finally {
+    if (relock) was.locked = true;
+  }
+}
+
+function cflMakeCaption(holder, text, fileName, path, opt) {
+  var b = holder.visibleBounds; // [y1, x1, y2, x2]
+  var page = holder.parentPage;
+  var top = b[2] + opt.gap;
+  // New groups go on the active layer, and fail if that layer is locked.
+  // Make the image's layer active while the frame and the group are made.
+  var doc = page.parent.parent, was = doc.activeLayer, f = null, grp = null;
+  try {
+    doc.activeLayer = holder.itemLayer;
+    f = page.textFrames.add(holder.itemLayer, LocationOptions.AT_END, {
+      geometricBounds: [top, b[1], top + 20, b[3]]
+    });
+    f.sendToBack(holder); // directly behind the image; the group then keeps the image's place
+    if (opt.oStyle) f.applyObjectStyle(opt.oStyle, true);
+    // Fit the height to the text unless the object style already sizes the frame.
+    if (f.textFramePreferences.autoSizingType === AutoSizingTypeEnum.OFF) {
+      f.textFramePreferences.autoSizingReferencePoint = AutoSizingReferenceEnum.TOP_CENTER_POINT;
+      f.textFramePreferences.autoSizingType = AutoSizingTypeEnum.HEIGHT_ONLY;
+    }
+    cflSetCaption(f, text, opt.pStyle, fileName, path);
+    f.insertLabel(CFL_LABEL, String(holder.id));
+    grp = page.groups.add([holder, f]);
+  } finally {
+    if (!grp &amp;&amp; f) { try { f.remove(); } catch (e) {} }
+    cflRestoreLayer(doc, was);
+  }
+  return { frame: f, group: grp };
+}
+
+function cflTake(row, paths, idx, report) {
+  if (paths.length &gt; 1) {
+    if (row.text !== &quot;&quot;)
+      report.push([&quot;matches more than one file (row ignored)&quot;, row.name, &quot;&quot;, &quot;row &quot; + row.line + &quot;: &quot; + paths.join(&quot;; &quot;)]);
+    return;
+  }
+  var file = idx.files[paths[0]], first = file.row ? file.row.line : file.emptyRow;
+  if (first) {
+    report.push([&quot;duplicate row (row &quot; + first + &quot; used)&quot;, row.name, &quot;&quot;, &quot;row &quot; + row.line]);
+    return;
+  }
+  if (row.text === &quot;&quot;) file.emptyRow = row.line;
+  else file.row = row;
+}
+
+// Matches list rows to placed files in passes over the whole list, so a row
+// with the exact file name always wins over a looser one. For each file the
+// first row that matches is used, even if its caption is empty.
+// 1. the exact file name  2. a row with no dot, against names without extension
+// 3. what is left: not in the document, or a near match that is reported only.
+function cflMatchRows(rows, idx, report) {
+  var pass2 = [], pass3 = [], i, row, key;
+  for (i = 0; i &lt; rows.length; i++) {
+    row = rows[i]; key = row.name.toLowerCase();
+    if (row.text === &quot;&quot; &amp;&amp; !row.invalid) report.push([&quot;empty caption (no text for this file)&quot;, row.name, &quot;&quot;, &quot;row &quot; + row.line]);
+    if (idx.byName.hasOwnProperty(key)) cflTake(row, idx.byName[key], idx, report);
+    else pass2.push(row);
+  }
+  for (i = 0; i &lt; pass2.length; i++) {
+    row = pass2[i]; key = row.name.toLowerCase();
+    if (key.indexOf(&quot;.&quot;) &lt; 0 &amp;&amp; idx.byBase.hasOwnProperty(key)) cflTake(row, idx.byBase[key], idx, report);
+    else pass3.push(row);
+  }
+  for (i = 0; i &lt; pass3.length; i++) {
+    row = pass3[i]; key = row.name.toLowerCase();
+    if (row.text === &quot;&quot;) continue;
+    var near = [], keys = [key, cflBaseName(key)];
+    for (var k = 0; k &lt; keys.length; k++) {
+      if (!idx.byBase.hasOwnProperty(keys[k])) continue;
+      for (var j = 0; j &lt; idx.byBase[keys[k]].length; j++) {
+        var nm = idx.files[idx.byBase[keys[k]][j]].name;
+        if ((&quot;; &quot; + near.join(&quot;; &quot;) + &quot;;&quot;).indexOf(&quot;; &quot; + nm + &quot;;&quot;) &lt; 0) near.push(nm);
+      }
+    }
+    if (near.length)
+      report.push([&quot;only a similar file name is placed (row ignored)&quot;, row.name, &quot;&quot;, &quot;row &quot; + row.line + &quot;: &quot; + near.join(&quot;; &quot;)]);
+    else report.push([&quot;in the list but not in the document&quot;, row.name, &quot;&quot;, &quot;row &quot; + row.line]);
+  }
+}
+
+// opt = { list: File, pStyle: ParagraphStyle, oStyle: ObjectStyle|null, gap: Number (points),
+//         acceptMoved: Boolean }
+// Returns { report: [[status, file, page, detail]], counts: {...}, restore: [settings not restored] }
+// opt.notRestored gets the same list, so a run that throws can still show it.
+function cflRun(doc, opt) {
+  var loaded;
+  try { loaded = cflLoadList(opt.list); } // throws before anything changes
+  catch (e) { e.listError = true; throw e; }
+  var report = loaded.problems.slice(0);
+  var counts = { added: 0, updated: 0, unchanged: 0, skipped: 0 };
+  var vp = doc.viewPreferences, saved = null, notRestored = [];
+  opt.notRestored = notRestored;
+
+  try {
+    saved = { h: vp.horizontalMeasurementUnits, v: vp.verticalMeasurementUnits,
+      o: vp.rulerOrigin, z: doc.zeroPoint };
+    vp.horizontalMeasurementUnits = MeasurementUnits.POINTS;
+    vp.verticalMeasurementUnits = MeasurementUnits.POINTS;
+    vp.rulerOrigin = RulerOrigin.PAGE_ORIGIN;
+    doc.zeroPoint = [0, 0];
+
+    var idx = cflIndexImages(doc);
+    var earlier = cflEarlierCaptions(doc), visited = {}, checks = [];
+    cflMatchRows(loaded.rows, idx, report);
+
+    for (var path in idx.files) {
+      if (!idx.files.hasOwnProperty(path)) continue;
+      var file = idx.files[path], name = file.name, row = file.row;
+      if (row &amp;&amp; file.places.length &gt; 1) {
+        var pages = [];
+        for (var q = 0; q &lt; file.places.length; q++) pages.push(file.places[q].page || &quot;pasteboard&quot;);
+        report.push([&quot;placed &quot; + file.places.length + &quot; times&quot;, name, pages.join(&quot;, &quot;), &quot;row &quot; + row.line]);
+      }
+      for (var n = 0; n &lt; file.places.length; n++) {
+        var place = file.places[n], holder = place.holder, page = place.page;
+        var id = String(holder.id), olds = earlier[id] || [], old = olds[0];
+        visited[id] = true;
+
+        if (!row) {
+          if (olds.length) report.push([&quot;has an earlier caption but no usable row now (left as is)&quot;, name, page, &quot;&quot;]);
+          else if (!file.emptyRow) report.push([&quot;no usable row in the list&quot;, name, page, &quot;&quot;]);
+          continue;
+        }
+
+        var skip = &quot;&quot;;
+        if (cflHidden(holder)) skip = &quot;image or its layer is hidden&quot;;
+        else if (olds.length) {
+          if (olds.length &gt; 1) skip = olds.length + &quot; caption frames carry this image's mark (copied?)&quot;;
+          else if (old.extractLabel(CFL_FILE_LABEL).toLowerCase() !== name.toLowerCase())
+            skip = &quot;the image was relinked to a different file after the caption was made&quot;;
+          else if (!(old.parent instanceof Group) || old.parent.id !== holder.parent.id)
+            skip = &quot;the caption is not grouped with this image&quot;;
+          else if (old.previousTextFrame || old.nextTextFrame) skip = &quot;the caption is threaded to another frame&quot;;
+          else if (cflLocked(old)) skip = &quot;the caption or its layer is locked&quot;;
+          else if (cflHidden(old)) skip = &quot;the caption or its layer is hidden&quot;;
+        } else {
+          if (page === &quot;&quot;) skip = &quot;image is on the pasteboard&quot;;
+          else if (holder.parent instanceof Character) skip = &quot;image is anchored in text&quot;;
+          else if (holder.parent instanceof Group) skip = &quot;image is inside a group&quot;;
+          else if (!(holder.parent instanceof Spread)) skip = &quot;image is inside another object&quot;;
+          else if (cflLocked(holder)) skip = &quot;image or its layer is locked&quot;;
+        }
+        if (skip) { report.push([&quot;skipped: &quot; + skip, name, page, &quot;row &quot; + row.line]); counts.skipped++; continue; }
+
+        if (olds.length) {
+          var was = old.extractLabel(CFL_PATH_LABEL);
+          if (was !== path) {
+            if (!opt.acceptMoved) {
+              report.push([&quot;skipped: the image was relinked to a file of the same name in another folder&quot;, name, page, &quot;was &quot; + was + &quot;; now &quot; + path]);
+              counts.skipped++;
+              continue;
+            }
+            report.push([&quot;accepted: the image was relinked to a file of the same name in another folder&quot;, name, page, &quot;was &quot; + was + &quot;; now &quot; + path]);
+            old.insertLabel(CFL_PATH_LABEL, path);
+          }
+          // Compare with the list text used last time, not with the frame:
+          // InDesign may have changed quotes, and hand edits stay until the list changes.
+          if (old.extractLabel(CFL_TEXT_LABEL) === row.text) { counts.unchanged++; continue; }
+          cflSetCaption(old, row.text, opt.pStyle, name, path);
+          counts.updated++;
+          report.push([&quot;updated&quot;, name, page, &quot;row &quot; + row.line]);
+          checks.push({ frame: old, holder: holder, what: &quot;updated&quot;, name: name, page: page });
+          continue;
+        }
+
+        var made = cflMakeCaption(holder, row.text, name, path, opt);
+        counts.added++;
+        checks.push({ frame: made.frame, holder: holder, what: &quot;added&quot;, name: name, page: page });
+      }
+    }
+
+    for (var k = 0; k &lt; checks.length; k++) cflCheck(checks[k], report);
+
+    for (var e in earlier) {
+      if (!earlier.hasOwnProperty(e) || visited.hasOwnProperty(e)) continue;
+      for (var o = 0; o &lt; earlier[e].length; o++)
+        report.push([&quot;caption whose image was not found (left as is)&quot;, &quot;&quot;, cflPageName(earlier[e][o]),
+          earlier[e][o].parentStory.contents.substring(0, 40)]);
+    }
+  } finally {
+    if (saved) {
+      try { vp.horizontalMeasurementUnits = saved.h; } catch (e1) { notRestored.push(&quot;horizontal ruler units&quot;); }
+      try { vp.verticalMeasurementUnits = saved.v; } catch (e2) { notRestored.push(&quot;vertical ruler units&quot;); }
+      try { vp.rulerOrigin = saved.o; } catch (e3) { notRestored.push(&quot;ruler origin&quot;); }
+      try { doc.zeroPoint = saved.z; } catch (e4) { notRestored.push(&quot;zero point&quot;); }
+      if (notRestored.length) report.push([&quot;could not restore: &quot; + notRestored.join(&quot;, &quot;), &quot;&quot;, &quot;&quot;, &quot;&quot;]);
+    }
+  }
+  return { report: report, counts: counts, restore: notRestored };
+}
+
+function cflCsvCell(s) {
+  s = String(s);
+  return /[&quot;,\r\n]/.test(s) ? '&quot;' + s.replace(/&quot;/g, '&quot;&quot;') + '&quot;' : s;
+}
+
+function cflWriteReport(file, report) {
+  var lines = [&quot;Status,File,Page,Detail&quot;];
+  for (var i = 0; i &lt; report.length; i++) {
+    var r = report[i], c = [];
+    for (var j = 0; j &lt; r.length; j++) c.push(cflCsvCell(r[j]));
+    lines.push(c.join(&quot;,&quot;));
+  }
+  file.encoding = &quot;UTF-8&quot;;
+  file.lineFeed = &quot;Windows&quot;;
+  if (!file.open(&quot;w&quot;)) throw new Error(&quot;Cannot write &quot; + file.fsName);
+  var wrote = file.write(String.fromCharCode(0xFEFF) + lines.join(&quot;\n&quot;) + &quot;\n&quot;);
+  var closed = file.close();
+  if (!wrote || !closed) throw new Error(&quot;Writing &quot; + file.fsName + &quot; failed&quot; + (file.error ? &quot;: &quot; + file.error : &quot;.&quot;));
+}
+
+// ---------- dialog ----------
+
+function cflAsk(doc) {
+  var list = File.openDialog(&quot;Choose the caption list (CSV)&quot;, &quot;CSV:*.csv;*.txt,All files:*.*&quot;);
+  if (!list) return null;
+
+  var pNames = [], pItems = doc.allParagraphStyles;
+  for (var i = 0; i &lt; pItems.length; i++) pNames.push(pItems[i].name);
+  var oNames = [&quot;(none)&quot;], oItems = doc.allObjectStyles;
+  for (var j = 0; j &lt; oItems.length; j++) oNames.push(oItems[j].name);
+  var pDefault = 0;
+  for (var a = 0; a &lt; pNames.length; a++) if (/caption/i.test(pNames[a])) { pDefault = a; break; }
+  var oDefault = 0;
+  for (var b = 0; b &lt; oItems.length; b++) if (/caption/i.test(oItems[b].name)) { oDefault = b + 1; break; }
+
+  var d = app.dialogs.add({ name: &quot;Captions from List&quot; });
+  var col = d.dialogColumns.add();
+  col.staticTexts.add({ staticLabel: &quot;List: &quot; + list.name });
+  var r1 = col.dialogRows.add();
+  r1.staticTexts.add({ staticLabel: &quot;Paragraph style:&quot;, minWidth: 110 });
+  var pDrop = r1.dropdowns.add({ stringList: pNames, selectedIndex: pDefault, minWidth: 220 });
+  var r2 = col.dialogRows.add();
+  r2.staticTexts.add({ staticLabel: &quot;Object style:&quot;, minWidth: 110 });
+  var oDrop = r2.dropdowns.add({ stringList: oNames, selectedIndex: oDefault, minWidth: 220 });
+  var r3 = col.dialogRows.add();
+  r3.staticTexts.add({ staticLabel: &quot;Gap below image:&quot;, minWidth: 110 });
+  var gap = r3.measurementEditboxes.add({ editValue: 4, editUnits: doc.viewPreferences.verticalMeasurementUnits });
+  var moved = col.checkboxControls.add({ staticLabel: &quot;Accept all same-name relinks matched by this list&quot;, checkedState: false });
+
+  if (!d.show()) { d.destroy(); return null; }
+  var opt = {
+    list: list,
+    pStyle: pItems[pDrop.selectedIndex],
+    oStyle: oDrop.selectedIndex &gt; 0 ? oItems[oDrop.selectedIndex - 1] : null,
+    gap: gap.editValue, // measurementEditbox returns points
+    acceptMoved: moved.checkedState
+  };
+  d.destroy();
+  return opt;
+}
+
+function cflTwo(n) { return (n &lt; 10 ? &quot;0&quot; : &quot;&quot;) + n; }
+
+// A new file for every run, so an earlier report is never overwritten.
+function cflReportFile(doc, list) {
+  var base = doc.name.replace(/\.indd$/i, &quot;&quot;), folder, t = new Date();
+  try { folder = doc.filePath; } catch (e) { folder = Folder.desktop; }
+  var stamp = t.getFullYear() + cflTwo(t.getMonth() + 1) + cflTwo(t.getDate()) + &quot;-&quot; +
+    cflTwo(t.getHours()) + cflTwo(t.getMinutes()) + cflTwo(t.getSeconds());
+  var f = File(folder + &quot;/&quot; + base + &quot;-captions-&quot; + stamp + &quot;.csv&quot;), n = 2;
+  while (f.exists || f.fsName === list.fsName) f = File(folder + &quot;/&quot; + base + &quot;-captions-&quot; + stamp + &quot;-&quot; + (n++) + &quot;.csv&quot;);
+  return f;
+}
+
+// Returns { file, error }. Never throws, so the counts can still be shown.
+function cflSaveReport(doc, list, report) {
+  var rf = null;
+  try {
+    rf = cflReportFile(doc, list);
+    cflWriteReport(rf, report);
+    return { file: rf, error: &quot;&quot; };
+  } catch (e) {
+    return { file: rf, error: e.message };
+  }
+}
+
+function cflMain() {
+  if (!app.documents.length) { alert(&quot;Open a document first.&quot;); return; }
+  var doc = app.activeDocument;
+  var opt = cflAsk(doc);
+  if (!opt) return;
+  var result, err = null;
+  try {
+    app.doScript(function () {
+      try { result = cflRun(doc, opt); } catch (e) { err = e; throw e; }
+    }, ScriptLanguage.JAVASCRIPT, undefined, UndoModes.ENTIRE_SCRIPT, &quot;Captions from List&quot;);
+  } catch (e0) {
+    if (err &amp;&amp; err.listError) {
+      alert(&quot;The list was not used:\n&quot; + err.message + &quot;\n\nThe document was not changed.&quot;, &quot;Captions from List&quot;);
+      return;
+    }
+    var lost = opt.notRestored &amp;&amp; opt.notRestored.length ? &quot;\n\nCould not restore: &quot; + opt.notRestored.join(&quot;, &quot;) : &quot;&quot;;
+    alert(&quot;The script stopped:\n&quot; + (err ? err.message : String(e0)) + lost +
+      &quot;\n\nCheck the document before you save it.&quot;, &quot;Captions from List&quot;);
+    return;
+  }
+  var c = result.counts, msg = &quot;Added: &quot; + c.added + &quot;\nUpdated: &quot; + c.updated +
+    &quot;\nUnchanged: &quot; + c.unchanged + &quot;\nSkipped: &quot; + c.skipped;
+  if (result.restore.length) msg += &quot;\n\nCould not restore: &quot; + result.restore.join(&quot;, &quot;);
+  if (result.report.length) {
+    var saved = cflSaveReport(doc, opt.list, result.report);
+    if (saved.error) msg += &quot;\n\nThe report could not be saved: &quot; + saved.error;
+    else msg += &quot;\n\nReport (&quot; + result.report.length + &quot; lines):\n&quot; + saved.file.fsName;
+  }
+  alert(msg, &quot;Captions from List&quot;);
+}
+
+if (typeof CFL_TEST === &quot;undefined&quot;) cflMain();
+</code></pre>
+</details>
