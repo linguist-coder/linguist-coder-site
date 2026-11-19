@@ -1,0 +1,150 @@
+---
+title: "Translate an InDesign IDML File with AI and Review It Against a Brief"
+date: 2026-11-19T16:03:00.000+09:00
+updated: 2026-11-19T16:03:00.000+09:00
+permalink: "/2026/11/translate-indesign-idml-with-ai-brief.html"
+tags: ["IDML", "InDesign", "translation"]
+layout: post.njk
+---
+<p>This article is also available as a short video on YouTube: <a href="https://youtu.be/3qcClr6zMC8" target="_blank" rel="noopener">Translate an InDesign Document with AI and Review It Against a Brief</a></p>
+
+<p>I built a small Windows app, IDML Brief Translate, that translates an IDML file from English to Japanese using a saved translation brief. For the test brief below, the app checks B-01 through B-06 automatically, including the specified placement of the <code>UI Label</code> style. An OpenAI model reviews the free-text rules, such as the instructions on polite form and safety wording. It also checks for changes in meaning, omissions and additions. You review the findings, edit the translation, run the checks again and export an IDML to inspect in InDesign.</p>
+<p>I built it to show this workflow on one four-page test document. The exported file still needs a language review and a layout check in InDesign. The app is free and the source is on GitHub. API usage is paid separately, with your own Anthropic and OpenAI keys.</p>
+<figure class="diagram"><img src="/images/2026/11/translate-indesign-idml-with-ai-brief/findings.png" alt="The Findings and edit screen after the real run. The rule table shows one violation each for B-08 and M-meaning. Below it, the Japanese paragraph about cleaning the print head has two AI findings: the translation of &quot;sharp tools&quot; is narrowed to tools with sharp tips, with a suggested fix for each." width="1520" height="943" loading="lazy"></figure>
+
+<p>Related features already exist in Phrase and Crowdin. I wanted to build this workflow around an IDML file and make each finding point to a rule.</p>
+<h2>The brief</h2>
+<p>In this app, a brief is a saved list of translation rules. Each rule has an ID, so a finding can point back to the instruction it is about. The same brief is used for every run. This is the brief I used for the test file:</p>
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">ID</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Rule</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Checked by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-01</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">POWER stays in English</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">App check</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-02</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">The <code>UI Label</code> style goes on the Japanese word for "green"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">App check</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-03</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">label roll → ラベルロール</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">App check</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-04</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">print head → プリントヘッド</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">App check</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-05</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">TX-40 stays as is</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">App check</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-06</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Write numbers as digits (two seconds → 2 秒), recommended</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">App check</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-07</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Polite form in instructions</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">AI review</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">B-08</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Safety wording must not be softened or shortened</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">AI review</td>
+</tr>
+</tbody>
+</table>
+<p>The app checks the supported rule types automatically. Instructions written as free text go to the AI reviewer. The AI review also uses three built-in checks: M-meaning for a change in meaning, M-omission for missing content and M-addition for added content. These can overlap with rules in the brief.</p>
+<h2>The test file</h2>
+<p>I adapted the four-page test guide for a fictional label printer that I used in <a href="https://www.linguist-coder.com/2026/11/what-to-check-after-translating-idml.html">an earlier IDML translation test</a>. I changed the fonts used by the styles to a font that supports Japanese so I could inspect the text without missing-glyph boxes. I also replaced italic formatting with regular text and made the <code>UI Label</code> style blue.</p>
+<p>The file has a footnote, a table, an index marker, a cross-reference and character styles inside sentences. It also has local tracking and underline overrides, a hidden layer and a text frame on the pasteboard.</p>
+<p>The app reads 33 paragraphs in 10 stories from it. Five of them have no words to translate (four hold only a number, one holds only a tag) and stay as they are.</p>
+<h2>Keeping formatting markers in their paragraph</h2>
+<p>The app extracts the text with Okapi Tikal. Character styles, footnote references, cross-references and index markers become markers in the text sent to the model. I call them tags here.</p>
+<p>The model may move a tag inside its paragraph, because Japanese word order is different. It may not drop a tag, repeat it, invent one or move it to another paragraph. The app checks this for each paragraph before anything goes back into the IDML. If a paragraph fails the tag check, the app asks for a new translation once. If that also fails, the source paragraph is kept and listed in the report.</p>
+<p>In my run, Claude (<code>claude-opus-5-5</code>) translated 28 paragraphs in two requests in about 15 seconds. The tag checks found no errors, and no paragraph was retried. For this one translation run, the estimated API cost was about $0.04, using the rates I recorded on November 17, 2026.</p>
+<p>This sentence shows why tags may move:</p>
+<blockquote>
+<p>The status light turns <em>green</em> when the printer is ready.</p>
+</blockquote>
+<p>In this Japanese translation, the phrase for "is ready" comes before the word for "green." The <code>UI Label</code> style was on 緑色 (green). The Strong character style stayed on POWER, and the tracking override was on 準備が完了 (is ready). I checked these placements in InDesign.</p>
+<figure class="diagram"><img src="/images/2026/11/translate-indesign-idml-with-ai-brief/indesign-ui-label.png" alt="The exported Japanese paragraph in InDesign. POWER is in English and the word for green, 緑色, is blue because the UI Label style is applied to it." width="1480" height="170" loading="lazy"></figure>
+
+<h2>Review against the rules</h2>
+<p>The app's automatic checks run first. Then an OpenAI model (<code>gpt-5.5-2026-04-23</code>) reads the source and translated paragraphs with the free-text rules and the three built-in checks. It returns findings with a rule ID, the reason and a suggested fix. The app accepts findings only for those rules and checks. A finding with any other rule ID is discarded. A paragraph with no review response stays marked "not evaluated".</p>
+<p>I tested the automatic checks and the AI review together with two sets of errors planted in a manually prepared Japanese translation of the same file. Each altered paragraph had one planted error, such as POWER translated or "wider" changed to "narrower". I used the first set while writing the review prompt. I ran the second set once with the review prompt unchanged.</p>
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;"></th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">First set</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Second set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Planted errors</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">7</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Found by the app's checks</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">2 of 2</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">1 of 1</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Found by the AI review</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">4 of 4</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">6 of 6</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Findings on paragraphs with no planted error</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">1</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Both runs flagged the same note, which used the plain form. I counted that finding as a B-07 violation. In the second set, a paragraph with a planted error also got a second finding of another type, which I also judged valid. Both sets were small and deliberately constructed within the same test document. These results do not establish how often the checks would miss errors in other documents.</p>
+<h2>Edit and check again</h2>
+<p>You edit the Japanese text in the app. An edit that removes or breaks a tag is refused. When you save an edit, the app automatically reruns its checks and marks the previous AI review as out of date. Select <strong>Run AI review</strong> to review all translated paragraphs again.</p>
+<figure class="diagram"><img src="/images/2026/11/translate-indesign-idml-with-ai-brief/review-out-of-date.png" alt="The Findings and edit screen right after an edited paragraph was saved. The message reads &quot;AI review is out of date. The translation was edited after the AI review.&quot; The edited paragraph is marked &quot;edited by hand&quot;." width="1520" height="845" loading="lazy"></figure>
+
+<h2>Export</h2>
+<p>The app uses Tikal to rebuild the IDML, then runs a structure check against the input. It compares the footnotes, cross-references, index markers, anchored objects, tables and character formatting, and allows a different order inside a paragraph. If the check reports a problem, export is blocked. In automated tests, removing a footnote, a cross-reference, a tracking override or a style definition blocked the export.</p>
+<p>The structure check does not establish whether formatting is attached to the intended words. In this brief, B-02 checks the placement of the <code>UI Label</code> style on 緑色. Inspect the other formatting placements in InDesign.</p>
+<p>The HTML report has three sections:</p>
+<ol>
+<li><strong>Language and brief:</strong> for each rule, the number of violations, checks with no findings, and cases that were not applicable, could not be judged or were not evaluated.</li>
+<li><strong>Codes and structure:</strong> the result of the structure check, and any paragraph still in English.</li>
+<li><strong>InDesign layout:</strong> always "not checked". The app does not open InDesign.</li>
+</ol>
+<p>Open the exported file in InDesign to inspect the layout, including overset text and where the character styles landed.</p>
+<figure class="diagram"><img src="/images/2026/11/translate-indesign-idml-with-ai-brief/report-sections.png" alt="The end of the HTML report: the Findings table with the two AI findings, section 2 Codes and structure with the structure check result and the text left as is, and section 3 InDesign layout marked Not checked." width="1420" height="800" loading="lazy"></figure>
+
+<p>The report records the checks that were run. The translation and the layout still need a person to review them.</p>
+<h2>What it leaves alone and what it refuses</h2>
+<p>Text on a hidden layer, index topic names and the words in a cross-reference format, such as "on page," are left as they are. The report lists them. To change "on page", edit the cross-reference format in InDesign.</p>
+<p>The app is designed to refuse files that contain features it does not support, including tracked changes, notes, conditional text, XML-tagged content, hyperlinks, endnotes and text variables outside cross-references. It shows the reason.</p>
+<h2>Limits</h2>
+<ul>
+<li>This version runs on Windows and translates IDML files from English to Japanese.</li>
+<li>I tested it on one four-page file. Other files may contain things it refuses or has not seen.</li>
+<li>The models are fixed: Claude for translation and an OpenAI model for review.</li>
+<li>For translation, the app sends the paragraph text and the saved brief, including its term rules, to Anthropic. For review, it sends the source and translated paragraphs to OpenAI with the free-text rules and the built-in checks. Do not use it on documents you are not allowed to send to those services.</li>
+<li>The app keeps your API keys in memory while it runs and does not save them to disk.</li>
+<li>The app is not signed, so Windows SmartScreen may warn you.</li>
+</ul>
+<h2>Download</h2>
+<p>The zip is on the <a target="_blank" rel="noopener" href="https://github.com/linguist-coder/idml-brief-translate/releases">Releases page</a>, and the source is in the same repository. The zip includes a Java runtime and Okapi Tikal, so you do not need to install them. It also includes the test file and a saved example that uses a manually prepared translation, which you can open without API keys.</p>
