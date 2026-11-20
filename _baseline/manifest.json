@@ -1,5 +1,21 @@
 [
  {
+  "path": "/2026/11/check-indesign-toc-against-headings.html",
+  "title": "Check an InDesign Table of Contents Against Its Headings Before You Export",
+  "published": "2026-11-21T08:05:00.000+09:00",
+  "updated": "2026-11-21T08:05:00.000+09:00",
+  "tags": [
+   "ExtendScript",
+   "InDesign",
+   "automation"
+  ],
+  "raw_sha256": "7b1cb315fc946ae31d20464f667b528c844b2facceaaf54e9684e20a2ec9aeaf",
+  "rewritten_sha256": "7b1cb315fc946ae31d20464f667b528c844b2facceaaf54e9684e20a2ec9aeaf",
+  "raw_len": 27228,
+  "images": {},
+  "file": "src/posts/2026/11/check-indesign-toc-against-headings.html"
+ },
+ {
   "path": "/2026/11/translate-indesign-idml-with-ai-brief.html",
   "title": "Translate an InDesign IDML File with AI and Review It Against a Brief",
   "published": "2026-11-19T16:03:00.000+09:00",

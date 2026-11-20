@@ -1,0 +1,377 @@
+---
+title: "Check an InDesign Table of Contents Against Its Headings Before You Export"
+date: 2026-11-21T08:05:00.000+09:00
+updated: 2026-11-21T08:05:00.000+09:00
+permalink: "/2026/11/check-indesign-toc-against-headings.html"
+tags: ["ExtendScript", "InDesign", "automation"]
+layout: post.njk
+---
+<p>This article is also available as a short video on YouTube: <a href="https://youtu.be/fau60vtewbc" target="_blank" rel="noopener">InDesign Table of Contents Out of Date? Check It Before You Update</a></p>
+
+<p>A reader on <a href="https://www.reddit.com/r/indesign/comments/1y0deow/" target="_blank" rel="noopener">r/indesign</a> changed a chapter heading after the table of contents was generated, forgot to update it, and found the mismatch after printing. Preflight has no rule for this.</p>
+<p>If you have not edited the table of contents by hand, the fix is to choose Layout &gt; Update Table of Contents right before you export. The script below is for the cases where you want to see what is out of date first: the contents page has hand edits that an update would replace, you are checking a file someone else prepared, or the table of contents collects headings from every chapter of a book.</p>
+<h2>What the script reports</h2>
+<p>Run it with the document that holds the table of contents active. It changes nothing and shows one alert. These are the messages from my test document after I edited one heading, moved one heading to another page, added a heading, and deleted one:</p>
+<pre><code>Not in TOC (p.3): Loading roll paper
+Page moved 4 -&gt; 6: Printing labels
+Not in TOC (p.5): Troubleshooting
+No matching heading: Loading paper3
+No matching heading: Cleaning ... 5
+(1 heading(s) on the pasteboard or overset were skipped.)
+</code></pre>
+<ul>
+<li><strong>Not in TOC</strong> is a heading on a page with no table of contents line that has the same text. An edited heading shows up twice: once here with its new text, and once as a line with no matching heading.</li>
+<li><strong>Page moved</strong> means the text matches but the page number in the table of contents is not the page the heading is on now. If two headings have the same text, such as a Summary in every chapter, each one is first paired with the line that has its own page number.</li>
+<li><strong>No matching heading</strong> is a table of contents line whose heading no longer exists with that text. The line is shown whole, with " ... " where it has a tab, so "Cleaning ... 5" is the entry for Cleaning on page 5. "Loading paper3" had no tab between the entry and its page number.</li>
+</ul>
+<figure class="diagram"><img src="/images/2026/11/check-indesign-toc-against-headings/spread.png" alt="Two pages of a demo manual. The contents page lists Getting started 2, Loading paper 3, Cleaning 4. Page 2 now holds both Getting started and Cleaning." width="2638" height="884" loading="lazy"><figcaption>The contents page still says Cleaning is on page 4, but the heading was moved to page 2. The heading on page 3 was also changed to Loading roll paper.</figcaption></figure>
+
+<figure class="diagram native"><img src="/images/2026/11/check-indesign-toc-against-headings/alert.png" alt="InDesign script alert: Not in TOC (p.3): Loading roll paper. Page moved 4 -&gt; 2: Cleaning. No matching heading: Loading paper ... 3." width="461" height="275" loading="lazy"><figcaption>The alert for that document.</figcaption></figure>
+
+<p>When everything matches, the alert says so and gives the number of headings checked.</p>
+<h2>How it reads a contents line</h2>
+<p>Each heading's paragraph style has an entry in the table of contents style, and the entry says whether page numbers are shown. The script reads that setting for each heading.</p>
+<p>If the entry shows no page number, the whole contents line must be the heading, and the page is not checked.</p>
+<p>If the entry shows page numbers, the script accepts one of these:</p>
+<ul>
+<li>The text before the last tab is the heading. What follows the tab is the page number.</li>
+<li>The line starts with the heading and the rest is digits or a roman numeral. This is the case when the entry has no tab before the number, as in "Loading paper3" above.</li>
+</ul>
+<p>The second one is a guess. If a heading "Part1" on page 2 is renamed "Part" and moves to page 12, the line "Part12" looks correct. Set a tab as the separator in the table of contents style if you can.</p>
+<p>Text is compared after line breaks, tabs and repeated spaces are reduced to one space. A forced line break inside a heading, as in "Getting / started", still matched. An entry that was shortened on purpose does not match, so if your contents page uses shorter titles than the headings, expect those lines in the report every time.</p>
+<h2>What it compares</h2>
+<p>The script finds the table of contents by story type, so it does not matter which frame or page it is on. To tell which table of contents style made it, the script compares the paragraph styles of the contents lines (not the title) with the entry styles set in each table of contents style. Only the styles that match are read, so a figure list style with different entry styles is left out.</p>
+<p>This is an inference, and it can fail two ways. If two styles use the same entry styles, the script cannot tell them apart. It combines them and names them in the alert. If one of them has Include Book Documents turned on, that means it asks you to open a book even for a single document. If one shows page numbers for an entry and the other does not, both readings are tried for that entry. If you restyled the contents lines by hand so that no style matches, the script stops and checks nothing.</p>
+<p>From that style it collects every paragraph in the included paragraph styles. Styles in a style group are matched with the group name, so Heads:Section and Sidebar:Section are kept apart.</p>
+<p>Some headings are skipped and counted at the end of the alert:</p>
+<ul>
+<li>Headings that are not on a page, because they sit on the pasteboard or in overset text. In my test, a heading on the pasteboard was also missing from the generated table of contents. I did not test overset text.</li>
+<li>Headings on a hidden layer, unless the table of contents style has Include Text on Hidden Layers turned on.</li>
+</ul>
+<p>Headings with automatic numbering appeared in my generated tables of contents with their number in front, as in "1. Getting started". The script reads each heading's current number from InDesign and accepts a contents line only if it is the number and the text, or the text alone. A line with an old number, such as "99. Cleaning", is reported as not matching.</p>
+<h2>Books</h2>
+<p>If the table of contents style has Include Book Documents turned on, open the book (.indb) before running the script. The script then reads the headings in every chapter of that book. Chapters that are not open are opened without a window and closed again without saving. Chapters you already have open are read from the open document and left open.</p>
+<p>Page numbers come from the pages in each chapter, so they follow the book's numbering. In my test I had renamed a heading in the second chapter, then added a page at the start of the first chapter and repaginated the book. The three headings with unchanged text were reported as moved, with the chapter file name:</p>
+<pre><code>Page moved 2 -&gt; 3 (ch1.indd): Getting started
+Page moved 3 -&gt; 4 (ch1.indd): Loading paper
+Page moved 5 -&gt; 6 (ch2.indd): Printing labels
+Not in TOC (ch2.indd p.7): Cleaning the head
+No matching heading: Cleaning ... 6
+</code></pre>
+<p>If a chapter file is missing, the alert lists it, and its contents lines show up as having no matching heading. Those lines mean the chapter could not be read, not that the headings were deleted. If nothing else differs, for example when the missing chapter has no headings, the alert says the book was not fully checked instead of saying it matches.</p>
+<p>If the book is not open, the script stops with a message asking you to open it, instead of checking only the current file.</p>
+<h2>The script</h2>
+<p><a href="https://github.com/linguist-coder/indesign-toc-check/releases/latest/download/CheckTOC.jsx" target="_blank" rel="noopener">Download CheckTOC.jsx</a> from GitHub, or copy the code below. The test scripts and their log are in the <a href="https://github.com/linguist-coder/indesign-toc-check" target="_blank" rel="noopener">repository</a>.</p>
+<p>Save this as <code>CheckTOC.jsx</code> in your Scripts folder and run it from the Scripts panel. If you have not installed a script before, <a href="https://www.linguist-coder.com/2026/07/your-first-indesign-script-which-pages.html">Your First InDesign Script</a> shows where the folder is and what to watch for when pasting code into a text editor.</p>
+<details>
+<summary>Show the full script</summary>
+<pre><code>// CheckTOC.jsx - compare the TOC in the active document with its headings.
+// Lists headings missing from the TOC, page numbers that moved,
+// and TOC lines whose heading no longer exists. Changes nothing.
+// If the TOC style uses &quot;Include Book Documents&quot;, open the book first:
+// the script then reads the headings in every chapter of that book.
+
+var JUNK = new RegExp(&quot;[\\r\\n\\t\\x03\\uFFFC\\uFEFF]&quot;, &quot;g&quot;);
+
+function clean(s) {
+    return String(s).replace(JUNK, &quot; &quot;).replace(/\s+/g, &quot; &quot;).replace(/^\s+|\s+$/g, &quot;&quot;);
+}
+
+function pathOf(d) {
+    try { return d.fullName.fsName; } catch (e) { return &quot;&quot;; } // unsaved document
+}
+
+// &quot;Heads:Section&quot; for a style inside the group Heads, like TOC style entries
+function stylePath(s) {
+    var parts = [s.name], p = s.parent;
+    while (p &amp;&amp; p.constructor.name === &quot;ParagraphStyleGroup&quot;) { parts.unshift(p.name); p = p.parent; }
+    return parts.join(&quot;:&quot;);
+}
+
+function tocStories(d) {
+    var a = [];
+    for (var i = 0; i &lt; d.stories.length; i++) {
+        if (d.stories[i].storyType == StoryTypes.TOC_STORY) { a.push(d.stories[i]); }
+    }
+    return a;
+}
+
+// Reads TOC lines (only from the TOC document) and headings from document d.
+function readDoc(d, set, readToc, r) {
+    for (var i = 0; i &lt; d.stories.length; i++) {
+        var st = d.stories[i];
+        var isToc = st.storyType == StoryTypes.TOC_STORY;
+        if (isToc &amp;&amp; !readToc) { continue; }
+        for (var k = 0; k &lt; st.paragraphs.length; k++) {
+            var p = st.paragraphs[k];
+            var raw = String(p.contents).replace(/\r$/, &quot;&quot;);
+            if (isToc) {
+                var t = clean(raw);
+                if (!t || (k === 0 &amp;&amp; set.titles[t])) { continue; } // the TOC title
+                // shown whole in the report, a tab as &quot; ... &quot;: &quot;Cleaning ... 5&quot;
+                r.toc.push({ raw: raw, t: clean(raw.replace(/\t/g, &quot; ... &quot;)) });
+            } else if (set.styles[stylePath(p.appliedParagraphStyle)]) {
+                var mode = set.styles[stylePath(p.appliedParagraphStyle)];
+                var h = clean(raw);
+                if (!h) { continue; }
+                var fr = p.characters[0].parentTextFrames[0];
+                if (!fr || !fr.parentPage) { r.skipped++; continue; } // pasteboard or overset
+                if (!set.hidden &amp;&amp; !fr.itemLayer.visible) { r.hidden++; continue; }
+                // a numbered heading appears in the TOC with its current number, e.g. &quot;2. Cleaning&quot;
+                var keys = [h];
+                if (p.bulletsAndNumberingListType == ListType.NUMBERED_LIST) {
+                    keys.unshift(clean(p.bulletsAndNumberingResultText + &quot; &quot; + h));
+                }
+                r.heads.push({ t: h, keys: keys, mode: mode, pg: fr.parentPage.name, doc: d.name });
+            }
+        }
+    }
+}
+
+// Page number the TOC line e gives for heading h: &quot;&quot; if the line has no page number,
+// null if e is not that heading. h.mode is the TOC entry's page number setting:
+// &quot;page&quot;, &quot;none&quot;, or &quot;either&quot; when combined TOC styles disagree.
+function pageFor(e, h) {
+    var tab = e.raw.lastIndexOf(&quot;\t&quot;), whole = clean(e.raw);
+    for (var i = 0; i &lt; h.keys.length; i++) {
+        var key = h.keys[i];
+        if (h.mode !== &quot;page&quot; &amp;&amp; whole === key) { return &quot;&quot;; } // TOC entry without page numbers
+        if (h.mode === &quot;none&quot;) { continue; }
+        if (tab &gt;= 0 &amp;&amp; clean(e.raw.substring(0, tab)) === key) { return clean(e.raw.substring(tab + 1)); }
+        if (whole.indexOf(key) === 0) { // no tab: the page number is glued to the entry
+            var rest = clean(whole.substring(key.length).replace(/^[\s.]+/, &quot;&quot;));
+            if (/^(\d+|[ivxlcdm]+)$/i.test(rest)) { return rest; } // digits only: a guess
+        }
+    }
+    return null;
+}
+
+function checkTOC(doc) {
+    var i, j, k, tocs = tocStories(doc);
+    if (!tocs.length) { return &quot;No table of contents found in this document.&quot;; }
+    // paragraph styles of the TOC entries (not the title), to tell which TOC style made it
+    var anyTitle = {}, inToc = {};
+    for (i = 0; i &lt; doc.tocStyles.length; i++) { if (doc.tocStyles[i].title) { anyTitle[clean(doc.tocStyles[i].title)] = true; } }
+    for (i = 0; i &lt; tocs.length; i++) {
+        for (k = 0; k &lt; tocs[i].paragraphs.length; k++) {
+            var tp = tocs[i].paragraphs[k];
+            if (k === 0 &amp;&amp; anyTitle[clean(tp.contents)]) { continue; }
+            inToc[stylePath(tp.appliedParagraphStyle)] = true;
+        }
+    }
+    var used = [];
+    for (i = 0; i &lt; doc.tocStyles.length; i++) {
+        var ts = doc.tocStyles[i];
+        for (j = 0; j &lt; ts.tocStyleEntries.length; j++) {
+            var en = ts.tocStyleEntries[j], fs = en.formatStyle;
+            var look = (typeof fs === &quot;string&quot; || !fs.name) ? en.name : stylePath(fs); // [Same Style]
+            if (inToc[look]) { used.push(ts); break; }
+        }
+    }
+    if (!used.length) {
+        return &quot;Could not tell which table of contents style made this table of contents: its lines use none of the entry styles in Layout &gt; Table of Contents Styles. Nothing was checked.&quot;;
+    }
+    var set = { styles: {}, titles: {}, hidden: false }, wantBook = false;
+    for (i = 0; i &lt; used.length; i++) {
+        if (used[i].title) { set.titles[clean(used[i].title)] = true; }
+        if (used[i].includeBookDocuments) { wantBook = true; }
+        if (used[i].includeHidden) { set.hidden = true; }
+        for (j = 0; j &lt; used[i].tocStyleEntries.length; j++) {
+            var te = used[i].tocStyleEntries[j], m = te.pageNumberPosition == PageNumberPosition.NONE ? &quot;none&quot; : &quot;page&quot;;
+            set.styles[te.name] = (set.styles[te.name] &amp;&amp; set.styles[te.name] !== m) ? &quot;either&quot; : m;
+        }
+    }
+    var r = { toc: [], heads: [], skipped: 0, hidden: 0 }, notes = [];
+    if (used.length &gt; 1) {
+        var names = [];
+        for (i = 0; i &lt; used.length; i++) { names.push(used[i].name); }
+        notes.push(&quot;These TOC styles use the same entry styles, so their headings were combined: &quot; + names.join(&quot;, &quot;) + &quot;.&quot;);
+    }
+    var me = pathOf(doc), book = null;
+    if (wantBook &amp;&amp; me) {
+        for (i = 0; i &lt; app.books.length &amp;&amp; !book; i++) {
+            for (j = 0; j &lt; app.books[i].bookContents.length; j++) {
+                if (app.books[i].bookContents[j].fullName.fsName === me) { book = app.books[i]; break; }
+            }
+        }
+    }
+    if (wantBook &amp;&amp; !book) {
+        return [&quot;This TOC takes headings from a book. Open the book (.indb) that contains this document and run the script again.&quot;].concat(notes).join(&quot;\n&quot;);
+    }
+    var missing = 0;
+    if (!book) {
+        readDoc(doc, set, true, r);
+    } else {
+        for (j = 0; j &lt; book.bookContents.length; j++) {
+            var bc = book.bookContents[j], f = bc.fullName, d = null, opened = false;
+            if (!f.exists) { notes.push(&quot;Missing chapter file: &quot; + bc.name); missing++; continue; }
+            for (i = 0; i &lt; app.documents.length; i++) {
+                if (pathOf(app.documents[i]) === f.fsName) { d = app.documents[i]; break; }
+            }
+            if (!d) { d = app.open(f, false); opened = true; }
+            try { readDoc(d, set, pathOf(d) === me, r); }
+            finally { if (opened) { d.close(SaveOptions.NO); } }
+        }
+    }
+    var out = [], taken = [], toc = r.toc, heads = r.heads, pages = [];
+    // first pass: same text on the same page; second pass: same text anywhere
+    for (var pass = 0; pass &lt; 2; pass++) {
+        for (i = 0; i &lt; heads.length; i++) {
+            if (pages[i] !== undefined) { continue; }
+            for (j = 0; j &lt; toc.length; j++) {
+                if (taken[j]) { continue; }
+                var pg = pageFor(toc[j], heads[i]);
+                if (pg !== null &amp;&amp; (pass === 1 || pg === heads[i].pg)) { taken[j] = true; pages[i] = pg; break; }
+            }
+        }
+    }
+    for (i = 0; i &lt; heads.length; i++) {
+        var h = heads[i], where = (book ? h.doc + &quot; &quot; : &quot;&quot;) + &quot;p.&quot; + h.pg;
+        if (pages[i] === undefined) { out.push(&quot;Not in TOC (&quot; + where + &quot;): &quot; + h.t); }
+        else if (pages[i] !== &quot;&quot; &amp;&amp; pages[i] !== h.pg) { out.push(&quot;Page moved &quot; + pages[i] + &quot; -&gt; &quot; + h.pg + (book ? &quot; (&quot; + h.doc + &quot;)&quot; : &quot;&quot;) + &quot;: &quot; + h.t); }
+    }
+    for (j = 0; j &lt; toc.length; j++) {
+        if (!taken[j]) { out.push(&quot;No matching heading: &quot; + toc[j].t); }
+    }
+    if (!out.length) {
+        out.push(missing ? &quot;No differences in the chapters that could be read. The book was not fully checked.&quot;
+            : &quot;TOC matches the headings (&quot; + heads.length + &quot; checked&quot; + (book ? &quot; in &quot; + book.name : &quot;&quot;) + &quot;).&quot;);
+    }
+    if (r.skipped) { out.push(&quot;(&quot; + r.skipped + &quot; heading(s) on the pasteboard or overset were skipped.)&quot;); }
+    if (r.hidden) { out.push(&quot;(&quot; + r.hidden + &quot; heading(s) on hidden layers were skipped.)&quot;); }
+    return out.concat(notes).join(&quot;\n&quot;);
+}
+
+if (app.documents.length) { alert(checkTOC(app.activeDocument)); }
+</code></pre>
+</details>
+<h2>What I tested</h2>
+<p>I tested the script in InDesign 21.6 on Windows. The test documents were built by a test script: one document of six pages with two heading levels, one of them in a style group, a small book with a front-matter file and two chapters, and small documents for the last eighteen cases in the table. I ran each step from the test script. I also ran the script from the Scripts panel on a small document of my own, with a heading edited and another moved to a different page, and the alert matched the test output.</p>
+<table style="border-collapse: collapse; margin: 1em 0px; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Change</th>
+<th style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Report</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">None, right after generating</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches (4 headings)</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading text edited</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading frame moved to another page</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Page moved</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">New heading added, one more on the pasteboard</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC, and 1 skipped</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heading frame deleted</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Table of contents generated again</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Book: heading edited in an open chapter</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Book: page added to the first chapter</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Page moved for the three unchanged headings; the edited one as before</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Book: a chapter file moved away</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">No matching heading for its lines, and the missing file listed</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Book: a chapter with no headings moved away</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not fully checked, and the missing file listed</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Book closed</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Asks you to open the book</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Two headings "Summary" on different pages</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">An unused figure list style with Include Book Documents on</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches, no request to open a book</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Heads:Section in the TOC, Sidebar:Section not</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">A heading on a hidden layer</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches, and 1 skipped</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Two numbered headings, no tab before the page number</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">A heading with the same text as the TOC title</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">No tab, heading "PrintingLabels" shortened to "Printing"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">The TOC title uses the same paragraph style as an unused figure list style</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Contents lines restyled by hand</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Stops: could not tell which style made the TOC</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Short numbered headings "API" and "UI", no tab</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">A contents line edited to "99. Cleaning"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">A contents line edited to "Wrong Cleaning"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">No page numbers in the TOC, heading moved</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Matches (pages not checked)</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Chapters without page numbers, sections with, both moved</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Page moved for the section only</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Two TOC styles with the same entry style, one for a book</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Asks you to open the book, and names both styles</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">"Part ... 2" in the TOC, heading renamed "Part 2" and moved to page 5</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">No page numbers, "Getting ... started" in the TOC, heading shortened to "Getting"</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading</td>
+</tr>
+<tr>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Numbered heading "API" renamed "SDK", no tab</td>
+<td style="border: 1px solid rgb(204, 204, 204); padding: 8px; text-align: left;">Not in TOC + No matching heading: 1. ... API2</td>
+</tr>
+</tbody>
+</table>
+<p>These last eighteen cases come from three rounds of review. The version I posted on Reddit got the first seven wrong. My first revision passed those seven, got the next seven wrong, and left the style names out of the fifteenth. My second revision got two of the last three wrong and showed the old line in the third as just "1.".</p>
+<p>I did not test macOS, other InDesign versions, page numbers with section prefixes, a table of contents with the page number before the entry, run-in entries, a document with more than one table of contents, chapters with unsaved changes, headings in overset text, or numbered headings with numbering settings changed in the TOC style.</p>
